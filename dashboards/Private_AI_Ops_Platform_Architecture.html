@@ -18,59 +18,80 @@
   --amber:#854F0B;--amber2:#BA7517;--amber3:#FAC775;
   --blue:#185FA5;--blue2:#378ADD;--blue3:#B5D4F4;
   --gray1:#F2F4F7;--gray2:#D5D9E0;--gray3:#4A6080;--gray4:#2A3A50;
-  --white:#FFFFFF;--text:#0F1C35;--text2:#4A6080;--text3:#8899AA;
+  --white:#FFFFFF;--text:#0F1C35;--text2:#42546F;--text3:#7C8AA0;
   --bg:#F8F7F4;--bg2:#EFEDE8;
   --r:6px;--r2:10px;--r3:16px;
+  --maxw:1360px;
+  --navh:47px;
 }
-html{scroll-behavior:smooth}
-body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.55;font-size:15px}
 
 /* ── HEADER ── */
-.masthead{background:var(--navy);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--gold);flex-wrap:wrap;gap:12px}
+.masthead{background:var(--navy);padding:22px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--gold);flex-wrap:wrap;gap:12px}
 .masthead-left{display:flex;flex-direction:column;gap:4px}
 .masthead-logo{font-size:13px;font-weight:700;letter-spacing:.18em;color:var(--gold);text-transform:uppercase}
-.masthead-title{font-size:20px;font-weight:700;color:var(--white);letter-spacing:-.01em}
-.masthead-meta{font-size:11px;color:rgba(255,255,255,.45);font-family:'DM Mono',monospace;margin-top:2px}
+.masthead-title{font-size:21px;font-weight:700;color:var(--white);letter-spacing:-.01em}
+.masthead-meta{font-size:11px;color:rgba(255,255,255,.5);font-family:'DM Mono',monospace;margin-top:2px}
+.masthead-right{display:flex;align-items:center;gap:10px}
 .version-badge{font-family:'DM Mono',monospace;font-size:10px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.35);color:var(--gold2);padding:4px 10px;border-radius:4px;letter-spacing:.08em}
+.kbd-hint{font-family:'DM Mono',monospace;font-size:9.5px;color:rgba(255,255,255,.4);letter-spacing:.04em}
+.kbd-hint b{color:rgba(255,255,255,.7);font-weight:500;border:1px solid rgba(255,255,255,.2);border-radius:3px;padding:0 4px}
 
-/* ── TABS ── */
-.tab-bar{background:var(--navy2);border-bottom:1px solid rgba(255,255,255,.08);padding:0 20px;display:flex;gap:0;overflow-x:auto;position:sticky;top:0;z-index:50}
-.tab-btn{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:14px 18px;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;position:relative;transition:color .2s;white-space:nowrap}
-.tab-btn::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transition:transform .2s}
-.tab-btn.active{color:var(--gold2)}
+/* ── STICKY NAV ── */
+.navstack{position:sticky;top:0;z-index:60;box-shadow:0 6px 18px -12px rgba(15,28,53,.4)}
+.tab-bar{background:var(--navy2);border-bottom:1px solid rgba(255,255,255,.08);padding:0 12px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:thin}
+.tab-bar::-webkit-scrollbar{height:3px}
+.tab-bar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2)}
+.tab-btn{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:14px 16px;background:none;border:none;color:rgba(255,255,255,.42);cursor:pointer;position:relative;transition:color .18s,background .18s;white-space:nowrap;display:flex;align-items:center;gap:7px;border-radius:6px 6px 0 0}
+.tab-btn .num{font-family:'DM Mono',monospace;font-size:10px;opacity:.55}
+.tab-btn::after{content:'';position:absolute;bottom:0;left:6px;right:6px;height:2px;background:var(--gold);transform:scaleX(0);transition:transform .2s}
+.tab-btn.active{color:var(--gold2);background:rgba(255,255,255,.04)}
 .tab-btn.active::after{transform:scaleX(1)}
-.tab-btn:hover:not(.active){color:rgba(255,255,255,.7)}
+.tab-btn:hover:not(.active){color:rgba(255,255,255,.75)}
+.tab-btn:focus-visible{outline:2px solid var(--gold2);outline-offset:-3px}
+
+/* section jump bar */
+.subnav{background:var(--navy);border-bottom:1px solid rgba(255,255,255,.07);padding:8px 16px;display:flex;gap:8px;align-items:center;overflow-x:auto;scrollbar-width:none}
+.subnav::-webkit-scrollbar{display:none}
+.subnav[hidden]{display:none}
+.subnav-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);flex-shrink:0}
+.subnav a{font-size:11px;font-weight:600;color:rgba(255,255,255,.6);text-decoration:none;padding:4px 9px;border-radius:20px;border:1px solid rgba(255,255,255,.14);white-space:nowrap;transition:.15s}
+.subnav a:hover{color:var(--white);border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.06)}
 
 /* ── LAYOUT ── */
-.wrap{max-width:1180px;margin:0 auto;padding:32px 24px 80px}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:38px 28px 40px}
 .panel{display:none}
-.panel.active{display:block;animation:fade .25s ease}
+.panel.active{display:block;animation:fade .24s ease}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-h2.sec{font-size:22px;font-weight:800;letter-spacing:-.01em;margin:6px 0 4px}
-p.lead{color:var(--text2);font-size:14.5px;max-width:78ch;margin-bottom:22px}
-h3.grp{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gray3);margin:32px 0 14px;padding-bottom:7px;border-bottom:1px solid var(--gray2)}
-.eyebrow{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+h2.sec{font-size:25px;font-weight:800;letter-spacing:-.015em;margin:6px 0 6px;line-height:1.25}
+p.lead{color:var(--text2);font-size:15.5px;max-width:80ch;margin-bottom:26px;line-height:1.62}
+h3.grp{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gray3);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--gray2);scroll-margin-top:calc(var(--navh) + 60px)}
+.eyebrow{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
 
 /* ── CARDS ── */
 .card{background:var(--white);border:1px solid var(--gray2);border-radius:var(--r2);padding:18px 20px;margin-bottom:14px}
-.card h4{font-size:15px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px}
-.card p{font-size:13px;color:var(--text2)}
+.card h4{font-size:15px;font-weight:700;margin-bottom:7px;display:flex;align-items:center;gap:8px;line-height:1.3}
+.card p{font-size:13.5px;color:var(--text2);line-height:1.6}
 .card .dot{width:9px;height:9px;border-radius:3px;flex-shrink:0}
 
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:14px}
-.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
 
 /* ── LAYERED DIAGRAM ── */
-.diagram{background:linear-gradient(180deg,#fbfaf7,#f3f1ec);border:1px solid var(--gray2);border-radius:var(--r3);padding:20px;margin:8px 0 26px}
-.layer{border-radius:var(--r2);padding:14px 16px;margin-bottom:12px;border:1px solid var(--gray2);background:var(--white);position:relative}
+.diagram{background:linear-gradient(180deg,#fbfaf7,#f2f0ea);border:1px solid var(--gray2);border-radius:var(--r3);padding:22px;margin:10px 0 28px}
+.layer{border-radius:var(--r2);padding:15px 17px;margin-bottom:12px;border:1px solid var(--gray2);background:var(--white);position:relative}
 .layer:last-child{margin-bottom:0}
-.layer-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
-.layer-name{font-size:13px;font-weight:800;letter-spacing:.02em}
+.layer-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.layer-name{font-size:13.5px;font-weight:800;letter-spacing:.02em}
 .layer-tag{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.06em;color:var(--text3);text-transform:uppercase}
-.chips{display:flex;flex-wrap:wrap;gap:7px}
-.chip{font-size:11.5px;font-weight:600;padding:6px 10px;border-radius:var(--r);border:1px solid var(--gray2);background:var(--gray1);color:var(--navy);display:flex;align-items:center;gap:6px;cursor:default}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:12px;font-weight:600;padding:7px 11px;border-radius:var(--r);border:1px solid var(--gray2);background:var(--gray1);color:var(--navy);display:flex;align-items:center;gap:7px;line-height:1.35;transition:opacity .2s,filter .2s}
 .chip .pdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.chip .mono{white-space:nowrap}
+.diagram.filtering .chip{opacity:.16;filter:saturate(.25)}
+.diagram.filtering .chip.match{opacity:1;filter:none;border-color:var(--gray3)}
 .layer.l-client{border-left:4px solid var(--blue2)}
 .layer.l-orch{border-left:4px solid var(--gold)}
 .layer.l-conn{border-left:4px solid var(--amber2)}
@@ -78,47 +99,106 @@ h3.grp{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:upperc
 .layer.l-data{border-left:4px solid var(--purple2)}
 .layer.l-sec{border-left:4px solid var(--coral2)}
 .layer.l-ops{border-left:4px solid var(--gray3)}
-.flowarrow{text-align:center;color:var(--gray3);font-size:13px;margin:2px 0;font-family:'DM Mono',monospace}
+.flowarrow{text-align:center;color:var(--gray3);font-size:12.5px;margin:3px 0;font-family:'DM Mono',monospace}
 
-/* phase dots */
-.p0{background:#9FE1CB}.p1{background:var(--teal2)}.p2{background:var(--amber2)}.p3{background:var(--purple2)}.p4{background:var(--coral2)}
-
-.legend{display:flex;flex-wrap:wrap;gap:16px;margin:14px 0 4px;padding:12px 14px;background:var(--navy);border-radius:var(--r2)}
-.legend-item{display:flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.65);letter-spacing:.03em}
-.legend-item .pdot{width:9px;height:9px;border-radius:50%}
+/* phase dots / legend */
+.p0{background:#7FCBB0}.p1{background:var(--teal2)}.p2{background:var(--amber2)}.p3{background:var(--purple2)}.p4{background:var(--coral2)}
+.legend{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0 6px;padding:12px 14px;background:var(--navy);border-radius:var(--r2)}
+.legend-title{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);width:100%;margin-bottom:2px}
+.lg-btn{display:flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.7);letter-spacing:.02em;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:5px 11px;cursor:pointer;transition:.15s}
+.lg-btn:hover{background:rgba(255,255,255,.12);color:var(--white)}
+.lg-btn.active{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:500}
+.lg-btn .pdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 
 /* ── TABLE ── */
-.tbl-wrap{overflow-x:auto;border:1px solid var(--gray2);border-radius:var(--r2);margin-bottom:16px}
-table{border-collapse:collapse;width:100%;font-size:12.5px;min-width:640px}
-th{background:var(--navy);color:var(--white);text-align:left;padding:10px 12px;font-weight:600;font-size:11px;letter-spacing:.05em;text-transform:uppercase;position:sticky;top:0}
-td{padding:9px 12px;border-top:1px solid var(--gray2);color:var(--text2);vertical-align:top}
+.tbl-toolbar{display:flex;align-items:center;gap:12px;margin:4px 0 10px;flex-wrap:wrap}
+.tbl-search{flex:1;min-width:220px;max-width:380px;position:relative}
+.tbl-search input{width:100%;font-family:'Syne',sans-serif;font-size:13px;padding:8px 12px 8px 32px;border:1px solid var(--gray2);border-radius:var(--r);background:var(--white);color:var(--text)}
+.tbl-search input:focus{outline:2px solid var(--gold2);outline-offset:0;border-color:var(--gold)}
+.tbl-search::before{content:'⌕';position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:15px}
+.tbl-count{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--gray2);border-radius:var(--r2);margin-bottom:18px;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:660px}
+th{background:var(--navy);color:var(--white);text-align:left;padding:11px 14px;font-weight:600;font-size:11px;letter-spacing:.05em;text-transform:uppercase;position:sticky;top:0}
+td{padding:11px 14px;border-top:1px solid var(--gray2);color:var(--text2);vertical-align:top;line-height:1.55}
 tr:nth-child(even) td{background:var(--gray1)}
+tr.hide{display:none}
+tbody tr:hover td{background:var(--gold3)}
 td code,.mono{font-family:'DM Mono',monospace;font-size:11.5px;color:var(--navy);background:rgba(15,28,53,.06);padding:1px 5px;border-radius:4px;white-space:nowrap}
 td strong{color:var(--text)}
+mark{background:var(--gold3);color:var(--navy);padding:0 1px;border-radius:2px}
 
 /* ── ROADMAP ── */
+.roadmap-ctl{display:flex;justify-content:flex-end;margin-bottom:10px}
+.roadmap-ctl button{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.04em;color:var(--gray3);background:var(--white);border:1px solid var(--gray2);border-radius:var(--r);padding:6px 12px;cursor:pointer;transition:.15s}
+.roadmap-ctl button:hover{background:var(--gray1);color:var(--navy)}
 .phase{border:1px solid var(--gray2);border-radius:var(--r2);margin-bottom:14px;overflow:hidden;background:var(--white)}
-.phase-head{padding:13px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--gray2)}
+.phase-head{padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--gray2);cursor:pointer;width:100%;background:none;font-family:inherit;text-align:left;transition:background .15s}
+.phase-head:hover{background:var(--gray1)}
+.phase-head:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+.phase-caret{margin-left:auto;color:var(--gray3);font-size:12px;transition:transform .2s;flex-shrink:0}
+.phase.collapsed .phase-head{border-bottom-color:transparent}
+.phase.collapsed .phase-caret{transform:rotate(-90deg)}
+.phase.collapsed .phase-body{display:none}
 .phase-num{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--white);padding:3px 9px;border-radius:4px}
-.phase-title{font-weight:800;font-size:14px}
-.phase-gate{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);margin-left:auto}
-.phase-body{padding:14px 16px}
-.phase-body ul{list-style:none;display:flex;flex-direction:column;gap:8px}
-.phase-body li{font-size:12.5px;color:var(--text2);padding-left:18px;position:relative}
-.phase-body li::before{content:'▸';position:absolute;left:0;color:var(--gold);font-size:11px;top:1px}
+.phase-title{font-weight:800;font-size:14.5px}
+.phase-gate{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3)}
+.phase-body{padding:15px 17px}
+.phase-body ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.phase-body li{font-size:13px;color:var(--text2);padding-left:19px;position:relative;line-height:1.6}
+.phase-body li::before{content:'▸';position:absolute;left:0;color:var(--gold);font-size:11px;top:2px}
 .phase-body li b{color:var(--text);font-weight:600}
 
-.callout{border-left:3px solid var(--gold);background:linear-gradient(90deg,rgba(201,168,76,.09),transparent);padding:12px 16px;border-radius:0 var(--r) var(--r) 0;margin:16px 0;font-size:13px;color:var(--text2)}
+.callout{border-left:3px solid var(--gold);background:linear-gradient(90deg,rgba(201,168,76,.1),transparent);padding:14px 18px;border-radius:0 var(--r) var(--r) 0;margin:20px 0;font-size:13.5px;color:var(--text2);line-height:1.62}
 .callout b{color:var(--text)}
 .pill{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;padding:2px 7px;border-radius:20px;border:1px solid var(--gray2);color:var(--gray3);margin:0 3px 3px 0}
 .pill.sku{border-color:var(--teal2);color:var(--teal)}
 
-footer{max-width:1180px;margin:0 auto;padding:22px 24px 50px;color:var(--text3);font-size:11px;font-family:'DM Mono',monospace;border-top:1px solid var(--gray2)}
+/* ── PAGER ── */
+.pager{max-width:var(--maxw);margin:0 auto;padding:8px 28px 60px;display:flex;gap:12px;justify-content:space-between}
+.pager button{flex:1;max-width:340px;text-align:left;background:var(--white);border:1px solid var(--gray2);border-radius:var(--r2);padding:14px 16px;cursor:pointer;font-family:inherit;transition:.15s;color:var(--text)}
+.pager button:hover:not(:disabled){border-color:var(--gold);box-shadow:0 4px 14px -8px rgba(201,168,76,.5)}
+.pager button:disabled{opacity:.35;cursor:default}
+.pager button.next{text-align:right}
+.pager .pg-dir{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:3px}
+.pager .pg-name{font-size:13.5px;font-weight:700}
 
+footer{max-width:var(--maxw);margin:0 auto;padding:22px 28px 60px;color:var(--text3);font-size:11px;font-family:'DM Mono',monospace;border-top:1px solid var(--gray2);line-height:1.7}
+
+/* ── WIDE SCREENS ── */
+@media(min-width:1000px){
+  .chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));align-items:start}
+  .chip{justify-content:flex-start}
+}
+@media(min-width:1500px){
+  :root{--maxw:1500px}
+  body{font-size:15.5px}
+  h2.sec{font-size:27px}
+  .chips{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
+}
+
+/* ── SMALL SCREENS ── */
 @media(max-width:640px){
+  .masthead{padding:16px 18px}
   .masthead-title{font-size:16px}
-  .wrap{padding:22px 14px 60px}
-  h2.sec{font-size:19px}
+  .masthead-right{display:none}
+  .wrap{padding:24px 15px 30px}
+  .pager{padding:8px 15px 50px;flex-direction:column}
+  .pager button{max-width:none}
+  h2.sec{font-size:20px}
+  p.lead{font-size:14.5px}
+}
+
+/* ── PRINT ── */
+@media print{
+  .navstack,.pager,.masthead-right,.roadmap-ctl,.tbl-toolbar,.legend{display:none!important}
+  .panel{display:block!important;page-break-before:always}
+  .panel:first-of-type{page-break-before:avoid}
+  .phase.collapsed .phase-body{display:block!important}
+  .diagram.filtering .chip{opacity:1!important;filter:none!important}
+  body{background:#fff;font-size:11pt}
+  .card,.phase,.tbl-wrap{break-inside:avoid}
+  a{color:inherit;text-decoration:none}
 }
 </style>
 </head>
@@ -130,22 +210,28 @@ footer{max-width:1180px;margin:0 auto;padding:22px 24px 50px;color:var(--text3);
     <span class="masthead-title">Internal Platform &amp; Development Architecture</span>
     <span class="masthead-meta">How the productized services are actually built and delivered · Companion to the Strategy Suite</span>
   </div>
-  <span class="version-badge">v1.0 · SEP 2026</span>
+  <div class="masthead-right">
+    <span class="kbd-hint"><b>&larr;</b> <b>&rarr;</b> tabs &nbsp;·&nbsp; <b>1</b>&ndash;<b>6</b> jump</span>
+    <span class="version-badge">v1.1 · SEP 2026</span>
+  </div>
 </header>
 
-<nav class="tab-bar">
-  <button class="tab-btn active" data-tab="overview">Overview</button>
-  <button class="tab-btn" data-tab="architecture">Platform Architecture</button>
-  <button class="tab-btn" data-tab="skumap">SKU → Capability Map</button>
-  <button class="tab-btn" data-tab="roadmap">Build Roadmap</button>
-  <button class="tab-btn" data-tab="dataflow">Data Flow &amp; Trust</button>
-  <button class="tab-btn" data-tab="stack">Tech Stack</button>
-</nav>
+<div class="navstack">
+  <nav class="tab-bar" role="tablist" aria-label="Architecture sections">
+    <button class="tab-btn active" data-tab="overview" role="tab" aria-selected="true" id="tab-overview"><span class="num">1</span>Overview</button>
+    <button class="tab-btn" data-tab="architecture" role="tab" aria-selected="false" id="tab-architecture"><span class="num">2</span>Platform Architecture</button>
+    <button class="tab-btn" data-tab="skumap" role="tab" aria-selected="false" id="tab-skumap"><span class="num">3</span>SKU → Capability Map</button>
+    <button class="tab-btn" data-tab="roadmap" role="tab" aria-selected="false" id="tab-roadmap"><span class="num">4</span>Build Roadmap</button>
+    <button class="tab-btn" data-tab="dataflow" role="tab" aria-selected="false" id="tab-dataflow"><span class="num">5</span>Data Flow &amp; Trust</button>
+    <button class="tab-btn" data-tab="stack" role="tab" aria-selected="false" id="tab-stack"><span class="num">6</span>Tech Stack</button>
+  </nav>
+  <div class="subnav" id="subnav" hidden><span class="subnav-label">On this tab</span></div>
+</div>
 
 <div class="wrap">
 
 <!-- ================= OVERVIEW ================= -->
-<section class="panel active" id="overview">
+<section class="panel active" id="overview" role="tabpanel" aria-labelledby="tab-overview" tabindex="0">
   <div class="eyebrow">Purpose</div>
   <h2 class="sec">The engineering system behind a services-first business</h2>
   <p class="lead">
@@ -165,7 +251,7 @@ footer{max-width:1180px;margin:0 auto;padding:22px 24px 50px;color:var(--text3);
     tagged with the phase it gets built.
   </div>
 
-  <h3 class="grp">Four planes of the platform</h3>
+  <h3 class="grp" id="ov-planes">Four planes of the platform</h3>
   <div class="grid2">
     <div class="card">
       <h4><span class="dot" style="background:var(--blue2)"></span>Acquisition &amp; Client Surface</h4>
@@ -189,7 +275,7 @@ footer{max-width:1180px;margin:0 auto;padding:22px 24px 50px;color:var(--text3);
     </div>
   </div>
 
-  <h3 class="grp">What the platform must make true</h3>
+  <h3 class="grp" id="ov-truths">What the platform must make true</h3>
   <div class="tbl-wrap">
   <table>
     <thead><tr><th>Requirement</th><th>Why it exists</th><th>Where it lives</th></tr></thead>
@@ -206,22 +292,25 @@ footer{max-width:1180px;margin:0 auto;padding:22px 24px 50px;color:var(--text3);
 </section>
 
 <!-- ================= ARCHITECTURE ================= -->
-<section class="panel" id="architecture">
+<section class="panel" id="architecture" role="tabpanel" aria-labelledby="tab-architecture" tabindex="0">
   <div class="eyebrow">The stack</div>
   <h2 class="sec">Platform architecture — seven layers</h2>
   <p class="lead">Client work flows top-to-bottom: a request enters through the client surface or a connector webhook,
   is orchestrated into workflow jobs, executed against the appropriate model tier, grounded in client data, and
-  returned through a human review gate — with every step isolated and logged. Chip colour = build phase.</p>
+  returned through a human review gate — with every step isolated and logged. Use the phase filter to isolate what
+  gets built when.</p>
 
-  <div class="legend">
-    <span class="legend-item"><span class="pdot p0"></span>Phase 0 — pre-revenue / manual</span>
-    <span class="legend-item"><span class="pdot p1"></span>Phase 1 — first retainers</span>
-    <span class="legend-item"><span class="pdot p2"></span>Phase 2 — infra-enabled</span>
-    <span class="legend-item"><span class="pdot p3"></span>Phase 3 — playbook productization</span>
-    <span class="legend-item"><span class="pdot p4"></span>Phase 4 — platformization (post-G6)</span>
+  <div class="legend" role="group" aria-label="Filter components by build phase">
+    <span class="legend-title">Filter by build phase — click to isolate</span>
+    <button class="lg-btn active" data-phase="all">All phases</button>
+    <button class="lg-btn" data-phase="p0"><span class="pdot p0"></span>Phase 0 — pre-revenue</button>
+    <button class="lg-btn" data-phase="p1"><span class="pdot p1"></span>Phase 1 — first retainers</button>
+    <button class="lg-btn" data-phase="p2"><span class="pdot p2"></span>Phase 2 — infra-enabled</button>
+    <button class="lg-btn" data-phase="p3"><span class="pdot p3"></span>Phase 3 — playbook productization</button>
+    <button class="lg-btn" data-phase="p4"><span class="pdot p4"></span>Phase 4 — platformization</button>
   </div>
 
-  <div class="diagram">
+  <div class="diagram" id="archDiagram">
 
     <div class="layer l-client">
       <div class="layer-head"><span class="layer-name">1 · Acquisition &amp; Client Surface</span><span class="layer-tag">self-serve · public</span></div>
@@ -323,7 +412,7 @@ footer{max-width:1180px;margin:0 auto;padding:22px 24px 50px;color:var(--text3);
 
   </div>
 
-  <h3 class="grp">Component notes</h3>
+  <h3 class="grp" id="ar-notes">Component notes</h3>
   <div class="grid2">
     <div class="card"><h4><span class="dot p1"></span>Workflow Engine</h4><p>A workflow = an ordered set of steps (fetch context → prompt → tool call → format → review → deliver) bound to one client. Starts as structured config + Power Automate flows; becomes a real engine only when repetition justifies it (Phase 2).</p></div>
     <div class="card"><h4><span class="dot p1"></span>Playbook / Prompt Library Service</h4><p>The moat, as code. Every prompt is vertical-scoped, versioned, and traceable to the deployment it came from. Serves the Workflow Engine at run time; backed by the git Playbook Repo.</p></div>
@@ -335,15 +424,19 @@ footer{max-width:1180px;margin:0 auto;padding:22px 24px 50px;color:var(--text3);
 </section>
 
 <!-- ================= SKU MAP ================= -->
-<section class="panel" id="skumap">
+<section class="panel" id="skumap" role="tabpanel" aria-labelledby="tab-skumap" tabindex="0">
   <div class="eyebrow">Traceability</div>
   <h2 class="sec">Every SKU mapped to the components that deliver it</h2>
   <p class="lead">Read this as the build-priority argument: components required by the earliest revenue SKUs
   (<span class="mono">PAO-ASM</span>, <span class="mono">PAO-ONB</span>, <span class="mono">PAO-RET-SM</span>)
   get built first. Infrastructure components are gated behind signed infra-add-on demand.</p>
 
+  <div class="tbl-toolbar">
+    <label class="tbl-search"><input type="text" placeholder="Filter SKUs, services, components…" data-filter-target="skuTable" aria-label="Filter SKU table"></label>
+    <span class="tbl-count" data-count-for="skuTable"></span>
+  </div>
   <div class="tbl-wrap">
-  <table>
+  <table id="skuTable">
     <thead><tr><th>SKU</th><th>Service</th><th>Platform components engaged</th><th>Phase</th></tr></thead>
     <tbody>
       <tr><td><code>PAO-ASM-STD / CPX</code></td><td>AI Ops Assessment</td><td>Playbook Repo (discovery templates) · Deliverable Generator (roadmap docx)</td><td>0–1</td></tr>
@@ -372,15 +465,17 @@ footer{max-width:1180px;margin:0 auto;padding:22px 24px 50px;color:var(--text3);
 </section>
 
 <!-- ================= ROADMAP ================= -->
-<section class="panel" id="roadmap">
+<section class="panel" id="roadmap" role="tabpanel" aria-labelledby="tab-roadmap" tabindex="0">
   <div class="eyebrow">Sequencing</div>
   <h2 class="sec">Build roadmap — tied to the strategy's decision gates</h2>
   <p class="lead">The platform is built <em>behind</em> the services, never ahead of them. Each phase ships only what
   the next tranche of signed revenue requires. Gates <span class="mono">G1</span>–<span class="mono">G6</span> are
   from the Unified Strategy's decision-gate table.</p>
 
-  <div class="phase">
-    <div class="phase-head"><span class="phase-num" style="background:var(--teal2)">PHASE 0</span><span class="phase-title">Foundation — pre-revenue</span><span class="phase-gate">no gate · weeks 1–4</span></div>
+  <div class="roadmap-ctl"><button id="roadmapToggle" aria-label="Expand or collapse all phases">Collapse all</button></div>
+
+  <div class="phase" data-phase-card>
+    <button class="phase-head" aria-expanded="true"><span class="phase-num" style="background:var(--teal2)">PHASE 0</span><span class="phase-title">Foundation — pre-revenue</span><span class="phase-gate">no gate · weeks 1–4</span><span class="phase-caret">▾</span></button>
     <div class="phase-body"><ul>
       <li><b>Four free vertical tools</b> live: static web app + Claude API budget tier + lead capture. Charter Brief Pro (React/TSX) already exists as the reference implementation.</li>
       <li><b>Playbook Repo</b> stood up in git — discovery scripts, first prompt patterns, SOP skeletons per vertical.</li>
@@ -390,8 +485,8 @@ footer{max-width:1180px;margin:0 auto;padding:22px 24px 50px;color:var(--text3);
     </ul></div>
   </div>
 
-  <div class="phase">
-    <div class="phase-head"><span class="phase-num" style="background:var(--teal)">PHASE 1</span><span class="phase-title">First retainers — minimum viable delivery</span><span class="phase-gate">after 1st onboarding · months 1–4</span></div>
+  <div class="phase" data-phase-card>
+    <button class="phase-head" aria-expanded="true"><span class="phase-num" style="background:var(--teal)">PHASE 1</span><span class="phase-title">First retainers — minimum viable delivery</span><span class="phase-gate">after 1st onboarding · months 1–4</span><span class="phase-caret">▾</span></button>
     <div class="phase-body"><ul>
       <li><b>Client Config Store</b> + <b>Workflow Engine v0</b>: structured config + Power Automate/Zapier flows, not a custom engine.</li>
       <li><b>Playbook Library Service</b>: versioned prompts served into runs; every edit tracked to a client deployment.</li>
@@ -403,8 +498,8 @@ footer{max-width:1180px;margin:0 auto;padding:22px 24px 50px;color:var(--text3);
     </ul></div>
   </div>
 
-  <div class="phase">
-    <div class="phase-head"><span class="phase-num" style="background:var(--amber2)">PHASE 2</span><span class="phase-title">Infrastructure-enabled differentiation</span><span class="phase-gate">gate G1 · demand-triggered</span></div>
+  <div class="phase" data-phase-card>
+    <button class="phase-head" aria-expanded="true"><span class="phase-num" style="background:var(--amber2)">PHASE 2</span><span class="phase-title">Infrastructure-enabled differentiation</span><span class="phase-gate">gate G1 · demand-triggered</span><span class="phase-caret">▾</span></button>
     <div class="phase-body"><ul>
       <li><b>Connector SDK</b>: shared auth/retry/rate-limit/mapping. First real connectors — Clio, AppFolio/Buildium, Dentrix, QuickBooks, DocuSign.</li>
       <li><b>Azure private-endpoint route</b> in the Model Router → ships <span class="pill sku">PAO-INF-END</span> <span class="pill sku">PAO-INF-BAA</span> with no owned hardware.</li>
@@ -415,8 +510,8 @@ footer{max-width:1180px;margin:0 auto;padding:22px 24px 50px;color:var(--text3);
     </ul></div>
   </div>
 
-  <div class="phase">
-    <div class="phase-head"><span class="phase-num" style="background:var(--purple2)">PHASE 3</span><span class="phase-title">Vertical playbook productization</span><span class="phase-gate">gate G2/G4 · playbooks documented</span></div>
+  <div class="phase" data-phase-card>
+    <button class="phase-head" aria-expanded="true"><span class="phase-num" style="background:var(--purple2)">PHASE 3</span><span class="phase-title">Vertical playbook productization</span><span class="phase-gate">gate G2/G4 · playbooks documented</span><span class="phase-caret">▾</span></button>
     <div class="phase-body"><ul>
       <li><b>Playbook Packager</b>: reusable onboarding kits per vertical (prompt sets + connector configs + checklists) — turns tribal knowledge into a deployable artifact.</li>
       <li><b>QLoRA fine-tune sprint tooling</b> on the GPU node (add-on revenue, HIPAA-safe — data stays on node).</li>
@@ -425,8 +520,8 @@ footer{max-width:1180px;margin:0 auto;padding:22px 24px 50px;color:var(--text3);
     </ul></div>
   </div>
 
-  <div class="phase">
-    <div class="phase-head"><span class="phase-num" style="background:var(--coral2)">PHASE 4</span><span class="phase-title">Platformization</span><span class="phase-gate">gate G6 · 10+ clients · MRR &gt; $25k</span></div>
+  <div class="phase" data-phase-card>
+    <button class="phase-head" aria-expanded="true"><span class="phase-num" style="background:var(--coral2)">PHASE 4</span><span class="phase-title">Platformization</span><span class="phase-gate">gate G6 · 10+ clients · MRR &gt; $25k</span><span class="phase-caret">▾</span></button>
     <div class="phase-body"><ul>
       <li><b>Client Portal</b>: engagement status, monthly reports, workflow request intake, usage visibility.</li>
       <li><b>AI Ops Control Plane</b>: unifies workflow health, endpoint uptime, metering, billing, and playbook state in one internal surface.</li>
@@ -444,36 +539,40 @@ footer{max-width:1180px;margin:0 auto;padding:22px 24px 50px;color:var(--text3);
 </section>
 
 <!-- ================= DATA FLOW ================= -->
-<section class="panel" id="dataflow">
+<section class="panel" id="dataflow" role="tabpanel" aria-labelledby="tab-dataflow" tabindex="0">
   <div class="eyebrow">Trust model</div>
   <h2 class="sec">How client data moves through one engagement</h2>
   <p class="lead">The intended flow for a typical retainer workflow run. Every transition is isolated per client and
   logged as metadata (never prompt content) for billing and the monthly client report.</p>
 
   <div class="diagram">
-    <div class="layer l-client"><div class="layer-head"><span class="layer-name">1 · Controlled intake</span></div><p style="font-size:12.5px;color:var(--text2)">Client documents enter through a <b>sensitivity-labelled SharePoint/OneDrive folder</b> or direct upload — <b>never email attachments</b> as the primary channel. Intake event logged.</p></div>
+    <div class="layer l-client"><div class="layer-head"><span class="layer-name">1 · Controlled intake</span></div><p style="font-size:13px;color:var(--text2);line-height:1.6">Client documents enter through a <b>sensitivity-labelled SharePoint/OneDrive folder</b> or direct upload — <b>never email attachments</b> as the primary channel. Intake event logged.</p></div>
     <div class="flowarrow">▼</div>
-    <div class="layer l-orch"><div class="layer-head"><span class="layer-name">2 · Workflow job created</span></div><p style="font-size:12.5px;color:var(--text2)">Workflow Engine loads the client's config + the versioned playbook for this workflow. Connector Framework pulls any grounding context (matter record, patient list, lease data) via least-privilege API scopes.</p></div>
+    <div class="layer l-orch"><div class="layer-head"><span class="layer-name">2 · Workflow job created</span></div><p style="font-size:13px;color:var(--text2);line-height:1.6">Workflow Engine loads the client's config + the versioned playbook for this workflow. Connector Framework pulls any grounding context (matter record, patient list, lease data) via least-privilege API scopes.</p></div>
     <div class="flowarrow">▼</div>
-    <div class="layer l-ai"><div class="layer-head"><span class="layer-name">3 · Model Router decides tier + route</span></div><p style="font-size:12.5px;color:var(--text2)"><b>Lowest model tier that can do the job.</b> Route per the client's SKU: <span class="mono">public Claude API</span> by default → <span class="mono">Azure private endpoint</span> for END/BAA → <span class="mono">owned GPU node</span> for RAG/MGD. RAG retrieval hits only that client's vector namespace.</p></div>
+    <div class="layer l-ai"><div class="layer-head"><span class="layer-name">3 · Model Router decides tier + route</span></div><p style="font-size:13px;color:var(--text2);line-height:1.6"><b>Lowest model tier that can do the job.</b> Route per the client's SKU: <span class="mono">public Claude API</span> by default → <span class="mono">Azure private endpoint</span> for END/BAA → <span class="mono">owned GPU node</span> for RAG/MGD. RAG retrieval hits only that client's vector namespace.</p></div>
     <div class="flowarrow">▼</div>
-    <div class="layer l-sec"><div class="layer-head"><span class="layer-name">4 · Zero-retention execution</span></div><p style="font-size:12.5px;color:var(--text2)">Inference runs inside a TLS tunnel; on the private routes, prompt + response live in GPU/endpoint memory only and are <b>purged on response completion</b>. Structured log records timestamp, client ID, workflow, token/latency — <b>no prompt content</b>.</p></div>
+    <div class="layer l-sec"><div class="layer-head"><span class="layer-name">4 · Zero-retention execution</span></div><p style="font-size:13px;color:var(--text2);line-height:1.6">Inference runs inside a TLS tunnel; on the private routes, prompt + response live in GPU/endpoint memory only and are <b>purged on response completion</b>. Structured log records timestamp, client ID, workflow, token/latency — <b>no prompt content</b>.</p></div>
     <div class="flowarrow">▼</div>
-    <div class="layer l-orch"><div class="layer-head"><span class="layer-name">5 · Human-in-the-loop review</span></div><p style="font-size:12.5px;color:var(--text2)">Draft deliverable lands in the Review Console. A person checks it, edits or regenerates, and approves. No output reaches the client unreviewed.</p></div>
+    <div class="layer l-orch"><div class="layer-head"><span class="layer-name">5 · Human-in-the-loop review</span></div><p style="font-size:13px;color:var(--text2);line-height:1.6">Draft deliverable lands in the Review Console. A person checks it, edits or regenerates, and approves. No output reaches the client unreviewed.</p></div>
     <div class="flowarrow">▼</div>
-    <div class="layer l-client"><div class="layer-head"><span class="layer-name">6 · Delivery + metering</span></div><p style="font-size:12.5px;color:var(--text2)">Native docx/xlsx returned through the Client Delivery Layer (SharePoint / portal). Usage record written to the Metering DB → rolls up into billing and the monthly client access report.</p></div>
+    <div class="layer l-client"><div class="layer-head"><span class="layer-name">6 · Delivery + metering</span></div><p style="font-size:13px;color:var(--text2);line-height:1.6">Native docx/xlsx returned through the Client Delivery Layer (SharePoint / portal). Usage record written to the Metering DB → rolls up into billing and the monthly client access report.</p></div>
   </div>
 
-  <h3 class="grp">Three architectural decisions that matter most at this stage</h3>
+  <h3 class="grp" id="df-decisions">Three architectural decisions that matter most at this stage</h3>
   <div class="grid3">
     <div class="card"><h4>Public API by default</h4><p>Claude's API is the default execution path — dramatically cheaper and faster than owned infrastructure, and standard API terms already support the "no training on API data" posture most clients need. Private inference is the exception, not the norm.</p></div>
     <div class="card"><h4>Every credential MFA-enforced, vault-issued</h4><p>A one- or two-person operation handling privilege- and HIPAA-adjacent data. The security baseline has to be genuinely defensible in a client conversation, not just described. Entra ID conditional access + 1Password on everything.</p></div>
     <div class="card"><h4>Native file formats end-to-end</h4><p>Every deliverable is already docx/xlsx and the core environment is M365 — no format-translation step between internal production and client delivery. One fewer place for drift or a broken client experience.</p></div>
   </div>
 
-  <h3 class="grp">Per-client isolation model</h3>
+  <h3 class="grp" id="df-isolation">Per-client isolation model</h3>
+  <div class="tbl-toolbar">
+    <label class="tbl-search"><input type="text" placeholder="Filter routes…" data-filter-target="isoTable" aria-label="Filter isolation table"></label>
+    <span class="tbl-count" data-count-for="isoTable"></span>
+  </div>
   <div class="tbl-wrap">
-  <table>
+  <table id="isoTable">
     <thead><tr><th>Route</th><th>Isolation mechanism</th><th>Retention</th><th>SKUs</th></tr></thead>
     <tbody>
       <tr><td>Public Claude API</td><td>Per-client API key + workspace, no cross-client context in prompts</td><td>Per Anthropic API terms (no training)</td><td><code>PAO-RET-*</code>, free tools, Pro</td></tr>
@@ -486,15 +585,19 @@ footer{max-width:1180px;margin:0 auto;padding:22px 24px 50px;color:var(--text3);
 </section>
 
 <!-- ================= STACK ================= -->
-<section class="panel" id="stack">
+<section class="panel" id="stack" role="tabpanel" aria-labelledby="tab-stack" tabindex="0">
   <div class="eyebrow">Concrete choices</div>
   <h2 class="sec">Recommended technology stack</h2>
   <p class="lead">Aligned to the Tech Infrastructure Cost Inventory's decisions: Microsoft 365 as the core environment,
   Anthropic as the single AI vendor, Azure as the natural private-cloud fit. First-named is the recommendation for
   this business specifically.</p>
 
+  <div class="tbl-toolbar">
+    <label class="tbl-search"><input type="text" placeholder="Filter by layer, component, or tool…" data-filter-target="stackTable" aria-label="Filter tech stack table"></label>
+    <span class="tbl-count" data-count-for="stackTable"></span>
+  </div>
   <div class="tbl-wrap">
-  <table>
+  <table id="stackTable">
     <thead><tr><th>Layer</th><th>Component</th><th>Recommended</th><th>Notes</th></tr></thead>
     <tbody>
       <tr><td>Client Surface</td><td>Free tools + Pro apps</td><td>React/TSX on Azure Static Web Apps (or Netlify)</td><td>Charter Brief Pro is the reference build. Stripe for Pro billing.</td></tr>
@@ -537,20 +640,170 @@ footer{max-width:1180px;margin:0 auto;padding:22px 24px 50px;color:var(--text3);
 
 </div>
 
+<div class="pager" id="pager">
+  <button class="prev" type="button"><span class="pg-dir">◂ Previous</span><span class="pg-name"></span></button>
+  <button class="next" type="button"><span class="pg-dir">Next ▸</span><span class="pg-name"></span></button>
+</div>
+
 <footer>
-  Private AI Ops · Internal Platform &amp; Development Architecture · v1.0 · September 2026 · Confidential — Founder Use Only<br>
+  Private AI Ops · Internal Platform &amp; Development Architecture · v1.1 · September 2026 · Confidential — Founder Use Only<br>
   Companion to: Unified Strategy (§4 Layer 4, §17 gates G1/G6) · SKU &amp; Pricing Catalog · Tech Infrastructure Cost Inventory · Opex/Capex/Net ARR One-Pager · GPU Hosting PoC Report
 </footer>
 
 <script>
-document.querySelectorAll('.tab-btn').forEach(function(btn){
-  btn.addEventListener('click',function(){
-    var id=btn.dataset.tab;
-    document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.toggle('active',b===btn);});
-    document.querySelectorAll('.panel').forEach(function(p){p.classList.toggle('active',p.id===id);});
-    window.scrollTo({top:0,behavior:'smooth'});
+(function(){
+  "use strict";
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab-btn'));
+  var ids  = tabs.map(function(t){return t.dataset.tab;});
+  var panels = {};
+  ids.forEach(function(id){ panels[id] = document.getElementById(id); });
+  var tabBar = document.querySelector('.tab-bar');
+  var subnav = document.getElementById('subnav');
+  var pager  = document.getElementById('pager');
+  var pgPrev = pager.querySelector('.prev'), pgNext = pager.querySelector('.next');
+
+  var SECTIONS = {
+    overview:    [['#ov-planes','Four planes'],['#ov-truths','What it must make true']],
+    architecture:[['#ar-notes','Component notes']],
+    dataflow:    [['#df-decisions','Key decisions'],['#df-isolation','Isolation model']]
+  };
+
+  function store(id){ try{ localStorage.setItem('paoArchTab', id); }catch(e){} }
+  function recall(){ try{ return localStorage.getItem('paoArchTab'); }catch(e){ return null; } }
+
+  function buildSubnav(id){
+    var secs = SECTIONS[id] || [];
+    subnav.querySelectorAll('a').forEach(function(a){a.remove();});
+    if(secs.length < 2){ subnav.hidden = true; return; }
+    secs.forEach(function(s){
+      var a = document.createElement('a');
+      a.href = s[0]; a.textContent = s[1];
+      a.addEventListener('click', function(ev){
+        ev.preventDefault();
+        var el = document.querySelector(s[0]);
+        if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+      subnav.appendChild(a);
+    });
+    subnav.hidden = false;
+  }
+
+  function updatePager(idx){
+    var p = idx > 0 ? tabs[idx-1] : null;
+    var n = idx < tabs.length-1 ? tabs[idx+1] : null;
+    pgPrev.disabled = !p; pgNext.disabled = !n;
+    pgPrev.querySelector('.pg-name').textContent = p ? p.textContent.replace(/^\d+/,'').trim() : '—';
+    pgNext.querySelector('.pg-name').textContent = n ? n.textContent.replace(/^\d+/,'').trim() : '—';
+  }
+
+  function show(id, opts){
+    opts = opts || {};
+    if(ids.indexOf(id) === -1) id = ids[0];
+    var idx = ids.indexOf(id);
+    tabs.forEach(function(b){
+      var on = b.dataset.tab === id;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+      b.tabIndex = on ? 0 : -1;
+    });
+    ids.forEach(function(pid){ panels[pid].classList.toggle('active', pid === id); });
+    buildSubnav(id);
+    updatePager(idx);
+    store(id);
+    if(opts.hash !== false && ('#'+id) !== location.hash){
+      history.replaceState(null, '', '#'+id);
+    }
+    var active = tabs[idx];
+    if(active && active.scrollIntoView) active.scrollIntoView({inline:'center', block:'nearest'});
+    if(opts.scroll !== false) window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  tabs.forEach(function(btn){
+    btn.addEventListener('click', function(){ show(btn.dataset.tab); });
   });
-});
+  pgPrev.addEventListener('click', function(){ var i = ids.indexOf(current()); if(i>0) show(ids[i-1]); });
+  pgNext.addEventListener('click', function(){ var i = ids.indexOf(current()); if(i<ids.length-1) show(ids[i+1]); });
+
+  function current(){ var a = document.querySelector('.tab-btn.active'); return a ? a.dataset.tab : ids[0]; }
+
+  window.addEventListener('hashchange', function(){
+    var id = location.hash.replace('#','');
+    if(ids.indexOf(id) !== -1) show(id, {hash:false});
+  });
+
+  document.addEventListener('keydown', function(e){
+    var t = e.target.tagName;
+    if(t === 'INPUT' || t === 'TEXTAREA' || e.metaKey || e.ctrlKey || e.altKey) return;
+    var i = ids.indexOf(current());
+    if(e.key === 'ArrowRight'){ if(i < ids.length-1){ show(ids[i+1]); e.preventDefault(); } }
+    else if(e.key === 'ArrowLeft'){ if(i > 0){ show(ids[i-1]); e.preventDefault(); } }
+    else if(/^[1-6]$/.test(e.key)){ show(ids[parseInt(e.key,10)-1]); e.preventDefault(); }
+  });
+
+  // ---- phase filter (architecture) ----
+  var diagram = document.getElementById('archDiagram');
+  document.querySelectorAll('.lg-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var ph = btn.dataset.phase;
+      document.querySelectorAll('.lg-btn').forEach(function(b){ b.classList.toggle('active', b === btn); });
+      if(ph === 'all'){
+        diagram.classList.remove('filtering');
+        diagram.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('match'); });
+        return;
+      }
+      diagram.classList.add('filtering');
+      diagram.querySelectorAll('.chip').forEach(function(c){
+        c.classList.toggle('match', !!c.querySelector('.pdot.'+ph));
+      });
+    });
+  });
+
+  // ---- table filters ----
+  document.querySelectorAll('input[data-filter-target]').forEach(function(input){
+    var table = document.getElementById(input.dataset.filterTarget);
+    var countEl = document.querySelector('[data-count-for="'+input.dataset.filterTarget+'"]');
+    var rows = Array.prototype.slice.call(table.tBodies[0].rows);
+    function apply(){
+      var q = input.value.trim().toLowerCase();
+      var shown = 0;
+      rows.forEach(function(r){
+        var hit = !q || r.textContent.toLowerCase().indexOf(q) !== -1;
+        r.classList.toggle('hide', !hit);
+        if(hit) shown++;
+      });
+      countEl.textContent = q ? (shown + ' of ' + rows.length + ' rows') : '';
+    }
+    input.addEventListener('input', apply);
+  });
+
+  // ---- roadmap collapse ----
+  var phaseCards = Array.prototype.slice.call(document.querySelectorAll('[data-phase-card]'));
+  var rTo = document.getElementById('roadmapToggle');
+  function anyPhaseOpen(){ return phaseCards.some(function(c){ return !c.classList.contains('collapsed'); }); }
+  function syncToggleLabel(){ rTo.textContent = anyPhaseOpen() ? 'Collapse all' : 'Expand all'; }
+  phaseCards.forEach(function(card){
+    var head = card.querySelector('.phase-head');
+    head.addEventListener('click', function(){
+      var collapsed = card.classList.toggle('collapsed');
+      head.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      syncToggleLabel();
+    });
+  });
+  rTo.addEventListener('click', function(){
+    var collapse = anyPhaseOpen();
+    phaseCards.forEach(function(c){
+      c.classList.toggle('collapsed', collapse);
+      c.querySelector('.phase-head').setAttribute('aria-expanded', collapse ? 'false' : 'true');
+    });
+    syncToggleLabel();
+  });
+
+  // ---- init ----
+  var initial = location.hash.replace('#','');
+  if(ids.indexOf(initial) === -1) initial = recall();
+  if(ids.indexOf(initial) === -1) initial = ids[0];
+  show(initial, {scroll:false});
+})();
 </script>
 </body>
 </html>

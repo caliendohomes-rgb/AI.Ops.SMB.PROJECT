@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Private AI Ops — Internal Platform &amp; Development Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0F1C35;--navy2:#1a2d4e;--navy3:#243a60;
+  --gold:#C9A84C;--gold2:#e8c96a;--gold3:#f5e4a8;
+  --teal:#0F6E56;--teal2:#1D9E75;--teal3:#9FE1CB;
+  --coral:#993C1D;--coral2:#D85A30;--coral3:#F5C4B3;
+  --purple:#534AB7;--purple2:#7F77DD;--purple3:#CECBF6;
+  --amber:#854F0B;--amber2:#BA7517;--amber3:#FAC775;
+  --blue:#185FA5;--blue2:#378ADD;--blue3:#B5D4F4;
+  --gray1:#F2F4F7;--gray2:#D5D9E0;--gray3:#4A6080;--gray4:#2A3A50;
+  --white:#FFFFFF;--text:#0F1C35;--text2:#4A6080;--text3:#8899AA;
+  --bg:#F8F7F4;--bg2:#EFEDE8;
+  --r:6px;--r2:10px;--r3:16px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+
+/* ── HEADER ── */
+.masthead{background:var(--navy);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--gold);flex-wrap:wrap;gap:12px}
+.masthead-left{display:flex;flex-direction:column;gap:4px}
+.masthead-logo{font-size:13px;font-weight:700;letter-spacing:.18em;color:var(--gold);text-transform:uppercase}
+.masthead-title{font-size:20px;font-weight:700;color:var(--white);letter-spacing:-.01em}
+.masthead-meta{font-size:11px;color:rgba(255,255,255,.45);font-family:'DM Mono',monospace;margin-top:2px}
+.version-badge{font-family:'DM Mono',monospace;font-size:10px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.35);color:var(--gold2);padding:4px 10px;border-radius:4px;letter-spacing:.08em}
+
+/* ── TABS ── */
+.tab-bar{background:var(--navy2);border-bottom:1px solid rgba(255,255,255,.08);padding:0 20px;display:flex;gap:0;overflow-x:auto;position:sticky;top:0;z-index:50}
+.tab-btn{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:14px 18px;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;position:relative;transition:color .2s;white-space:nowrap}
+.tab-btn::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transition:transform .2s}
+.tab-btn.active{color:var(--gold2)}
+.tab-btn.active::after{transform:scaleX(1)}
+.tab-btn:hover:not(.active){color:rgba(255,255,255,.7)}
+
+/* ── LAYOUT ── */
+.wrap{max-width:1180px;margin:0 auto;padding:32px 24px 80px}
+.panel{display:none}
+.panel.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+h2.sec{font-size:22px;font-weight:800;letter-spacing:-.01em;margin:6px 0 4px}
+p.lead{color:var(--text2);font-size:14.5px;max-width:78ch;margin-bottom:22px}
+h3.grp{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gray3);margin:32px 0 14px;padding-bottom:7px;border-bottom:1px solid var(--gray2)}
+.eyebrow{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+
+/* ── CARDS ── */
+.card{background:var(--white);border:1px solid var(--gray2);border-radius:var(--r2);padding:18px 20px;margin-bottom:14px}
+.card h4{font-size:15px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.card p{font-size:13px;color:var(--text2)}
+.card .dot{width:9px;height:9px;border-radius:3px;flex-shrink:0}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+
+/* ── LAYERED DIAGRAM ── */
+.diagram{background:linear-gradient(180deg,#fbfaf7,#f3f1ec);border:1px solid var(--gray2);border-radius:var(--r3);padding:20px;margin:8px 0 26px}
+.layer{border-radius:var(--r2);padding:14px 16px;margin-bottom:12px;border:1px solid var(--gray2);background:var(--white);position:relative}
+.layer:last-child{margin-bottom:0}
+.layer-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.layer-name{font-size:13px;font-weight:800;letter-spacing:.02em}
+.layer-tag{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.06em;color:var(--text3);text-transform:uppercase}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{font-size:11.5px;font-weight:600;padding:6px 10px;border-radius:var(--r);border:1px solid var(--gray2);background:var(--gray1);color:var(--navy);display:flex;align-items:center;gap:6px;cursor:default}
+.chip .pdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.layer.l-client{border-left:4px solid var(--blue2)}
+.layer.l-orch{border-left:4px solid var(--gold)}
+.layer.l-conn{border-left:4px solid var(--amber2)}
+.layer.l-ai{border-left:4px solid var(--teal2)}
+.layer.l-data{border-left:4px solid var(--purple2)}
+.layer.l-sec{border-left:4px solid var(--coral2)}
+.layer.l-ops{border-left:4px solid var(--gray3)}
+.flowarrow{text-align:center;color:var(--gray3);font-size:13px;margin:2px 0;font-family:'DM Mono',monospace}
+
+/* phase dots */
+.p0{background:#9FE1CB}.p1{background:var(--teal2)}.p2{background:var(--amber2)}.p3{background:var(--purple2)}.p4{background:var(--coral2)}
+
+.legend{display:flex;flex-wrap:wrap;gap:16px;margin:14px 0 4px;padding:12px 14px;background:var(--navy);border-radius:var(--r2)}
+.legend-item{display:flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.65);letter-spacing:.03em}
+.legend-item .pdot{width:9px;height:9px;border-radius:50%}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--gray2);border-radius:var(--r2);margin-bottom:16px}
+table{border-collapse:collapse;width:100%;font-size:12.5px;min-width:640px}
+th{background:var(--navy);color:var(--white);text-align:left;padding:10px 12px;font-weight:600;font-size:11px;letter-spacing:.05em;text-transform:uppercase;position:sticky;top:0}
+td{padding:9px 12px;border-top:1px solid var(--gray2);color:var(--text2);vertical-align:top}
+tr:nth-child(even) td{background:var(--gray1)}
+td code,.mono{font-family:'DM Mono',monospace;font-size:11.5px;color:var(--navy);background:rgba(15,28,53,.06);padding:1px 5px;border-radius:4px;white-space:nowrap}
+td strong{color:var(--text)}
+
+/* ── ROADMAP ── */
+.phase{border:1px solid var(--gray2);border-radius:var(--r2);margin-bottom:14px;overflow:hidden;background:var(--white)}
+.phase-head{padding:13px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--gray2)}
+.phase-num{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--white);padding:3px 9px;border-radius:4px}
+.phase-title{font-weight:800;font-size:14px}
+.phase-gate{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);margin-left:auto}
+.phase-body{padding:14px 16px}
+.phase-body ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.phase-body li{font-size:12.5px;color:var(--text2);padding-left:18px;position:relative}
+.phase-body li::before{content:'▸';position:absolute;left:0;color:var(--gold);font-size:11px;top:1px}
+.phase-body li b{color:var(--text);font-weight:600}
+
+.callout{border-left:3px solid var(--gold);background:linear-gradient(90deg,rgba(201,168,76,.09),transparent);padding:12px 16px;border-radius:0 var(--r) var(--r) 0;margin:16px 0;font-size:13px;color:var(--text2)}
+.callout b{color:var(--text)}
+.pill{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;padding:2px 7px;border-radius:20px;border:1px solid var(--gray2);color:var(--gray3);margin:0 3px 3px 0}
+.pill.sku{border-color:var(--teal2);color:var(--teal)}
+
+footer{max-width:1180px;margin:0 auto;padding:22px 24px 50px;color:var(--text3);font-size:11px;font-family:'DM Mono',monospace;border-top:1px solid var(--gray2)}
+
+@media(max-width:640px){
+  .masthead-title{font-size:16px}
+  .wrap{padding:22px 14px 60px}
+  h2.sec{font-size:19px}
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-left">
+    <span class="masthead-logo">Private AI Ops</span>
+    <span class="masthead-title">Internal Platform &amp; Development Architecture</span>
+    <span class="masthead-meta">How the productized services are actually built and delivered · Companion to the Strategy Suite</span>
+  </div>
+  <span class="version-badge">v1.0 · SEP 2026</span>
+</header>
+
+<nav class="tab-bar">
+  <button class="tab-btn active" data-tab="overview">Overview</button>
+  <button class="tab-btn" data-tab="architecture">Platform Architecture</button>
+  <button class="tab-btn" data-tab="skumap">SKU → Capability Map</button>
+  <button class="tab-btn" data-tab="roadmap">Build Roadmap</button>
+  <button class="tab-btn" data-tab="dataflow">Data Flow &amp; Trust</button>
+  <button class="tab-btn" data-tab="stack">Tech Stack</button>
+</nav>
+
+<div class="wrap">
+
+<!-- ================= OVERVIEW ================= -->
+<section class="panel active" id="overview">
+  <div class="eyebrow">Purpose</div>
+  <h2 class="sec">The engineering system behind a services-first business</h2>
+  <p class="lead">
+    Private AI Ops is a managed AI operations firm — <strong>not a software company</strong>. The product is the
+    implementation layer: playbooks, connectors, prompt libraries, private inference, and ongoing management.
+    This document describes the <strong>internal platform</strong> that team builds and operates to deliver the
+    SKU catalog reliably, at margin, and without exposing regulated client data. It complements the two existing
+    architecture views — the <em>private inference/RAG environment</em> diagram and the <em>four-layer business-technology</em>
+    stack (M365, HubSpot, QuickBooks) — by describing what the founder/dev team actually <em>engineers</em>.
+  </p>
+
+  <div class="callout">
+    <b>Core build principle — encode the pattern, don't pre-build it.</b> Per the Unified Strategy, the platform
+    (Layer 4) is a <b>Year 2+</b> initiative that begins only after services create a repeatable pattern worth
+    encoding (decision gate <span class="mono">G6</span>: 10+ retainer clients, 2+ documented vertical playbooks,
+    combined MRR &gt; $25k). Phase 0–1 is deliberately manual with off-the-shelf tooling. Every component below is
+    tagged with the phase it gets built.
+  </div>
+
+  <h3 class="grp">Four planes of the platform</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4><span class="dot" style="background:var(--blue2)"></span>Acquisition &amp; Client Surface</h4>
+      <p>The four free vertical tools (Law / Dental / Property / Charter Brief), their Pro tiers, and — later — a
+      client portal and co-branded partner collateral. This is the top of funnel and the only self-serve code.</p>
+    </div>
+    <div class="card">
+      <h4><span class="dot" style="background:var(--gold)"></span>Delivery &amp; Orchestration Plane</h4>
+      <p>Where retainer work is executed: the workflow engine, versioned prompt/playbook library, job scheduler,
+      human-in-the-loop review console, and native docx/xlsx deliverable generation.</p>
+    </div>
+    <div class="card">
+      <h4><span class="dot" style="background:var(--teal2)"></span>AI / Inference Plane</h4>
+      <p>Model-tier router with <b>public Claude API by default, private inference by exception</b>. Azure-hosted
+      private endpoints for the lighter infra SKUs; an owned GPU node (vLLM) only for RAG/Managed tiers, demand-gated.</p>
+    </div>
+    <div class="card">
+      <h4><span class="dot" style="background:var(--coral2)"></span>Security, Compliance &amp; Observability</h4>
+      <p>Per-client isolation, zero-retention enforcement, Entra ID + MFA on every credential, Purview and
+      structured audit logging, BAA/DPA gating, and the metering that feeds billing and per-client COGS.</p>
+    </div>
+  </div>
+
+  <h3 class="grp">What the platform must make true</h3>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Requirement</th><th>Why it exists</th><th>Where it lives</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Each onboarding is faster than the last</strong></td><td>Playbook IP is the compounding moat — config guides, prompt libraries, workflow templates from real deployments</td><td>Playbook Library Service · Connector Framework</td></tr>
+      <tr><td><strong>Regulated client data never reaches a public AI server when the SKU says so</strong></td><td>Heppner ruling (privilege), HIPAA, GLBA — the entire premium positioning</td><td>Model Router · Private Inference · Zero-Retention enforcement</td></tr>
+      <tr><td><strong>Every workflow run is metered per client</strong></td><td>API usage is COGS against each retainer, not fixed overhead — protects the ~72–77% margin</td><td>Metering DB → Billing sync</td></tr>
+      <tr><td><strong>A human reviews output before it reaches the client</strong></td><td>Human-in-the-loop is an established strategic principle and a liability control</td><td>Review Console</td></tr>
+      <tr><td><strong>Deliverables are native docx/xlsx end-to-end</strong></td><td>No format-translation step between internal production and client delivery</td><td>Deliverable Generator</td></tr>
+      <tr><td><strong>Any workflow change is regression-tested before it ships to a live client</strong></td><td>One prompt edit can silently break a paying client's workflow</td><td>Eval / Prompt Regression Harness</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ================= ARCHITECTURE ================= -->
+<section class="panel" id="architecture">
+  <div class="eyebrow">The stack</div>
+  <h2 class="sec">Platform architecture — seven layers</h2>
+  <p class="lead">Client work flows top-to-bottom: a request enters through the client surface or a connector webhook,
+  is orchestrated into workflow jobs, executed against the appropriate model tier, grounded in client data, and
+  returned through a human review gate — with every step isolated and logged. Chip colour = build phase.</p>
+
+  <div class="legend">
+    <span class="legend-item"><span class="pdot p0"></span>Phase 0 — pre-revenue / manual</span>
+    <span class="legend-item"><span class="pdot p1"></span>Phase 1 — first retainers</span>
+    <span class="legend-item"><span class="pdot p2"></span>Phase 2 — infra-enabled</span>
+    <span class="legend-item"><span class="pdot p3"></span>Phase 3 — playbook productization</span>
+    <span class="legend-item"><span class="pdot p4"></span>Phase 4 — platformization (post-G6)</span>
+  </div>
+
+  <div class="diagram">
+
+    <div class="layer l-client">
+      <div class="layer-head"><span class="layer-name">1 · Acquisition &amp; Client Surface</span><span class="layer-tag">self-serve · public</span></div>
+      <div class="chips">
+        <span class="chip"><span class="pdot p0"></span>Law Brief <span class="mono">PAO-FREE-LAW</span></span>
+        <span class="chip"><span class="pdot p0"></span>Dental Brief <span class="mono">PAO-FREE-DEN</span></span>
+        <span class="chip"><span class="pdot p0"></span>Property Brief <span class="mono">PAO-FREE-PROP</span></span>
+        <span class="chip"><span class="pdot p0"></span>Charter Brief <span class="mono">PAO-FREE-CHTR</span></span>
+        <span class="chip"><span class="pdot p1"></span>Pro Tier billing + auth <span class="mono">PAO-PRO-STD</span></span>
+        <span class="chip"><span class="pdot p1"></span>Lead capture → CRM</span>
+        <span class="chip"><span class="pdot p4"></span>Client Portal (status, reports, requests)</span>
+        <span class="chip"><span class="pdot p4"></span>Co-branded partner one-pagers</span>
+      </div>
+    </div>
+    <div class="flowarrow">│ lead events, Pro signups (48-hr outreach trigger), portal requests</div>
+
+    <div class="layer l-orch">
+      <div class="layer-head"><span class="layer-name">2 · Delivery &amp; Orchestration Plane</span><span class="layer-tag">where retainer work is executed</span></div>
+      <div class="chips">
+        <span class="chip"><span class="pdot p1"></span>Workflow Engine (per-client workflow definitions)</span>
+        <span class="chip"><span class="pdot p1"></span>Playbook / Prompt Library Service — vertical-scoped, versioned</span>
+        <span class="chip"><span class="pdot p2"></span>Job Queue + Scheduler (recall runs, renewal batches)</span>
+        <span class="chip"><span class="pdot p1"></span>Human-in-the-Loop Review Console</span>
+        <span class="chip"><span class="pdot p1"></span>Deliverable Generator — native docx / xlsx / HTML</span>
+        <span class="chip"><span class="pdot p2"></span>Eval / Prompt Regression Harness</span>
+        <span class="chip"><span class="pdot p3"></span>Playbook packager (reusable onboarding kits)</span>
+      </div>
+    </div>
+    <div class="flowarrow">│ workflow jobs → model calls · ↑ retrieval requests · ↑ connector reads/writes</div>
+
+    <div class="layer l-conn">
+      <div class="layer-head"><span class="layer-name">3 · Integration &amp; Connector Framework</span><span class="layer-tag">client systems of record</span></div>
+      <div class="chips">
+        <span class="chip"><span class="pdot p1"></span>Webhook Ingress (FareHarbor <span class="mono">booking.created</span>)</span>
+        <span class="chip"><span class="pdot p1"></span>Low-code bridge — Power Automate / Zapier</span>
+        <span class="chip"><span class="pdot p2"></span>Connector SDK (auth, retry, rate-limit, mapping)</span>
+        <span class="chip"><span class="pdot p2"></span>Property Mgmt — AppFolio / Buildium</span>
+        <span class="chip"><span class="pdot p2"></span>Dental — Dentrix / Eaglesoft</span>
+        <span class="chip"><span class="pdot p2"></span>Legal — Clio / MyCase / PracticePanther</span>
+        <span class="chip"><span class="pdot p2"></span>QuickBooks · DocuSign / SignNow</span>
+        <span class="chip"><span class="pdot p1"></span>M365 Graph (SharePoint intake, Outlook, Teams)</span>
+      </div>
+    </div>
+    <div class="flowarrow">│ grounded context in · structured actions out</div>
+
+    <div class="layer l-ai">
+      <div class="layer-head"><span class="layer-name">4 · AI / Inference Plane</span><span class="layer-tag">public by default · private by exception</span></div>
+      <div class="chips">
+        <span class="chip"><span class="pdot p1"></span>Model Router — tier + route selection</span>
+        <span class="chip"><span class="pdot p1"></span>Claude API — budget / mid / premium tiers (default path)</span>
+        <span class="chip"><span class="pdot p2"></span>Azure-hosted Private Endpoint <span class="mono">PAO-INF-END</span> / <span class="mono">PAO-INF-BAA</span></span>
+        <span class="chip"><span class="pdot p2"></span>Owned GPU node · vLLM · 4×RTX 4090 <span class="mono">PAO-INF-RAG</span> / <span class="mono">PAO-INF-MGD</span></span>
+        <span class="chip"><span class="pdot p2"></span>RAG pipeline — ingest · chunk · embed · retrieve</span>
+        <span class="chip"><span class="pdot p3"></span>QLoRA fine-tune sprints (on-node, HIPAA-safe)</span>
+        <span class="chip"><span class="pdot p1"></span>Prompt-cache + token accounting hooks</span>
+      </div>
+    </div>
+    <div class="flowarrow">│ reads client config, vectors, playbooks · writes usage records</div>
+
+    <div class="layer l-data">
+      <div class="layer-head"><span class="layer-name">5 · Data &amp; Knowledge Layer</span><span class="layer-tag">per-client isolation enforced</span></div>
+      <div class="chips">
+        <span class="chip"><span class="pdot p1"></span>Client Config Store (workflows, tone, approvals, hierarchy)</span>
+        <span class="chip"><span class="pdot p2"></span>Vector Stores — one namespace per client</span>
+        <span class="chip"><span class="pdot p0"></span>Playbook Repo (git — prompts, SOPs, checklists)</span>
+        <span class="chip"><span class="pdot p1"></span>Usage / Metering DB (tokens, minutes, infra hrs)</span>
+        <span class="chip"><span class="pdot p1"></span>Document Intake — SharePoint, sensitivity-labelled</span>
+        <span class="chip"><span class="pdot p2"></span>Deliverable Archive (versioned, retention policy)</span>
+      </div>
+    </div>
+    <div class="flowarrow">│ every access mediated by the layer below</div>
+
+    <div class="layer l-sec">
+      <div class="layer-head"><span class="layer-name">6 · Security &amp; Compliance Layer</span><span class="layer-tag">cross-cutting · client-defensible</span></div>
+      <div class="chips">
+        <span class="chip"><span class="pdot p0"></span>Entra ID SSO + MFA on every tool &amp; credential</span>
+        <span class="chip"><span class="pdot p0"></span>1Password — issued secrets, no plaintext</span>
+        <span class="chip"><span class="pdot p1"></span>Zero-Retention enforcement (no prompt persistence)</span>
+        <span class="chip"><span class="pdot p2"></span>Per-client isolation — VLAN (node) / tenant (cloud)</span>
+        <span class="chip"><span class="pdot p1"></span>BAA / DPA gating — SKU can't activate without executed docs</span>
+        <span class="chip"><span class="pdot p1"></span>Audit logging — Purview + structured request logs, 90-day</span>
+        <span class="chip"><span class="pdot p2"></span>WireGuard VPN-only admin plane · TLS 1.3 · LUKS at rest</span>
+        <span class="chip"><span class="pdot p1"></span>Breach-notification SOP hooks (24-hr client / 72-hr reg.)</span>
+      </div>
+    </div>
+    <div class="flowarrow">│ feeds evidence &amp; metrics upward</div>
+
+    <div class="layer l-ops">
+      <div class="layer-head"><span class="layer-name">7 · Internal Ops &amp; Observability</span><span class="layer-tag">runs the business</span></div>
+      <div class="chips">
+        <span class="chip"><span class="pdot p1"></span>Metering → Billing sync (QuickBooks Online)</span>
+        <span class="chip"><span class="pdot p1"></span>CRM sync (HubSpot) — pipeline, Pro-signup alerts</span>
+        <span class="chip"><span class="pdot p2"></span>Monitoring &amp; Alerting — workflow health, endpoint uptime</span>
+        <span class="chip"><span class="pdot p2"></span>Per-client COGS &amp; margin dashboard</span>
+        <span class="chip"><span class="pdot p3"></span>Playbook analytics — hours/onboarding, reuse rate</span>
+        <span class="chip"><span class="pdot p4"></span>AI Ops control plane (unifies the above)</span>
+      </div>
+    </div>
+
+  </div>
+
+  <h3 class="grp">Component notes</h3>
+  <div class="grid2">
+    <div class="card"><h4><span class="dot p1"></span>Workflow Engine</h4><p>A workflow = an ordered set of steps (fetch context → prompt → tool call → format → review → deliver) bound to one client. Starts as structured config + Power Automate flows; becomes a real engine only when repetition justifies it (Phase 2).</p></div>
+    <div class="card"><h4><span class="dot p1"></span>Playbook / Prompt Library Service</h4><p>The moat, as code. Every prompt is vertical-scoped, versioned, and traceable to the deployment it came from. Serves the Workflow Engine at run time; backed by the git Playbook Repo.</p></div>
+    <div class="card"><h4><span class="dot p1"></span>Model Router</h4><p>Chooses the <em>lowest-privilege model tier that can do the job</em> and the <em>route</em> the client's SKU permits: public API, Azure private endpoint, or owned GPU node. Single decision point for cost and compliance.</p></div>
+    <div class="card"><h4><span class="dot p2"></span>Connector SDK</h4><p>Turns each new client integration from a bespoke project into a configured instance: shared auth, retry, rate-limiting, and field-mapping. Directly drives "each onboarding faster than the last."</p></div>
+    <div class="card"><h4><span class="dot p2"></span>RAG Pipeline</h4><p>Document ingestion → chunking → embedding → per-client vector namespace → retrieval. Managed vector DB first (Pinecone/Qdrant); self-host on the GPU node only for RAG/Managed-tier clients.</p></div>
+    <div class="card"><h4><span class="dot p1"></span>Review Console</h4><p>Queue of generated deliverables awaiting human sign-off, with diff view and one-click regenerate. The enforcement point for the human-in-the-loop principle.</p></div>
+  </div>
+</section>
+
+<!-- ================= SKU MAP ================= -->
+<section class="panel" id="skumap">
+  <div class="eyebrow">Traceability</div>
+  <h2 class="sec">Every SKU mapped to the components that deliver it</h2>
+  <p class="lead">Read this as the build-priority argument: components required by the earliest revenue SKUs
+  (<span class="mono">PAO-ASM</span>, <span class="mono">PAO-ONB</span>, <span class="mono">PAO-RET-SM</span>)
+  get built first. Infrastructure components are gated behind signed infra-add-on demand.</p>
+
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>SKU</th><th>Service</th><th>Platform components engaged</th><th>Phase</th></tr></thead>
+    <tbody>
+      <tr><td><code>PAO-ASM-STD / CPX</code></td><td>AI Ops Assessment</td><td>Playbook Repo (discovery templates) · Deliverable Generator (roadmap docx)</td><td>0–1</td></tr>
+      <tr><td><code>PAO-ONB-SM</code></td><td>Onboarding (Small SMB)</td><td>Client Config Store · Playbook Library · Connector Framework (M365 Graph + 1 low-code bridge) · Workflow Engine · Review Console</td><td>1</td></tr>
+      <tr><td><code>PAO-ONB-CPX</code></td><td>Onboarding (Regulated)</td><td>All of the above · BAA/DPA gating · Audit logging · Model Router private route · security configuration</td><td>1–2</td></tr>
+      <tr><td><code>PAO-RET-SM</code></td><td>Retainer (Small SMB)</td><td>Workflow Engine · Job Scheduler · Metering DB · Review Console · Monitoring · Billing sync</td><td>1</td></tr>
+      <tr><td><code>PAO-RET-MX</code></td><td>Retainer (Multi-loc / Regulated)</td><td>+ multi-connector management · compliance reporting · usage analytics dashboard · Eval harness</td><td>2</td></tr>
+      <tr><td><code>PAO-RET-HV</code></td><td>Retainer (Heavy / Custom)</td><td>+ dedicated infra pairing · custom workflow definitions · priority monitoring</td><td>2–3</td></tr>
+      <tr><td><code>PAO-INF-END</code></td><td>Private Endpoint ($650)</td><td>Model Router · <strong>Azure-hosted private endpoint</strong> · zero-retention · DPA · per-tenant isolation — <em>no owned hardware</em></td><td>2</td></tr>
+      <tr><td><code>PAO-INF-BAA</code></td><td>HIPAA-Ready Endpoint ($850)</td><td>+ signed BAA · HIPAA audit-log package · quarterly access review · breach SOP — <em>Azure route, no owned hardware</em></td><td>2</td></tr>
+      <tr><td><code>PAO-INF-RAG</code></td><td>Dual GPU + RAG ($1,400)</td><td><strong>Owned GPU node (vLLM)</strong> · RAG pipeline · per-client vector store · document ingestion — <em>triggers Phase 2 capex</em></td><td>2</td></tr>
+      <tr><td><code>PAO-INF-MGD</code></td><td>Managed Private AI ($2,200+)</td><td>+ QLoRA fine-tune sprints · API integration support · quarterly security review · burst scheduling</td><td>2–3</td></tr>
+      <tr><td><code>PAO-FREE-*</code></td><td>Free vertical tools</td><td>Static web app · Claude API (budget tier) · lead capture → CRM · rate-limiting</td><td>0</td></tr>
+      <tr><td><code>PAO-PRO-STD</code></td><td>Pro Tier ($49–199)</td><td>+ auth · self-serve billing (Stripe) · primary-workflow automation (e.g. FareHarbor sync) · 48-hr outreach alert</td><td>1</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout">
+    <b>Capex trigger rule (from the Opex/Capex/Net ARR one-pager).</b> The owned GPU node ($15.3–16.1k) is deployed
+    only once <span class="mono">≥1 signed PAO-INF-MGD</span> or <span class="mono">≥2 signed PAO-INF-RAG</span>
+    contracts are in hand — that mix repays the capex in ~7–9 months of gross margin on those SKUs alone.
+    <span class="mono">PAO-INF-END</span> and <span class="mono">PAO-INF-BAA</span> are fulfilled on the Azure
+    private-endpoint route and never require it.
+  </div>
+</section>
+
+<!-- ================= ROADMAP ================= -->
+<section class="panel" id="roadmap">
+  <div class="eyebrow">Sequencing</div>
+  <h2 class="sec">Build roadmap — tied to the strategy's decision gates</h2>
+  <p class="lead">The platform is built <em>behind</em> the services, never ahead of them. Each phase ships only what
+  the next tranche of signed revenue requires. Gates <span class="mono">G1</span>–<span class="mono">G6</span> are
+  from the Unified Strategy's decision-gate table.</p>
+
+  <div class="phase">
+    <div class="phase-head"><span class="phase-num" style="background:var(--teal2)">PHASE 0</span><span class="phase-title">Foundation — pre-revenue</span><span class="phase-gate">no gate · weeks 1–4</span></div>
+    <div class="phase-body"><ul>
+      <li><b>Four free vertical tools</b> live: static web app + Claude API budget tier + lead capture. Charter Brief Pro (React/TSX) already exists as the reference implementation.</li>
+      <li><b>Playbook Repo</b> stood up in git — discovery scripts, first prompt patterns, SOP skeletons per vertical.</li>
+      <li><b>Security baseline</b>: M365 Business Premium, Entra ID + MFA everywhere, 1Password, Purview logging on.</li>
+      <li><b>Legal gating scaffold</b>: BAA/DPA/MSA templates (attorney-reviewed) referenced by a checklist that later becomes automated SKU gating.</li>
+      <li><span class="pill">Deliverable</span> Apps + repo + defensible security posture — no bespoke backend yet.</li>
+    </ul></div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head"><span class="phase-num" style="background:var(--teal)">PHASE 1</span><span class="phase-title">First retainers — minimum viable delivery</span><span class="phase-gate">after 1st onboarding · months 1–4</span></div>
+    <div class="phase-body"><ul>
+      <li><b>Client Config Store</b> + <b>Workflow Engine v0</b>: structured config + Power Automate/Zapier flows, not a custom engine.</li>
+      <li><b>Playbook Library Service</b>: versioned prompts served into runs; every edit tracked to a client deployment.</li>
+      <li><b>Model Router v0</b>: tier selection (budget/mid/premium) + token accounting → <b>Metering DB</b>.</li>
+      <li><b>Review Console</b> (can start as a shared queue) enforcing human sign-off before delivery.</li>
+      <li><b>Deliverable Generator</b>: native docx/xlsx output. <b>Billing + CRM sync</b> to QuickBooks / HubSpot.</li>
+      <li><b>Pro Tier</b> auth + self-serve billing + primary-workflow automation + 48-hr outreach alert.</li>
+      <li><span class="pill">Deliverable</span> Repeatable delivery of <span class="pill sku">PAO-ONB-SM</span> <span class="pill sku">PAO-RET-SM</span> <span class="pill sku">PAO-PRO-STD</span> at 30–50 hrs/onboarding.</li>
+    </ul></div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head"><span class="phase-num" style="background:var(--amber2)">PHASE 2</span><span class="phase-title">Infrastructure-enabled differentiation</span><span class="phase-gate">gate G1 · demand-triggered</span></div>
+    <div class="phase-body"><ul>
+      <li><b>Connector SDK</b>: shared auth/retry/rate-limit/mapping. First real connectors — Clio, AppFolio/Buildium, Dentrix, QuickBooks, DocuSign.</li>
+      <li><b>Azure private-endpoint route</b> in the Model Router → ships <span class="pill sku">PAO-INF-END</span> <span class="pill sku">PAO-INF-BAA</span> with no owned hardware.</li>
+      <li><b>Owned GPU node</b> (vLLM, 4×RTX 4090) + <b>RAG pipeline</b> + per-client vector stores — <em>only</em> once <span class="mono">G1</span> passes (≥1 MGD or ≥2 RAG signed). Ships <span class="pill sku">PAO-INF-RAG</span> <span class="pill sku">PAO-INF-MGD</span>.</li>
+      <li><b>Eval / Prompt Regression Harness</b> — no prompt change reaches a live client untested.</li>
+      <li><b>Job Queue + Scheduler</b> for batch workflows (recall runs, renewal batches). <b>Monitoring</b> + <b>per-client COGS dashboard</b>.</li>
+      <li><span class="pill">Deliverable</span> Full infra SKU line + <span class="pill sku">PAO-RET-MX</span>; margin visibility per client.</li>
+    </ul></div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head"><span class="phase-num" style="background:var(--purple2)">PHASE 3</span><span class="phase-title">Vertical playbook productization</span><span class="phase-gate">gate G2/G4 · playbooks documented</span></div>
+    <div class="phase-body"><ul>
+      <li><b>Playbook Packager</b>: reusable onboarding kits per vertical (prompt sets + connector configs + checklists) — turns tribal knowledge into a deployable artifact.</li>
+      <li><b>QLoRA fine-tune sprint tooling</b> on the GPU node (add-on revenue, HIPAA-safe — data stays on node).</li>
+      <li><b>Playbook analytics</b>: hours-per-onboarding trend, reuse rate, which workflows drive retention.</li>
+      <li><span class="pill">Deliverable</span> Onboarding at 15–25 hrs; a second vertical delivered from a packaged playbook.</li>
+    </ul></div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head"><span class="phase-num" style="background:var(--coral2)">PHASE 4</span><span class="phase-title">Platformization</span><span class="phase-gate">gate G6 · 10+ clients · MRR &gt; $25k</span></div>
+    <div class="phase-body"><ul>
+      <li><b>Client Portal</b>: engagement status, monthly reports, workflow request intake, usage visibility.</li>
+      <li><b>AI Ops Control Plane</b>: unifies workflow health, endpoint uptime, metering, billing, and playbook state in one internal surface.</li>
+      <li><b>Workflow monitoring</b> surfaced to clients; <b>partner referral portal</b> + co-branded collateral for Tier-2 co-sell MSPs.</li>
+      <li>Evaluate a tightly-scoped <b>vertical app marketplace</b> — only if channel volume justifies it.</li>
+      <li><span class="pill">Deliverable</span> The Layer-4 platform the Unified Strategy defers to Year 2+, now backed by a proven pattern.</li>
+    </ul></div>
+  </div>
+
+  <div class="callout">
+    <b>Anti-goal.</b> Do not build a workflow engine, a portal, or a control plane before services prove the pattern
+    they should encode. The financial model reaches ~$602k Year-1 revenue at ~71.8% EBITDA margin with a
+    <em>$495–1,000/month</em> tech run-rate — the platform investment is justified by scale, not anticipated before it.
+  </div>
+</section>
+
+<!-- ================= DATA FLOW ================= -->
+<section class="panel" id="dataflow">
+  <div class="eyebrow">Trust model</div>
+  <h2 class="sec">How client data moves through one engagement</h2>
+  <p class="lead">The intended flow for a typical retainer workflow run. Every transition is isolated per client and
+  logged as metadata (never prompt content) for billing and the monthly client report.</p>
+
+  <div class="diagram">
+    <div class="layer l-client"><div class="layer-head"><span class="layer-name">1 · Controlled intake</span></div><p style="font-size:12.5px;color:var(--text2)">Client documents enter through a <b>sensitivity-labelled SharePoint/OneDrive folder</b> or direct upload — <b>never email attachments</b> as the primary channel. Intake event logged.</p></div>
+    <div class="flowarrow">▼</div>
+    <div class="layer l-orch"><div class="layer-head"><span class="layer-name">2 · Workflow job created</span></div><p style="font-size:12.5px;color:var(--text2)">Workflow Engine loads the client's config + the versioned playbook for this workflow. Connector Framework pulls any grounding context (matter record, patient list, lease data) via least-privilege API scopes.</p></div>
+    <div class="flowarrow">▼</div>
+    <div class="layer l-ai"><div class="layer-head"><span class="layer-name">3 · Model Router decides tier + route</span></div><p style="font-size:12.5px;color:var(--text2)"><b>Lowest model tier that can do the job.</b> Route per the client's SKU: <span class="mono">public Claude API</span> by default → <span class="mono">Azure private endpoint</span> for END/BAA → <span class="mono">owned GPU node</span> for RAG/MGD. RAG retrieval hits only that client's vector namespace.</p></div>
+    <div class="flowarrow">▼</div>
+    <div class="layer l-sec"><div class="layer-head"><span class="layer-name">4 · Zero-retention execution</span></div><p style="font-size:12.5px;color:var(--text2)">Inference runs inside a TLS tunnel; on the private routes, prompt + response live in GPU/endpoint memory only and are <b>purged on response completion</b>. Structured log records timestamp, client ID, workflow, token/latency — <b>no prompt content</b>.</p></div>
+    <div class="flowarrow">▼</div>
+    <div class="layer l-orch"><div class="layer-head"><span class="layer-name">5 · Human-in-the-loop review</span></div><p style="font-size:12.5px;color:var(--text2)">Draft deliverable lands in the Review Console. A person checks it, edits or regenerates, and approves. No output reaches the client unreviewed.</p></div>
+    <div class="flowarrow">▼</div>
+    <div class="layer l-client"><div class="layer-head"><span class="layer-name">6 · Delivery + metering</span></div><p style="font-size:12.5px;color:var(--text2)">Native docx/xlsx returned through the Client Delivery Layer (SharePoint / portal). Usage record written to the Metering DB → rolls up into billing and the monthly client access report.</p></div>
+  </div>
+
+  <h3 class="grp">Three architectural decisions that matter most at this stage</h3>
+  <div class="grid3">
+    <div class="card"><h4>Public API by default</h4><p>Claude's API is the default execution path — dramatically cheaper and faster than owned infrastructure, and standard API terms already support the "no training on API data" posture most clients need. Private inference is the exception, not the norm.</p></div>
+    <div class="card"><h4>Every credential MFA-enforced, vault-issued</h4><p>A one- or two-person operation handling privilege- and HIPAA-adjacent data. The security baseline has to be genuinely defensible in a client conversation, not just described. Entra ID conditional access + 1Password on everything.</p></div>
+    <div class="card"><h4>Native file formats end-to-end</h4><p>Every deliverable is already docx/xlsx and the core environment is M365 — no format-translation step between internal production and client delivery. One fewer place for drift or a broken client experience.</p></div>
+  </div>
+
+  <h3 class="grp">Per-client isolation model</h3>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Route</th><th>Isolation mechanism</th><th>Retention</th><th>SKUs</th></tr></thead>
+    <tbody>
+      <tr><td>Public Claude API</td><td>Per-client API key + workspace, no cross-client context in prompts</td><td>Per Anthropic API terms (no training)</td><td><code>PAO-RET-*</code>, free tools, Pro</td></tr>
+      <tr><td>Azure private endpoint</td><td>Dedicated per-tenant endpoint, network-isolated, DPA</td><td>Zero — memory only, purged on response</td><td><code>PAO-INF-END</code>, <code>PAO-INF-BAA</code></td></tr>
+      <tr><td>Owned GPU node</td><td>Per-client VLAN, inter-VLAN routing blocked, bearer token per client, no outbound from inference containers</td><td>Zero — GPU memory only; LUKS at rest; 90-day metadata logs</td><td><code>PAO-INF-RAG</code>, <code>PAO-INF-MGD</code></td></tr>
+      <tr><td>Vector stores</td><td>One namespace/index per client; retrieval scoped to caller's namespace</td><td>Client documents retained per DPA; deletable on request</td><td>Any RAG-enabled retainer</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ================= STACK ================= -->
+<section class="panel" id="stack">
+  <div class="eyebrow">Concrete choices</div>
+  <h2 class="sec">Recommended technology stack</h2>
+  <p class="lead">Aligned to the Tech Infrastructure Cost Inventory's decisions: Microsoft 365 as the core environment,
+  Anthropic as the single AI vendor, Azure as the natural private-cloud fit. First-named is the recommendation for
+  this business specifically.</p>
+
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Layer</th><th>Component</th><th>Recommended</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Client Surface</td><td>Free tools + Pro apps</td><td>React/TSX on Azure Static Web Apps (or Netlify)</td><td>Charter Brief Pro is the reference build. Stripe for Pro billing.</td></tr>
+      <tr><td>Client Surface</td><td>Client Portal (Phase 4)</td><td>React + Entra ID External ID auth</td><td>Reuses the app toolchain; portal identities separate from staff Entra tenant.</td></tr>
+      <tr><td>Orchestration</td><td>Workflow engine v0</td><td>Power Automate + typed config in a repo</td><td>Upgrade to a real engine (Temporal / a queue + workers) only at Phase 2 repetition.</td></tr>
+      <tr><td>Orchestration</td><td>Playbook / prompt library</td><td>Git repo + thin service layer; prompts as versioned files</td><td>The moat as code. CI runs the eval harness on every change.</td></tr>
+      <tr><td>Orchestration</td><td>Deliverable generation</td><td><code>python-docx</code> / <code>openpyxl</code> / HTML templates</td><td>Native Office formats end-to-end — no PDF round-trip.</td></tr>
+      <tr><td>Orchestration</td><td>Eval / regression harness</td><td>Promptfoo or a lightweight custom runner in CI</td><td>Golden-set per workflow; blocks merges that regress output quality.</td></tr>
+      <tr><td>Integration</td><td>Connector framework</td><td>Power Automate / Zapier first → typed Connector SDK (TypeScript) at Phase 2</td><td>FareHarbor <code>booking.created</code> webhook is the first real integration.</td></tr>
+      <tr><td>Integration</td><td>Webhook ingress</td><td>Azure Functions (HTTP trigger) + queue</td><td>Signature verification, replay protection, per-client routing.</td></tr>
+      <tr><td>AI / Inference</td><td>Default model access</td><td>Anthropic Claude API</td><td>Tier pricing ~$1/$5 → $3/$15 → $5/$25 per Mtok. Track as COGS per client. Verify at anthropic.com/pricing before budgeting.</td></tr>
+      <tr><td>AI / Inference</td><td>Private endpoint (light tiers)</td><td>Azure-hosted private Claude / OSS model endpoint</td><td>Fulfils <code>PAO-INF-END</code> / <code>PAO-INF-BAA</code> with no capex; Azure BAA available.</td></tr>
+      <tr><td>AI / Inference</td><td>Owned inference (heavy tiers)</td><td>vLLM (OpenAI-compatible API) on 4×RTX 4090, undervolted 360W</td><td>Demand-gated per capex trigger rule. Llama-class 70B @ 4-bit with concurrency headroom.</td></tr>
+      <tr><td>AI / Inference</td><td>Fine-tuning</td><td>QLoRA on-node (Llama 3 8B / Mistral)</td><td>Add-on revenue; data never leaves the node.</td></tr>
+      <tr><td>Data &amp; Knowledge</td><td>Vector database</td><td>Managed (Pinecone / Qdrant Cloud) → self-host Qdrant on node for RAG/MGD clients</td><td>$0–70/mo at early volume; namespace-per-client.</td></tr>
+      <tr><td>Data &amp; Knowledge</td><td>Config / metering store</td><td>Azure SQL or Postgres (Flexible Server)</td><td>Small, relational, backed up via M365/Azure.</td></tr>
+      <tr><td>Data &amp; Knowledge</td><td>Document intake / delivery</td><td>SharePoint / OneDrive with Purview sensitivity labels</td><td>Primary channel; email attachments explicitly not the intake path.</td></tr>
+      <tr><td>Security</td><td>Identity + MFA</td><td>Microsoft Entra ID (in M365 Business Premium)</td><td>Conditional access on every tool; complements 1Password, doesn't replace it.</td></tr>
+      <tr><td>Security</td><td>Secrets</td><td>1Password Business + Azure Key Vault for service creds</td><td>No plaintext credential storage anywhere.</td></tr>
+      <tr><td>Security</td><td>Audit logging</td><td>Microsoft Purview + structured app logs (90-day)</td><td>Metadata only — client ID, endpoint, response code, latency. No prompt content.</td></tr>
+      <tr><td>Security</td><td>Admin plane</td><td>WireGuard VPN-only, SSH key-auth, TLS 1.3, LUKS at rest</td><td>Admin surface never public-facing (node); private networking (Azure).</td></tr>
+      <tr><td>Internal Ops</td><td>Billing</td><td>QuickBooks Online (Simple Start)</td><td>Metering DB rollup posts monthly invoices.</td></tr>
+      <tr><td>Internal Ops</td><td>CRM</td><td>HubSpot (free core → Starter)</td><td>Pro-signup webhook fires the 48-hr outreach task.</td></tr>
+      <tr><td>Internal Ops</td><td>Monitoring</td><td>Azure Monitor / Grafana + Loki (node)</td><td>Workflow health, endpoint uptime, per-client COGS dashboard.</td></tr>
+      <tr><td>Internal Ops</td><td>Automation glue</td><td>Microsoft Power Automate</td><td>Native to M365; basic flows included in Business Premium.</td></tr>
+      <tr><td>Dev</td><td>Language / CI</td><td>TypeScript + Python; GitHub Actions</td><td>Repo already on GitHub. CI runs eval harness + connector contract tests.</td></tr>
+      <tr><td>Dev</td><td>Build environment</td><td>Claude Team seat (includes Claude Code) for integration work</td><td>$150/mo/seat when custom connector work begins.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout">
+    <b>Skills gating (from the Tech Infrastructure Cost Inventory).</b> Prompt architecture, financial modelling, and
+    docx/xlsx generation are already strong. <b>Systems integration</b> (API/webhook) is partial — start with
+    Power Automate, contract a developer for custom API work. <b>Local LLM / GPU ops</b> and <b>RAG / vector DB
+    engineering</b> are treated as gaps until proven — use the GPU PoC as a learning sandbox and contract a
+    DevOps/MLOps specialist for the first production build.
+  </div>
+</section>
+
+</div>
+
+<footer>
+  Private AI Ops · Internal Platform &amp; Development Architecture · v1.0 · September 2026 · Confidential — Founder Use Only<br>
+  Companion to: Unified Strategy (§4 Layer 4, §17 gates G1/G6) · SKU &amp; Pricing Catalog · Tech Infrastructure Cost Inventory · Opex/Capex/Net ARR One-Pager · GPU Hosting PoC Report
+</footer>
+
+<script>
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var id=btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.toggle('active',b===btn);});
+    document.querySelectorAll('.panel').forEach(function(p){p.classList.toggle('active',p.id===id);});
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>

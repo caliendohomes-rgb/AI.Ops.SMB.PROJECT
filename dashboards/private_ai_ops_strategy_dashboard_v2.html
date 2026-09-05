@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Private AI Ops — Strategy Planning Dashboard v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f7f6f2;
+  --bg2: #eeecea;
+  --bg3: #e4e1dc;
+  --surface: #ffffff;
+  --text: #1a1714;
+  --text2: #5c5550;
+  --text3: #9a948e;
+  --border: rgba(0,0,0,0.09);
+  --border2: rgba(0,0,0,0.16);
+  --navy: #0d2340;
+  --navy-mid: #1a3a60;
+  --navy-light: #e8edf5;
+  --gold: #b8860b;
+  --gold-light: #f5efd7;
+  --teal: #0d6b5e;
+  --teal-light: #dff0ed;
+  --amber: #a05a00;
+  --amber-light: #faebd4;
+  --red: #8b1a1a;
+  --red-light: #fce8e8;
+  --green: #2d5a1b;
+  --green-light: #e6f2df;
+  --radius: 6px;
+  --radius-lg: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161412; --bg2: #1e1c19; --bg3: #262320;
+    --surface: #1e1c19;
+    --text: #e8e4de; --text2: #a09890; --text3: #5c554e;
+    --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.15);
+    --navy-light: #0d1e33; --gold-light: #2a2100; --teal-light: #0a2320;
+    --amber-light: #261500; --red-light: #280e0e; --green-light: #0f1f07;
+  }
+}
+body {
+  font-family: 'DM Sans', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.wrap { max-width: 1020px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+.header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 1.75rem; padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border2);
+  flex-wrap: wrap; gap: 8px;
+}
+.header-left h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 22px; font-weight: 700; letter-spacing: -0.02em;
+  color: var(--navy); margin-bottom: 3px;
+}
+@media (prefers-color-scheme: dark) { .header-left h1 { color: var(--text); } }
+.header-left p { font-size: 12px; color: var(--text3); font-family: 'DM Mono', monospace; }
+.header-right { font-size: 11px; color: var(--text3); text-align: right; line-height: 1.6; font-family: 'DM Mono', monospace; }
+.tabs { display: flex; gap: 3px; margin-bottom: 1.5rem; flex-wrap: wrap; background: var(--bg2); border-radius: var(--radius-lg); padding: 4px; }
+.tab { padding: 7px 14px; border-radius: var(--radius); border: none; background: transparent; cursor: pointer; font-size: 12px; color: var(--text2); font-family: 'DM Sans', sans-serif; font-weight: 500; transition: all .15s; white-space: nowrap; }
+.tab.active { background: var(--surface); color: var(--navy); box-shadow: var(--shadow); }
+.tab:hover:not(.active) { color: var(--text); }
+.section { display: none; }
+.section.visible { display: block; }
+
+/* Metrics */
+.metric-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+.metric { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; box-shadow: var(--shadow); }
+.metric-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .04em; font-family: 'DM Mono', monospace; }
+.metric-val { font-size: 24px; font-weight: 600; font-family: 'DM Mono', monospace; letter-spacing: -0.02em; }
+.metric-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
+.metric-up { color: var(--teal); }
+.metric-dn { color: var(--red); }
+.metric-warn { color: var(--amber); }
+
+/* Cards */
+.card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
+.card-title { font-size: 10px; font-weight: 600; color: var(--text3); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: .08em; font-family: 'DM Mono', monospace; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+.chart-wrap { position: relative; width: 100%; }
+.row-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; gap: 8px; }
+.row-item:last-child { border-bottom: none; }
+.row-label { color: var(--text2); flex: 1; }
+.row-val { font-weight: 500; font-family: 'DM Mono', monospace; font-size: 12px; white-space: nowrap; }
+
+/* Badges */
+.badge { font-size: 10px; padding: 2px 7px; border-radius: var(--radius); font-weight: 500; font-family: 'DM Mono', monospace; white-space: nowrap; }
+.badge-navy { background: var(--navy-light); color: var(--navy-mid); }
+.badge-teal { background: var(--teal-light); color: var(--teal); }
+.badge-gold { background: var(--gold-light); color: var(--gold); }
+.badge-red { background: var(--red-light); color: var(--red); }
+.badge-amber { background: var(--amber-light); color: var(--amber); }
+.badge-neutral { background: var(--bg2); color: var(--text2); }
+@media (prefers-color-scheme: dark) {
+  .badge-navy { color: #7dabd4; } .badge-teal { color: #5bc4b0; }
+  .badge-gold { color: #d4a84b; } .badge-red { color: #e08080; }
+  .badge-amber { color: #e0a060; }
+}
+
+/* Scenario buttons */
+.sc-bar { display: flex; gap: 8px; margin-bottom: 1.25rem; align-items: center; flex-wrap: wrap; }
+.sc-label { font-size: 12px; color: var(--text3); font-family: 'DM Mono', monospace; margin-right: 4px; }
+.sc-btn { padding: 6px 14px; border-radius: var(--radius); border: 1px solid var(--border2); cursor: pointer; font-size: 12px; font-family: 'DM Sans', sans-serif; font-weight: 500; background: var(--surface); color: var(--text2); transition: all .15s; }
+.sc-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+.sc-btn.slow.active { background: var(--teal); border-color: var(--teal); }
+.sc-btn.allin.active { background: var(--gold); border-color: var(--gold); color: #fff; }
+
+/* Sliders */
+.slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.slider-label { font-size: 12px; color: var(--text2); min-width: 160px; }
+.slider-val { font-size: 12px; font-weight: 500; min-width: 50px; text-align: right; font-family: 'DM Mono', monospace; }
+input[type=range] { flex: 1; accent-color: var(--navy); }
+
+/* Risk register */
+.risk-item { display: grid; grid-template-columns: 1fr 100px 100px; gap: 8px; padding: 10px 0; border-bottom: 0.5px solid var(--border); align-items: center; font-size: 13px; }
+.risk-item:last-child { border-bottom: none; }
+.dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 6px; flex-shrink: 0; }
+.dot-red { background: var(--red); } .dot-amber { background: var(--gold); } .dot-green { background: var(--teal); }
+
+/* Timeline */
+.timeline-item { display: flex; gap: 1rem; padding-bottom: 1.5rem; }
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 32px; }
+.timeline-dot { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; font-family: 'DM Mono', monospace; border: 1.5px solid transparent; }
+.timeline-line { width: 1px; flex: 1; min-height: 12px; background: var(--border2); margin: 4px 0; }
+.timeline-content { flex: 1; padding-top: 4px; }
+.timeline-phase { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 3px; font-family: 'DM Mono', monospace; }
+.timeline-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.timeline-tasks { list-style: none; padding: 0; }
+.timeline-tasks li { font-size: 12px; color: var(--text2); padding: 2.5px 0; display: flex; align-items: flex-start; gap: 6px; }
+.timeline-tasks li::before { content: "·"; color: var(--text3); flex-shrink: 0; font-size: 16px; line-height: 1.1; }
+.task-tag { font-size: 10px; padding: 1px 5px; border-radius: 3px; font-family: 'DM Mono', monospace; white-space: nowrap; margin-left: 4px; font-weight: 500; }
+.tag-founder { background: var(--amber-light); color: var(--amber); }
+.tag-ops { background: var(--navy-light); color: var(--navy-mid); }
+.tag-mktg { background: var(--teal-light); color: var(--teal); }
+.tag-infra { background: var(--red-light); color: var(--red); }
+.tag-hire { background: var(--gold-light); color: var(--gold); }
+@media (prefers-color-scheme: dark) {
+  .tag-founder { color: #e0a060; } .tag-ops { color: #7dabd4; }
+  .tag-mktg { color: #5bc4b0; } .tag-infra { color: #e08080; } .tag-hire { color: #d4a84b; }
+}
+
+/* Gate items */
+.gate-item { display: flex; gap: 10px; align-items: flex-start; padding: 10px; background: var(--bg2); border-radius: var(--radius); margin-bottom: 8px; }
+.gate-num { width: 22px; height: 22px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: 'DM Mono', monospace; }
+.gate-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.gate-desc { font-size: 12px; color: var(--text2); }
+
+/* Verticals */
+.vert-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; box-shadow: var(--shadow); }
+.vert-card.primary { border-color: var(--navy-mid); border-width: 1.5px; }
+.bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.bar-label { font-size: 11px; color: var(--text2); min-width: 130px; }
+.bar-track { flex: 1; height: 5px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; transition: width .4s ease; }
+
+/* Positioning table */
+table.pos-tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.pos-tbl th { font-size: 10px; font-weight: 600; color: var(--text3); text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border2); text-transform: uppercase; letter-spacing: .06em; font-family: 'DM Mono', monospace; }
+table.pos-tbl td { padding: 10px 8px; border-bottom: 0.5px solid var(--border); vertical-align: top; font-size: 13px; }
+table.pos-tbl tr:last-child td { border-bottom: none; }
+.say { font-size: 13px; color: var(--teal); }
+.avoid { font-size: 13px; color: var(--red); }
+
+/* Legend */
+.legend { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; font-size: 11px; color: var(--text2); font-family: 'DM Mono', monospace; }
+.legend span { display: flex; align-items: center; gap: 5px; }
+.legend-sq { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+/* Verdict boxes */
+.verdict-box { padding: 14px; border-radius: var(--radius); }
+
+/* Scenario comparison table */
+.sc-compare { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 1rem; }
+.sc-compare th { font-size: 10px; font-weight: 600; color: var(--text3); text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--border2); text-transform: uppercase; letter-spacing: .06em; font-family: 'DM Mono', monospace; }
+.sc-compare td { padding: 9px 10px; border-bottom: 0.5px solid var(--border); font-size: 12px; }
+.sc-compare tr:last-child td { border-bottom: none; }
+.sc-compare td:first-child { color: var(--text2); font-size: 12px; }
+.sc-compare td.slow-col { color: var(--teal); font-family: 'DM Mono', monospace; font-weight: 500; }
+.sc-compare td.allin-col { color: var(--gold); font-family: 'DM Mono', monospace; font-weight: 500; }
+.sc-compare thead th.slow-col { color: var(--teal); }
+.sc-compare thead th.allin-col { color: var(--gold); }
+
+/* Staffing note */
+.staffing-note { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; padding: 8px 12px; background: var(--bg2); border-radius: var(--radius); border-left: 2px solid var(--border2); line-height: 1.6; margin-top: 8px; }
+.staffing-note strong { color: var(--amber); font-weight: 600; }
+
+/* Roadmap phase headers */
+.phase-section { margin-bottom: 1.5rem; }
+.phase-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.phase-badge { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: var(--radius); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .06em; }
+.phase-title-main { font-size: 15px; font-weight: 600; }
+.phase-sub { font-size: 11px; color: var(--text3); margin-left: auto; font-family: 'DM Mono', monospace; }
+
+/* Founder hours callout */
+.founder-hours { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-top: 10px; }
+.fh-item { background: var(--bg2); border-radius: var(--radius); padding: 10px 12px; text-align: center; }
+.fh-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .04em; font-family: 'DM Mono', monospace; margin-bottom: 4px; }
+.fh-val { font-size: 18px; font-weight: 600; font-family: 'DM Mono', monospace; }
+.fh-sub { font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+@media (max-width: 640px) {
+  .two-col, .three-col { grid-template-columns: 1fr; }
+  .risk-item { grid-template-columns: 1fr; }
+  .header { flex-direction: column; align-items: flex-start; }
+  .header-right { text-align: left; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="header-left">
+      <h1>Private AI Ops — Strategy Dashboard</h1>
+      <p>CONFIDENTIAL · v2.0 · May 2026</p>
+    </div>
+    <div class="header-right">
+      Managed AI Operations + Private Infrastructure<br>
+      South Florida Beachhead · Law · Dental · Property Mgmt
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('overview',this)"><i class="ti ti-layout-dashboard"></i> Overview</button>
+    <button class="tab" onclick="showTab('financials',this)"><i class="ti ti-chart-line"></i> Financials</button>
+    <button class="tab" onclick="showTab('scenarios',this)"><i class="ti ti-arrows-split-2"></i> Scenarios</button>
+    <button class="tab" onclick="showTab('verticals',this)"><i class="ti ti-building"></i> Verticals</button>
+    <button class="tab" onclick="showTab('roadmap',this)"><i class="ti ti-calendar"></i> Roadmap</button>
+    <button class="tab" onclick="showTab('positioning',this)"><i class="ti ti-target"></i> Positioning</button>
+    <button class="tab" onclick="showTab('risks',this)"><i class="ti ti-alert-triangle"></i> Risk register</button>
+  </div>
+
+  <!-- ═══════════════════════ OVERVIEW ═══════════════════════ -->
+  <div class="section visible" id="tab-overview">
+    <div class="metric-row">
+      <div class="metric"><div class="metric-label">Y1 Revenue</div><div class="metric-val">$602K</div><div class="metric-sub">Base case FY 2026</div></div>
+      <div class="metric"><div class="metric-label">Y1 EBITDA</div><div class="metric-val">$433K</div><div class="metric-sub metric-up">71.8% margin</div></div>
+      <div class="metric"><div class="metric-label">Mo 12 MRR</div><div class="metric-val">$54.7K</div><div class="metric-sub">Retainer + GPU + Pro</div></div>
+      <div class="metric"><div class="metric-label">EOP Y1 Clients</div><div class="metric-val">30.6</div><div class="metric-sub">Active retainer</div></div>
+      <div class="metric"><div class="metric-label">LTV / CAC</div><div class="metric-val">184×</div><div class="metric-sub metric-up">Target &gt;5×</div></div>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">3-year revenue trajectory (base)</div>
+        <div class="legend">
+          <span><span class="legend-sq" style="background:#0d2340"></span>Total revenue ($K)</span>
+          <span><span class="legend-sq" style="background:#0d6b5e"></span>EBITDA ($K)</span>
+        </div>
+        <div class="chart-wrap" style="height:200px;"><canvas id="revChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Y1 Revenue mix</div>
+        <div class="legend">
+          <span><span class="legend-sq" style="background:#0d2340"></span>Onboarding 36%</span>
+          <span><span class="legend-sq" style="background:#0d6b5e"></span>Retainer 51%</span>
+          <span><span class="legend-sq" style="background:#b8860b"></span>GPU 7%</span>
+          <span><span class="legend-sq" style="background:#8b1a1a"></span>Pro 5%</span>
+        </div>
+        <div class="chart-wrap" style="height:200px;"><canvas id="mixChart"></canvas></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Strategic verdict</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="verdict-box" style="background:var(--teal-light);">
+          <div style="font-size:10px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;font-family:'DM Mono',monospace;">The business is</div>
+          <div style="font-size:12px;color:var(--teal);line-height:1.7;">Managed AI operations firm · Compliance-aware workflow automation · Founder-led local services · Embedded operational partner</div>
+        </div>
+        <div class="verdict-box" style="background:var(--red-light);">
+          <div style="font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;font-family:'DM Mono',monospace;">The business is not</div>
+          <div style="font-size:12px;color:var(--red);line-height:1.7;">A residential GPU hosting company · Raw compute marketplace · SaaS-first operation · Consulting firm that advises and leaves</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">One-sentence positioning</div>
+      <div style="font-size:15px;font-weight:500;line-height:1.6;padding:12px 0 6px;font-family:'Playfair Display',serif;">"Private AI Ops builds and operates private AI workflows for SMBs that need automation without exposing sensitive business data to public AI platforms."</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ FINANCIALS ═══════════════════════ -->
+  <div class="section" id="tab-financials">
+    <div class="sc-bar">
+      <span class="sc-label">View:</span>
+      <button class="sc-btn active" id="fin-base-btn" onclick="setFinView('base')">Base case</button>
+      <button class="sc-btn slow" id="fin-slow-btn" onclick="setFinView('slow')">Low &amp; Slow</button>
+      <button class="sc-btn allin" id="fin-allin-btn" onclick="setFinView('allin')">All-In</button>
+    </div>
+    <div class="metric-row" id="fin-metrics"></div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Monthly MRR ramp — Mo 1–18</div>
+        <div class="chart-wrap" style="height:230px;"><canvas id="mrrChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Active retainer clients — Mo 1–18</div>
+        <div class="chart-wrap" style="height:230px;"><canvas id="clientChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Staffing requirements &amp; founder hours — key assumption</div>
+      <div class="staffing-note" style="margin-top:0;margin-bottom:12px;">
+        <strong>FOUNDER NOTE:</strong> All financial projections assume the founding team carries delivery in Y1. No full-time salaried employees until gate thresholds are met. Part-time contractors are used for overflow delivery from Month 3 onward. Founder total hours are the binding constraint on growth rate in both scenarios.
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="sc-compare">
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Phase</th>
+              <th class="slow-col">Low &amp; Slow hrs/wk</th>
+              <th class="allin-col">All-In hrs/wk</th>
+              <th>Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Founder / CEO (sales + delivery)</td><td>Mo 1–6</td><td class="slow-col">35–40</td><td class="allin-col">50–60</td><td>Sweat equity</td></tr>
+            <tr><td>Founder / CEO (sales + strategy)</td><td>Mo 6–12</td><td class="slow-col">30–35</td><td class="allin-col">45–55</td><td>Sweat equity</td></tr>
+            <tr><td>Delivery contractor (pt)</td><td>From Mo 3</td><td class="slow-col">0–10</td><td class="allin-col">15–25</td><td>~$50/hr</td></tr>
+            <tr><td>Vertical lead — Law (contractor)</td><td>Mo 2–6</td><td class="slow-col">Not hired</td><td class="allin-col">20–30 hrs</td><td>$3,500–4,500/mo</td></tr>
+            <tr><td>Vertical lead — Dental (contractor)</td><td>Mo 3–6</td><td class="slow-col">Not hired</td><td class="allin-col">20–30 hrs</td><td>$3,500–4,500/mo</td></tr>
+            <tr><td>Full-time delivery hire</td><td>Mo 9 (base) / Mo 12 (slow)</td><td class="slow-col">Not in Y1</td><td class="allin-col">40 hrs</td><td>$5,500/mo</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="staffing-note" style="margin-top:10px;">
+        <strong>KEY RISK:</strong> In the All-In scenario, founder hours exceed sustainable levels by Mo 3–4 without contractor support. Contractor delay = sales pipeline stall. Hire delivery support before revenue requires it, not after.
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Unit economics</div>
+        <div class="row-item"><span class="row-label">Avg retainer / client (std)</span><span class="row-val">$1,250/mo</span></div>
+        <div class="row-item"><span class="row-label">Avg retainer / client (regulated)</span><span class="row-val">$2,000/mo</span></div>
+        <div class="row-item"><span class="row-label">Implied LTV (retainer, 40-mo avg)</span><span class="row-val">~$49K</span></div>
+        <div class="row-item"><span class="row-label">Onboarding CAC (Y1)</span><span class="row-val">$267</span></div>
+        <div class="row-item"><span class="row-label">Onboarding CAC (Y3)</span><span class="row-val">$127</span></div>
+        <div class="row-item"><span class="row-label">LTV / CAC</span><span class="row-val metric-up">184× → 418×</span></div>
+        <div class="row-item"><span class="row-label">Monthly churn rate (base)</span><span class="row-val">3%</span></div>
+        <div class="row-item"><span class="row-label">GPU infrastructure attach rate</span><span class="row-val">25% of clients</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Cost structure (Y1)</div>
+        <div class="row-item"><span class="row-label">Vertical leads ×2 (from Mo 2)</span><span class="row-val">$9,000/mo</span></div>
+        <div class="row-item"><span class="row-label">Delivery support contractor</span><span class="row-val">$5,500/mo</span></div>
+        <div class="row-item"><span class="row-label">GPU CapEx (one-time, Mo 3)</span><span class="row-val">$14,350</span></div>
+        <div class="row-item"><span class="row-label">GPU infra opex (from Mo 3)</span><span class="row-val">$650/mo</span></div>
+        <div class="row-item"><span class="row-label">Claude API / Anthropic API / client</span><span class="row-val">~$45/mo</span></div>
+        <div class="row-item"><span class="row-label">Marketing + legal + misc</span><span class="row-val">$1,050/mo</span></div>
+        <div class="row-item"><span class="row-label">Website / hosting / tools</span><span class="row-val">~$250/mo</span></div>
+        <div class="row-item"><span class="row-label">Y1 gross margin (est.)</span><span class="row-val metric-up">97.5%</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Sensitivity: churn rate impact on Y3 steady-state</div>
+      <div class="slider-row">
+        <span class="slider-label">Monthly churn rate</span>
+        <input type="range" min="1" max="8" value="3" step="1" id="churnSlider" oninput="updateChurn(this.value)">
+        <span class="slider-val" id="churnVal">3%</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px;">
+        <div class="metric"><div class="metric-label">Y3 active clients</div><div class="metric-val" id="sc3-clients">111</div></div>
+        <div class="metric"><div class="metric-label">Y3 net MRR</div><div class="metric-val" id="sc3-mrr">$160K</div></div>
+        <div class="metric"><div class="metric-label">Y3 EBITDA (est.)</div><div class="metric-val" id="sc3-ebitda">$2.01M</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ SCENARIOS ═══════════════════════ -->
+  <div class="section" id="tab-scenarios">
+    <div class="card" style="margin-bottom:1rem;">
+      <div class="card-title">Scenario overview</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--teal);margin-bottom:6px;display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--teal);display:inline-block;"></span>Low &amp; Slow</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.7;">Founder-only delivery. No vertical lead hires in Y1. One vertical at a time. Conservative 1–2 new clients/month. Infrastructure deployed only when signed. Prioritizes sustainable lifestyle business over aggressive growth.</div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--gold);display:inline-block;"></span>All-In</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.7;">Two vertical contractor leads hired in Mo 2. 4–6 new clients/month by Mo 4. Aggressive free-tool distribution. GPU infrastructure deployed Mo 3. Founder operating at ~50+ hrs/wk. Requires $30–50K working capital buffer.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Side-by-side scenario comparison</div>
+      <div style="overflow-x:auto;">
+        <table class="sc-compare">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th class="slow-col">Low &amp; Slow</th>
+              <th>Base Case</th>
+              <th class="allin-col">All-In</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Launch approach</strong></td><td class="slow-col">1 vertical, founder-only</td><td>2 verticals, 1–2 contractors</td><td class="allin-col">2–3 verticals, 2 contractor leads</td></tr>
+            <tr><td><strong>New clients/mo (steady state)</strong></td><td class="slow-col">1–2</td><td>2.5–3.5</td><td class="allin-col">4–6</td></tr>
+            <tr><td><strong>Mo 6 MRR</strong></td><td class="slow-col">~$7–10K</td><td>~$30K</td><td class="allin-col">~$45–55K</td></tr>
+            <tr><td><strong>Mo 12 MRR</strong></td><td class="slow-col">~$18–25K</td><td>~$54.7K</td><td class="allin-col">~$85–100K</td></tr>
+            <tr><td><strong>Active clients Mo 12</strong></td><td class="slow-col">8–12</td><td>~31</td><td class="allin-col">45–60</td></tr>
+            <tr><td><strong>Y1 total revenue</strong></td><td class="slow-col">~$120–180K</td><td>~$602K</td><td class="allin-col">~$900K–1.1M</td></tr>
+            <tr><td><strong>Y1 EBITDA</strong></td><td class="slow-col">~$90–140K</td><td>~$433K</td><td class="allin-col">~$520–650K</td></tr>
+            <tr><td><strong>Y3 MRR</strong></td><td class="slow-col">~$40–60K</td><td>~$160K</td><td class="allin-col">~$280–350K</td></tr>
+            <tr><td><strong>GPU infrastructure</strong></td><td class="slow-col">Deployed Mo 6+ (demand-gated)</td><td>Deployed Mo 3</td><td class="allin-col">Deployed Mo 2–3</td></tr>
+            <tr><td><strong>Founder hrs/wk (peak)</strong></td><td class="slow-col">35–45</td><td>45–55</td><td class="allin-col">55–65</td></tr>
+            <tr><td><strong>Working capital required</strong></td><td class="slow-col">$15–25K</td><td>$30–40K</td><td class="allin-col">$50–75K</td></tr>
+            <tr><td><strong>Break-even point</strong></td><td class="slow-col">Mo 2–3</td><td>Mo 2–3</td><td class="allin-col">Mo 3–4 (after contractor cost)</td></tr>
+            <tr><td><strong>Key risk</strong></td><td class="slow-col">Growth ceiling — founder bandwidth cap</td><td>Sales–delivery balance</td><td class="allin-col">Contractor quality + burn rate</td></tr>
+            <tr><td><strong>Best for</strong></td><td class="slow-col">Lifestyle business, low risk tolerance</td><td>Balanced growth</td><td class="allin-col">Investor-grade scale, high conviction</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title" style="color:var(--teal);">Low &amp; Slow — staffing plan</div>
+        <div class="row-item"><span class="row-label">Mo 1–12 delivery</span><span class="row-val">Founder only</span></div>
+        <div class="row-item"><span class="row-label">Founder hrs/wk</span><span class="row-val metric-up">35–45 hrs</span></div>
+        <div class="row-item"><span class="row-label">Contractor delivery</span><span class="row-val">Mo 6+ (overflow)</span></div>
+        <div class="row-item"><span class="row-label">Vertical leads</span><span class="row-val">Not hired Y1</span></div>
+        <div class="row-item"><span class="row-label">Max client load (founder)</span><span class="row-val">10–14 retainers</span></div>
+        <div class="row-item"><span class="row-label">Infrastructure</span><span class="row-val">Demand-gated Mo 6+</span></div>
+        <div class="staffing-note" style="margin-top:10px;">Suitable if founder is sole operator. Growth rate is hard-capped by individual capacity. Prioritize operational depth over volume.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--gold);">All-In — staffing plan</div>
+        <div class="row-item"><span class="row-label">Mo 1 delivery</span><span class="row-val">Founder</span></div>
+        <div class="row-item"><span class="row-label">Mo 2 adds</span><span class="row-val">2 vertical leads (contractors)</span></div>
+        <div class="row-item"><span class="row-label">Mo 3 adds</span><span class="row-val">Delivery contractor (10–20 hrs)</span></div>
+        <div class="row-item"><span class="row-label">Mo 9 adds</span><span class="row-val">FT delivery hire ($5,500/mo)</span></div>
+        <div class="row-item"><span class="row-label">Founder hrs/wk (peak)</span><span class="row-val metric-warn">55–65 hrs</span></div>
+        <div class="row-item"><span class="row-label">Max client load (team)</span><span class="row-val">50–65 retainers</span></div>
+        <div class="staffing-note" style="margin-top:10px;"><strong>WARNING:</strong> Founder at 55–65 hrs/wk is unsustainable beyond 90 days. Delivery contractor quality is a direct revenue risk. Vet before you need them.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">MRR ramp comparison — all scenarios (Mo 1–18)</div>
+      <div class="legend">
+        <span><span class="legend-sq" style="background:#0d6b5e"></span>Low &amp; Slow</span>
+        <span><span class="legend-sq" style="background:#0d2340"></span>Base case</span>
+        <span><span class="legend-sq" style="background:#b8860b"></span>All-In</span>
+      </div>
+      <div class="chart-wrap" style="height:250px;"><canvas id="scenarioChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ VERTICALS ═══════════════════════ -->
+  <div class="section" id="tab-verticals">
+    <div class="three-col" style="margin-bottom:1rem;">
+      <div class="vert-card primary">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+          <div style="font-size:15px;font-weight:600;">Law firms</div><span class="badge badge-navy">1st — primary</span>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.5;">Heppner ruling (Feb 2026) created urgent, real, monetizable privilege-protection pain.</div>
+        <div class="bar-row"><span class="bar-label">Pain density</span><div class="bar-track"><div class="bar-fill" style="width:95%;background:#0d2340;"></div></div></div>
+        <div class="bar-row"><span class="bar-label">Privacy sensitivity</span><div class="bar-track"><div class="bar-fill" style="width:98%;background:#0d2340;"></div></div></div>
+        <div class="bar-row"><span class="bar-label">Willingness to pay</span><div class="bar-track"><div class="bar-fill" style="width:85%;background:#0d2340;"></div></div></div>
+        <div class="bar-row"><span class="bar-label">Ease of close</span><div class="bar-track"><div class="bar-fill" style="width:75%;background:#0d2340;"></div></div></div>
+        <div style="margin-top:12px;border-top:0.5px solid var(--border);padding-top:10px;">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;font-family:'DM Mono',monospace;">Top workflows</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.7;">Intake summaries · Billing narratives · Demand letters · Matter summaries · Case chronologies · Research memos</div>
+        </div>
+        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="badge badge-navy">~180K US firms</span><span class="badge badge-teal">$2K–$3K/mo</span>
+        </div>
+      </div>
+      <div class="vert-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+          <div style="font-size:15px;font-weight:600;">Dental practices</div><span class="badge badge-teal">2nd — secondary</span>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.5;">HIPAA sensitivity + front-desk burden. Recall automation is a compelling demo hook.</div>
+        <div class="bar-row"><span class="bar-label">Pain density</span><div class="bar-track"><div class="bar-fill" style="width:85%;background:#0d6b5e;"></div></div></div>
+        <div class="bar-row"><span class="bar-label">Privacy sensitivity</span><div class="bar-track"><div class="bar-fill" style="width:88%;background:#0d6b5e;"></div></div></div>
+        <div class="bar-row"><span class="bar-label">Willingness to pay</span><div class="bar-track"><div class="bar-fill" style="width:80%;background:#0d6b5e;"></div></div></div>
+        <div class="bar-row"><span class="bar-label">Ease of close</span><div class="bar-track"><div class="bar-fill" style="width:80%;background:#0d6b5e;"></div></div></div>
+        <div style="margin-top:12px;border-top:0.5px solid var(--border);padding-top:10px;">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;font-family:'DM Mono',monospace;">Top workflows</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.7;">Recall campaigns · Appt confirmations · Post-visit reviews · Insurance pre-auth · Patient comms</div>
+        </div>
+        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="badge badge-teal">~100K practices</span><span class="badge badge-teal">$1.5K–$2K/mo</span>
+        </div>
+      </div>
+      <div class="vert-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+          <div style="font-size:15px;font-weight:600;">Marine / charter</div><span class="badge badge-gold">Experimental</span>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.5;">Charter Brief is proven distribution. Lower privacy sensitivity limits retainer upside.</div>
+        <div class="bar-row"><span class="bar-label">Pain density</span><div class="bar-track"><div class="bar-fill" style="width:55%;background:#b8860b;"></div></div></div>
+        <div class="bar-row"><span class="bar-label">Privacy sensitivity</span><div class="bar-track"><div class="bar-fill" style="width:20%;background:#b8860b;"></div></div></div>
+        <div class="bar-row"><span class="bar-label">Willingness to pay</span><div class="bar-track"><div class="bar-fill" style="width:50%;background:#b8860b;"></div></div></div>
+        <div class="bar-row"><span class="bar-label">Ease of close</span><div class="bar-track"><div class="bar-fill" style="width:85%;background:#b8860b;"></div></div></div>
+        <div style="margin-top:12px;border-top:0.5px solid var(--border);padding-top:10px;">
+          <div style="font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;font-family:'DM Mono',monospace;">Role in Y1</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.7;">Free lead magnet only. No dedicated marine vertical lead in Y1. Revisit at Y2.</div>
+        </div>
+        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="badge badge-gold">~5K operators</span><span class="badge badge-amber">$1K–$1.5K/mo max</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Pricing menu — all products</div>
+      <div style="overflow-x:auto;">
+        <table class="pos-tbl">
+          <thead><tr><th>Product</th><th>Price</th><th>Tier</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>AI Ops Assessment</td><td style="font-family:'DM Mono',monospace;font-size:12px;">$500–$2,500</td><td><span class="badge badge-navy">Entry</span></td><td style="font-size:12px;color:var(--text2);">Waivable if client signs onboarding same week</td></tr>
+            <tr><td>Managed AI Onboarding — standard</td><td style="font-family:'DM Mono',monospace;font-size:12px;">$3,500–$10,000</td><td><span class="badge badge-navy">Setup</span></td><td style="font-size:12px;color:var(--text2);">First client: 20–30% below rate for case study rights</td></tr>
+            <tr><td>Managed AI Onboarding — regulated</td><td style="font-family:'DM Mono',monospace;font-size:12px;">$10,000–$25,000</td><td><span class="badge badge-navy">Setup</span></td><td style="font-size:12px;color:var(--text2);">Law / dental; includes BAA/DPA setup</td></tr>
+            <tr><td>Managed AI Retainer — standard</td><td style="font-family:'DM Mono',monospace;font-size:12px;">$1,500–$3,000/mo</td><td><span class="badge badge-teal">Core MRR</span></td><td style="font-size:12px;color:var(--text2);">Maintenance, monitoring, monthly report, support</td></tr>
+            <tr><td>Managed AI Retainer — regulated</td><td style="font-family:'DM Mono',monospace;font-size:12px;">$3,500–$7,500/mo</td><td><span class="badge badge-teal">Core MRR</span></td><td style="font-size:12px;color:var(--text2);">Multi-location or compliance-heavy clients</td></tr>
+            <tr><td>Private endpoint (standard)</td><td style="font-family:'DM Mono',monospace;font-size:12px;">$650/mo</td><td><span class="badge badge-gold">Add-on</span></td><td style="font-size:12px;color:var(--text2);">TLS 1.3, zero-retention, DPA included</td></tr>
+            <tr><td>Private endpoint (HIPAA-ready)</td><td style="font-family:'DM Mono',monospace;font-size:12px;">$850/mo</td><td><span class="badge badge-gold">Add-on</span></td><td style="font-size:12px;color:var(--text2);">BAA-supported, audit logging</td></tr>
+            <tr><td>Private RAG environment</td><td style="font-family:'DM Mono',monospace;font-size:12px;">$1,400–$2,200/mo</td><td><span class="badge badge-gold">Add-on</span></td><td style="font-size:12px;color:var(--text2);">Dual GPU, vector store, document ingestion</td></tr>
+            <tr><td>Vertical free tools</td><td style="font-family:'DM Mono',monospace;font-size:12px;">$0</td><td><span class="badge badge-neutral">Distribution</span></td><td style="font-size:12px;color:var(--text2);">Lead magnets — not product, distribution only</td></tr>
+            <tr><td>Pro tier</td><td style="font-family:'DM Mono',monospace;font-size:12px;">$49–$199/mo</td><td><span class="badge badge-neutral">Filter</span></td><td style="font-size:12px;color:var(--text2);">Qualification signal — triggers 48-hr outreach</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ ROADMAP ═══════════════════════ -->
+  <div class="section" id="tab-roadmap">
+    <!-- PHASE 0: Pre-launch operational core -->
+    <div class="phase-section">
+      <div class="phase-header">
+        <span class="phase-badge" style="background:var(--bg3);color:var(--text2);">Phase 0</span>
+        <span class="phase-title-main">Operational Foundation</span>
+        <span class="phase-sub">Days 1–14 (before first client conversation)</span>
+      </div>
+      <div class="card" style="margin-bottom:0;">
+        <div class="staffing-note" style="margin-bottom:12px;">
+          <strong>FOUNDER HOURS:</strong> ~35–40 hrs/wk · 100% founder. These are blocking activities — the business cannot close a regulated client without them.
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div>
+            <div class="timeline-tasks" style="display:block;">
+              <ul class="timeline-tasks">
+                <li>Form Florida LLC + open dedicated business checking account <span class="task-tag tag-ops">Legal / Ops</span></li>
+                <li>File for EIN (IRS online — same day) <span class="task-tag tag-ops">Legal / Ops</span></li>
+                <li>Register business name / DBA if operating under brand name <span class="task-tag tag-ops">Legal / Ops</span></li>
+                <li>Open business credit card (separate from personal) <span class="task-tag tag-ops">Legal / Ops</span></li>
+                <li>Engage attorney: BAA, DPA, MSA, AUP template review <span class="task-tag tag-founder">Founder</span></li>
+                <li>Obtain cyber liability E&amp;O insurance ($1M minimum) <span class="task-tag tag-ops">Legal / Ops</span></li>
+                <li>Set up Stripe / payment processor for recurring billing <span class="task-tag tag-ops">Legal / Ops</span></li>
+                <li>Configure simple CRM (HubSpot free tier or Notion) <span class="task-tag tag-ops">Legal / Ops</span></li>
+              </ul>
+            </div>
+          </div>
+          <div>
+            <ul class="timeline-tasks">
+              <li>Build and launch website: homepage + 3 pricing tiers + law firm landing page <span class="task-tag tag-mktg">Marketing</span></li>
+              <li>Register domain, configure Google Workspace, set up email <span class="task-tag tag-ops">Legal / Ops</span></li>
+              <li>Deploy Law Brief free tool (intake / case chronology generator) <span class="task-tag tag-mktg">Marketing</span></li>
+              <li>Create LinkedIn company page + founder profile optimization <span class="task-tag tag-mktg">Marketing</span></li>
+              <li>Define 30 target law firms via Florida Bar directory <span class="task-tag tag-founder">Founder</span></li>
+              <li>Write and review outreach messaging (Heppner angle) <span class="task-tag tag-founder">Founder</span></li>
+              <li>Create discovery call framework + proposal template <span class="task-tag tag-founder">Founder</span></li>
+              <li>ISP business tier upgrade (if residential GPU node planned) <span class="task-tag tag-infra">Infrastructure</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 1: Days 1–30 -->
+    <div class="phase-section">
+      <div class="phase-header">
+        <span class="phase-badge" style="background:var(--navy-light);color:var(--navy-mid);">Phase 1</span>
+        <span class="phase-title-main">Foundation &amp; First Outreach</span>
+        <span class="phase-sub">Days 15–30</span>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="card-title" style="margin-bottom:1rem;font-size:10px;">Execution tasks</div>
+          <div class="timeline-item">
+            <div class="timeline-left">
+              <div class="timeline-dot" style="background:var(--navy-light);color:var(--navy-mid);border-color:var(--navy-mid);">1</div>
+              <div class="timeline-line"></div>
+            </div>
+            <div class="timeline-content">
+              <div class="timeline-phase">Sales &amp; Marketing</div>
+              <ul class="timeline-tasks">
+                <li>Launch 30-contact law firm cold outreach (Heppner angle) <span class="task-tag tag-founder">Founder</span></li>
+                <li>Join 2 South Florida bar association networks <span class="task-tag tag-founder">Founder</span></li>
+                <li>Publish 2 LinkedIn posts: Heppner ruling implications for SMB law <span class="task-tag tag-mktg">Marketing</span></li>
+                <li>Activate Google Business profile + local SEO setup <span class="task-tag tag-mktg">Marketing</span></li>
+                <li>Define marketing strategy: SEO vs. LinkedIn vs. referral vs. direct <span class="task-tag tag-founder">Founder</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card-title" style="margin-bottom:1rem;font-size:10px;">Founder hrs &amp; gates</div>
+          <div class="founder-hours">
+            <div class="fh-item"><div class="fh-label">Founder hrs/wk</div><div class="fh-val">40–45</div><div class="fh-sub">Sales + setup</div></div>
+            <div class="fh-item"><div class="fh-label">Contractors</div><div class="fh-val">None</div><div class="fh-sub">Founder-only</div></div>
+          </div>
+          <div class="gate-item" style="margin-top:10px;"><div class="gate-num">G0</div><div class="gate-body"><div class="gate-title">All legal &amp; ops complete</div><div class="gate-desc">LLC, bank, insurance, BAA templates all in place before first regulated client conversation.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 2: Days 31–60 -->
+    <div class="phase-section">
+      <div class="phase-header">
+        <span class="phase-badge" style="background:var(--gold-light);color:var(--gold);">Phase 2</span>
+        <span class="phase-title-main">First Clients</span>
+        <span class="phase-sub">Days 31–60</span>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="timeline-item">
+            <div class="timeline-left">
+              <div class="timeline-dot" style="background:var(--gold-light);color:var(--gold);border-color:var(--gold);">2</div>
+              <div class="timeline-line"></div>
+            </div>
+            <div class="timeline-content">
+              <ul class="timeline-tasks">
+                <li>Run 8–12 discovery calls (law + dental) <span class="task-tag tag-founder">Founder</span></li>
+                <li>Deliver 3+ same-day retainer proposals after each call <span class="task-tag tag-founder">Founder</span></li>
+                <li>Close 2 onboarding clients — sign contract, collect 50% deposit <span class="task-tag tag-founder">Founder</span></li>
+                <li>Deliver first onboarding; document every step as playbook v0 <span class="task-tag tag-founder">Founder</span></li>
+                <li>Dental Brief free tool live (recall campaign generator) <span class="task-tag tag-mktg">Marketing</span></li>
+                <li>Begin dental outreach using recall automation angle <span class="task-tag tag-mktg">Marketing</span></li>
+                <li>LinkedIn content: 2 posts/wk on law firm AI risk + workflow wins <span class="task-tag tag-mktg">Marketing</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="founder-hours">
+            <div class="fh-item"><div class="fh-label">Founder hrs/wk</div><div class="fh-val">45–55</div><div class="fh-sub">Sales + delivery</div></div>
+            <div class="fh-item"><div class="fh-label">Contractor</div><div class="fh-val">Optional</div><div class="fh-sub">+10 hrs overflow</div></div>
+          </div>
+          <div class="gate-item" style="margin-top:10px;"><div class="gate-num">G1</div><div class="gate-body"><div class="gate-title">First paying client</div><div class="gate-desc">0 paying clients by Day 60 → stop and revisit ICP + positioning before spending more on outreach.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 3: Days 61–90 -->
+    <div class="phase-section">
+      <div class="phase-header">
+        <span class="phase-badge" style="background:var(--teal-light);color:var(--teal);">Phase 3</span>
+        <span class="phase-title-main">Retainer Conversion + Infrastructure Decision</span>
+        <span class="phase-sub">Days 61–90</span>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="timeline-item">
+            <div class="timeline-left">
+              <div class="timeline-dot" style="background:var(--teal-light);color:var(--teal);border-color:var(--teal);">3</div>
+              <div class="timeline-line"></div>
+            </div>
+            <div class="timeline-content">
+              <ul class="timeline-tasks">
+                <li>Convert onboarding clients to retainer; invoice Month 1 <span class="task-tag tag-founder">Founder</span></li>
+                <li>Deliver first monthly report to each retainer client <span class="task-tag tag-ops">Ops</span></li>
+                <li>Infrastructure decision: private endpoint demand confirmed? <span class="task-tag tag-infra">Infrastructure</span></li>
+                <li>If yes → order hardware, upgrade ISP, install circuit <span class="task-tag tag-infra">Infrastructure</span></li>
+                <li>Document law firm onboarding playbook v1 (full SOP) <span class="task-tag tag-ops">Ops</span></li>
+                <li>Secure case study rights from first client <span class="task-tag tag-founder">Founder</span></li>
+                <li>Begin contractor vetting for delivery support role <span class="task-tag tag-hire">Hire</span></li>
+                <li>Deploy Property Brief free tool <span class="task-tag tag-mktg">Marketing</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="founder-hours">
+            <div class="fh-item"><div class="fh-label">Founder hrs/wk</div><div class="fh-val">45–55</div><div class="fh-sub">Delivery + sales</div></div>
+            <div class="fh-item"><div class="fh-label">Contractor</div><div class="fh-val">10–20hrs</div><div class="fh-sub">Delivery support</div></div>
+          </div>
+          <div class="gate-item" style="margin-top:10px;"><div class="gate-num">G2</div><div class="gate-body"><div class="gate-title">Hardware deployment</div><div class="gate-desc">2+ infrastructure clients signed, ISP upgraded, circuit installed, LLC formed, BAA ready.</div></div></div>
+          <div class="gate-item"><div class="gate-num">G3</div><div class="gate-body"><div class="gate-title">Dental vertical activation</div><div class="gate-desc">Law playbook documented, 2+ law retainers paying, founder bandwidth confirmed.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 4: Mo 3–6 -->
+    <div class="phase-section">
+      <div class="phase-header">
+        <span class="phase-badge" style="background:var(--amber-light);color:var(--amber);">Phase 4</span>
+        <span class="phase-title-main">Vertical Expansion + Infrastructure Live</span>
+        <span class="phase-sub">Months 3–6</span>
+      </div>
+      <div class="two-col">
+        <div>
+          <ul class="timeline-tasks">
+            <li>Activate dental vertical: 30-contact outreach, recall demo <span class="task-tag tag-mktg">Marketing</span></li>
+            <li>Private GPU node live (if G2 gate met): first private endpoint client <span class="task-tag tag-infra">Infrastructure</span></li>
+            <li>Hire or contract vertical lead — law (if All-In scenario) <span class="task-tag tag-hire">Hire</span></li>
+            <li>Deliver monthly reports to all retainer clients; tune workflows <span class="task-tag tag-ops">Ops</span></li>
+            <li>Refine law firm playbook v2 based on 2+ real deployments <span class="task-tag tag-ops">Ops</span></li>
+            <li>Close 2–4 additional retainer clients (law + dental) <span class="task-tag tag-founder">Founder</span></li>
+            <li>Begin building prompt library and reusable SOP library <span class="task-tag tag-ops">Ops</span></li>
+            <li>Upsell private endpoint to qualified existing retainer clients <span class="task-tag tag-founder">Founder</span></li>
+            <li>Case study published; begin referral outreach from happy clients <span class="task-tag tag-mktg">Marketing</span></li>
+          </ul>
+        </div>
+        <div>
+          <div class="founder-hours">
+            <div class="fh-item"><div class="fh-label">Founder hrs/wk</div><div class="fh-val">45–55</div><div class="fh-sub">Strategy + sales</div></div>
+            <div class="fh-item"><div class="fh-label">Delivery</div><div class="fh-val">15–25</div><div class="fh-sub">Contractor hrs</div></div>
+          </div>
+          <div class="gate-item" style="margin-top:10px;"><div class="gate-num">G4</div><div class="gate-body"><div class="gate-title">Delivery support hire</div><div class="gate-desc">3–4 retainer clients active, monthly support hours exceeding 40+ hrs/wk for founder.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 5: Mo 6–12 -->
+    <div class="phase-section">
+      <div class="phase-header">
+        <span class="phase-badge" style="background:var(--red-light);color:var(--red);">Phase 5</span>
+        <span class="phase-title-main">Playbook Expansion + Platform Foundation</span>
+        <span class="phase-sub">Months 6–12</span>
+      </div>
+      <div class="two-col">
+        <div>
+          <ul class="timeline-tasks">
+            <li>Property management vertical activation (if G4 + G5 met) <span class="task-tag tag-mktg">Marketing</span></li>
+            <li>FT delivery hire (Mo 9 target) — transition recurring delivery ops <span class="task-tag tag-hire">Hire</span></li>
+            <li>Expand GPU infrastructure if utilization &gt; 70% (evaluate colocation) <span class="task-tag tag-infra">Infrastructure</span></li>
+            <li>Build internal client reporting dashboard (Notion or custom) <span class="task-tag tag-ops">Ops</span></li>
+            <li>Standardize onboarding playbooks: law v3, dental v2 <span class="task-tag tag-ops">Ops</span></li>
+            <li>Begin referral partner program: CPAs, attorneys, practice consultants <span class="task-tag tag-mktg">Marketing</span></li>
+            <li>Target: 15–20 active retainer clients by Mo 12 (Low &amp; Slow) <span class="task-tag tag-founder">Founder</span></li>
+            <li>Target: 30–40 active retainer clients by Mo 12 (All-In) <span class="task-tag tag-founder">Founder</span></li>
+          </ul>
+        </div>
+        <div>
+          <div class="founder-hours">
+            <div class="fh-item"><div class="fh-label">Founder hrs/wk</div><div class="fh-val">40–50</div><div class="fh-sub">Strategy + sales</div></div>
+            <div class="fh-item"><div class="fh-label">Team hrs/wk</div><div class="fh-val">40–60</div><div class="fh-sub">Delivery team</div></div>
+          </div>
+          <div class="gate-item" style="margin-top:10px;"><div class="gate-num">G5</div><div class="gate-body"><div class="gate-title">Third vertical</div><div class="gate-desc">Law + dental playbooks documented, MRR &gt; $10K, vertical lead available.</div></div></div>
+          <div class="gate-item"><div class="gate-num">G6</div><div class="gate-body"><div class="gate-title">Colocation migration</div><div class="gate-desc">5+ infra clients, $5K+/mo infra MRR, residential power ceiling approached.</div></div></div>
+          <div class="gate-item"><div class="gate-num">G7</div><div class="gate-body"><div class="gate-title">Platform development</div><div class="gate-desc">10+ retainer clients, 2+ vertical playbooks done, combined MRR &gt; $25K.</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ POSITIONING ═══════════════════════ -->
+  <div class="section" id="tab-positioning">
+    <div class="card">
+      <div class="card-title">Recommended positioning</div>
+      <div style="background:var(--bg2);border-radius:var(--radius);padding:16px;margin-bottom:1rem;">
+        <div style="font-size:15px;font-weight:500;line-height:1.6;margin-bottom:8px;font-family:'Playfair Display',serif;">"Private AI Ops builds and operates private AI workflows for SMBs that need automation without exposing sensitive business data to public AI platforms."</div>
+        <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;">Core one-sentence positioning</div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="pos-tbl">
+          <thead><tr><th>Format</th><th>Language</th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:600;">Homepage headline</td><td>AI that works for your business — without exposing your clients' data.</td></tr>
+            <tr><td style="font-weight:600;">Subheadline</td><td>We configure, manage, and continuously improve AI-powered workflows for law firms, dental practices, and property managers — with private infrastructure when confidentiality matters.</td></tr>
+            <tr><td style="font-weight:600;">Buyer-facing (law)</td><td>After Heppner, sending client documents to public AI platforms creates real privilege risk. We run your workflows on private infrastructure with a signed DPA — your data never reaches a public AI server.</td></tr>
+            <tr><td style="font-weight:600;">Buyer-facing (dental)</td><td>Your front desk shouldn't spend 8 hrs/week on recall calls. We automate those workflows and keep patient data out of public AI tools — HIPAA-sensitive by design.</td></tr>
+            <tr><td style="font-weight:600;">Investor-facing</td><td>A managed AI operations firm serving privacy-sensitive SMBs. Recurring retainer revenue. Vertical depth as moat. Private infrastructure as premium capability. 12–18 month window before large MSPs enter.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Say this</div>
+        <div class="row-item"><span class="say">· "Managed AI operations"</span></div>
+        <div class="row-item"><span class="say">· "Zero-retention architecture"</span></div>
+        <div class="row-item"><span class="say">· "HIPAA-ready" / "BAA-supported"</span></div>
+        <div class="row-item"><span class="say">· "Private AI endpoint"</span></div>
+        <div class="row-item"><span class="say">· "Audit-friendly operating model"</span></div>
+        <div class="row-item"><span class="say">· "Human-reviewed workflows"</span></div>
+        <div class="row-item"><span class="say">· "Designed for privacy-sensitive workflows"</span></div>
+        <div class="row-item"><span class="say">· "We operate it — not just recommend it"</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Never say this</div>
+        <div class="row-item"><span class="avoid">✗ "Fully HIPAA compliant"</span></div>
+        <div class="row-item"><span class="avoid">✗ "Guarantees privilege protection"</span></div>
+        <div class="row-item"><span class="avoid">✗ "Safe harbor"</span></div>
+        <div class="row-item"><span class="avoid">✗ "We sell GPU compute"</span></div>
+        <div class="row-item"><span class="avoid">✗ "Residential GPU hosting business"</span></div>
+        <div class="row-item"><span class="avoid">✗ "Revolutionary AI platform"</span></div>
+        <div class="row-item"><span class="avoid">✗ "Fully compliant" (without legal review)</span></div>
+        <div class="row-item"><span class="avoid">✗ "Eliminates all legal risk"</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ RISK REGISTER ═══════════════════════ -->
+  <div class="section" id="tab-risks">
+    <div class="card">
+      <div class="card-title">Risk register</div>
+      <div class="risk-item" style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;font-family:'DM Mono',monospace;"><span>Risk</span><span>Likelihood</span><span>Impact</span></div>
+      <div class="risk-item"><span><span class="dot dot-red"></span>Fuzzy positioning — GPU hosting + AI agency + SaaS</span><span><span class="badge badge-red">High</span></span><span><span class="badge badge-red">High</span></span></div>
+      <div class="risk-item"><span><span class="dot dot-red"></span>Premature hardware spend before paid demand</span><span><span class="badge badge-gold">Medium</span></span><span><span class="badge badge-red">High</span></span></div>
+      <div class="risk-item"><span><span class="dot dot-red"></span>Compliance overclaiming — "HIPAA compliant" sans legal review</span><span><span class="badge badge-gold">Medium</span></span><span><span class="badge badge-red">Very High</span></span></div>
+      <div class="risk-item"><span><span class="dot dot-red"></span>Too many verticals — founder bandwidth collapse</span><span><span class="badge badge-red">High</span></span><span><span class="badge badge-red">High</span></span></div>
+      <div class="risk-item"><span><span class="dot dot-amber"></span>Failure to convert free-tool users to retainers</span><span><span class="badge badge-gold">Medium</span></span><span><span class="badge badge-red">High</span></span></div>
+      <div class="risk-item"><span><span class="dot dot-amber"></span>Residential infrastructure trust gap</span><span><span class="badge badge-gold">Medium</span></span><span><span class="badge badge-gold">Medium</span></span></div>
+      <div class="risk-item"><span><span class="dot dot-amber"></span>Long sales cycles with law firms</span><span><span class="badge badge-gold">Medium</span></span><span><span class="badge badge-gold">Medium</span></span></div>
+      <div class="risk-item"><span><span class="dot dot-amber"></span>Founder burnout in All-In scenario (55–65 hrs/wk)</span><span><span class="badge badge-gold">Medium</span></span><span><span class="badge badge-red">High</span></span></div>
+      <div class="risk-item"><span><span class="dot dot-green"></span>Client data security incident</span><span><span class="badge badge-teal">Low (with controls)</span></span><span><span class="badge badge-red">Very High</span></span></div>
+      <div class="risk-item"><span><span class="dot dot-green"></span>GPU market price compression</span><span><span class="badge badge-teal">Low through 2027</span></span><span><span class="badge badge-gold">Medium</span></span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Legal / compliance — required before first regulated client</div>
+      <div class="row-item"><span class="row-label">LLC formation (Florida) + registered agent</span><span class="badge badge-red">Before first client</span></div>
+      <div class="row-item"><span class="row-label">Attorney review: BAA, DPA, MSA, AUP templates</span><span class="badge badge-red">Before regulated client</span></div>
+      <div class="row-item"><span class="row-label">Cyber liability E&amp;O insurance ($1M limit)</span><span class="badge badge-red">Before system access</span></div>
+      <div class="row-item"><span class="row-label">Written AI usage scope definition in MSA</span><span class="badge badge-gold">In contract</span></div>
+      <div class="row-item"><span class="row-label">Breach notification SOP (24-hr client, 72-hr regulatory)</span><span class="badge badge-gold">Before go-live</span></div>
+      <div class="row-item"><span class="row-label">Hardware pre-conditions (ISP business tier, circuit, insurance)</span><span class="badge badge-teal">Before hardware ships</span></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// Tab switching
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('visible');
+  btn.classList.add('active');
+}
+
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
+const tickColor = isDark ? '#888' : '#777';
+const FONT = "'DM Mono', monospace";
+
+const baseScaleOpts = {
+  grid: { color: gridColor },
+  ticks: { color: tickColor, font: { size: 10, family: FONT } }
+};
+
+// ── Overview: 3-year bar chart
+new Chart(document.getElementById('revChart'), {
+  type: 'bar',
+  data: {
+    labels: ['FY 2026','FY 2027','FY 2028'],
+    datasets: [
+      { label: 'Revenue', data: [602,1413,2375], backgroundColor: '#0d2340', borderRadius: 4 },
+      { label: 'EBITDA',  data: [433,1178,2012], backgroundColor: '#0d6b5e', borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ...baseScaleOpts, ticks: { ...baseScaleOpts.ticks, maxRotation: 0 } },
+      y: { ...baseScaleOpts, ticks: { ...baseScaleOpts.ticks, callback: v => '$' + v + 'K' } }
+    }
+  }
+});
+
+// ── Overview: doughnut mix chart
+new Chart(document.getElementById('mixChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Onboarding','Retainer MRR','GPU add-on','Pro SaaS'],
+    datasets: [{ data: [36,51,7,5], backgroundColor: ['#0d2340','#0d6b5e','#b8860b','#8b1a1a'], borderWidth: 0 }]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '65%' }
+});
+
+// ── MRR & Client data: three scenarios
+const months = Array.from({length:18},(_,i)=>i+1);
+
+const mrrBase  = [7022,12031,16892,21611,26191,30636,34951,39139,43205,47152,50983,54702,60844,66804,72589,78203,83652,88940];
+const mrrSlow  = [2000,4000,6200,8000,9800,11400,13000,14500,16000,17500,19000,20500,22000,23500,25000,26500,28000,29500];
+const mrrAllin = [10000,20000,33000,44000,55000,66000,77000,87000,96000,104000,111000,118000,132000,145000,157000,168000,178000,188000];
+
+const cliBase  = [3,5.9,8.7,11.5,14.1,16.7,19.2,21.6,24.0,26.3,28.5,30.6,34.2,37.7,41.0,44.3,47.5,50.6];
+const cliSlow  = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18];
+const cliAllin = [4,9,15,21,28,35,42,49,56,62,67,72,81,89,96,103,109,114];
+
+let currentFinView = 'base';
+
+const finMetrics = {
+  base:  { mo6:'$30.6K', mo12:'$54.7K', y1:'$602K',   ebitda:'$433K',  clients:'~31' },
+  slow:  { mo6:'~$11K',  mo12:'~$20K',  y1:'~$170K',  ebitda:'~$130K', clients:'12' },
+  allin: { mo6:'~$66K',  mo12:'~$118K', y1:'~$950K',  ebitda:'~$560K', clients:'72' }
+};
+
+function setFinView(key) {
+  currentFinView = key;
+  ['base','slow','allin'].forEach(k => {
+    document.getElementById('fin-'+k+'-btn').classList.toggle('active', k === key);
+  });
+  const m = finMetrics[key];
+  document.getElementById('fin-metrics').innerHTML = `
+    <div class="metric"><div class="metric-label">Mo 6 MRR</div><div class="metric-val">${m.mo6}</div></div>
+    <div class="metric"><div class="metric-label">Mo 12 MRR</div><div class="metric-val">${m.mo12}</div></div>
+    <div class="metric"><div class="metric-label">Y1 Revenue</div><div class="metric-val">${m.y1}</div></div>
+    <div class="metric"><div class="metric-label">Y1 EBITDA</div><div class="metric-val metric-up">${m.ebitda}</div></div>
+    <div class="metric"><div class="metric-label">Clients Mo 12</div><div class="metric-val">${m.clients}</div></div>`;
+
+  const mrrData = { base: mrrBase, slow: mrrSlow, allin: mrrAllin }[key];
+  const cliData = { base: cliBase, slow: cliSlow, allin: cliAllin }[key];
+  const color   = { base: '#0d2340', slow: '#0d6b5e', allin: '#b8860b' }[key];
+  const bgAlpha = { base: '0.08', slow: '0.08', allin: '0.08' }[key];
+
+  mrrChart.data.datasets[0].data = mrrData;
+  mrrChart.data.datasets[0].borderColor = color;
+  mrrChart.data.datasets[0].backgroundColor = color.replace(')', `,${bgAlpha})`).replace('rgb','rgba');
+  mrrChart.update();
+
+  clientChart.data.datasets[0].data = cliData.map(v => +v.toFixed(1));
+  clientChart.data.datasets[0].borderColor = color;
+  clientChart.data.datasets[0].backgroundColor = color.replace(')', `,${bgAlpha})`).replace('rgb','rgba');
+  clientChart.update();
+}
+
+// ── Financials: MRR chart (6-month label step to avoid congestion)
+const mrrLabels = months.map(m => m % 3 === 1 ? 'Mo '+m : '');
+
+const mrrChart = new Chart(document.getElementById('mrrChart'), {
+  type: 'line',
+  data: {
+    labels: months.map(m => 'Mo '+m),
+    datasets: [{ label: 'Net MRR', data: mrrBase, borderColor: '#0d2340', backgroundColor: 'rgba(13,35,64,0.08)', fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2 }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: {
+        ...baseScaleOpts,
+        ticks: {
+          ...baseScaleOpts.ticks,
+          maxRotation: 0,
+          autoSkip: false,
+          callback: function(val, idx) { return (idx % 3 === 0) ? 'Mo '+(idx+1) : ''; }
+        }
+      },
+      y: { ...baseScaleOpts, ticks: { ...baseScaleOpts.ticks, callback: v => '$'+Math.round(v/1000)+'K' } }
+    }
+  }
+});
+
+// ── Financials: Client chart
+const clientChart = new Chart(document.getElementById('clientChart'), {
+  type: 'line',
+  data: {
+    labels: months.map(m => 'Mo '+m),
+    datasets: [{ label: 'Active clients', data: cliBase.map(v => +v.toFixed(1)), borderColor: '#0d6b5e', backgroundColor: 'rgba(13,107,94,0.08)', fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2 }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: {
+        ...baseScaleOpts,
+        ticks: {
+          ...baseScaleOpts.ticks,
+          maxRotation: 0,
+          autoSkip: false,
+          callback: function(val, idx) { return (idx % 3 === 0) ? 'Mo '+(idx+1) : ''; }
+        }
+      },
+      y: { ...baseScaleOpts, ticks: { ...baseScaleOpts.ticks, stepSize: 5 } }
+    }
+  }
+});
+
+setFinView('base');
+
+// ── Scenario comparison chart (three lines)
+new Chart(document.getElementById('scenarioChart'), {
+  type: 'line',
+  data: {
+    labels: months.map(m => 'Mo '+m),
+    datasets: [
+      { label: 'Low & Slow', data: mrrSlow,  borderColor: '#0d6b5e', backgroundColor: 'transparent', tension: 0.35, pointRadius: 0, borderWidth: 2 },
+      { label: 'Base case',  data: mrrBase,  borderColor: '#0d2340', backgroundColor: 'transparent', tension: 0.35, pointRadius: 0, borderWidth: 2 },
+      { label: 'All-In',     data: mrrAllin, borderColor: '#b8860b', backgroundColor: 'transparent', tension: 0.35, pointRadius: 0, borderWidth: 2.5 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: {
+        ...baseScaleOpts,
+        ticks: {
+          ...baseScaleOpts.ticks,
+          maxRotation: 0,
+          autoSkip: false,
+          callback: function(val, idx) { return (idx % 3 === 0) ? 'Mo '+(idx+1) : ''; }
+        }
+      },
+      y: { ...baseScaleOpts, ticks: { ...baseScaleOpts.ticks, callback: v => '$'+Math.round(v/1000)+'K' } }
+    }
+  }
+});
+
+// ── Churn slider
+function updateChurn(v) {
+  document.getElementById('churnVal').textContent = v + '%';
+  const churn = parseFloat(v) / 100;
+  const eq = Math.round(6.3 / churn);
+  const mrr = eq * 1250;
+  document.getElementById('sc3-clients').textContent = eq;
+  document.getElementById('sc3-mrr').textContent = '$' + Math.round(mrr/1000) + 'K';
+  document.getElementById('sc3-ebitda').textContent = '$' + Math.round(mrr * 12 * 0.85 / 1000) + 'K/yr';
+}
+</script>
+</body>
+</html>

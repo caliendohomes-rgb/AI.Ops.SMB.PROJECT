@@ -1,0 +1,614 @@
+PRIVATE AI OPS  |  Unified Business Strategy  |  May 2026  |  CONFIDENTIAL
+
+**PRIVATE AI OPS**
+
+Unified Business Strategy & Operating Plan
+
+ 
+
+*Managed AI Operations · Private AI Infrastructure · Vertical Workflow Automation*
+
+| **Document** | Private AI Ops — Unified Strategy & Business Plan |
+| --- | --- |
+| **Version** | 1.0 — Initial Unified Strategy |
+| **Date** | May 2026 |
+| **Classification** | Confidential — Founder Use Only |
+| **Status** | Working Document — Subject to Revision |
+
+ 
+
+ 
+
+# **1. Executive Summary**
+
+Private AI Ops is a managed AI operations firm. It builds, configures, manages, and continuously improves AI-powered workflows for small and medium-sized businesses that lack the internal technical talent to implement them safely. For privacy-sensitive, regulated, or confidentiality-dependent clients — law firms, dental practices, financial SMBs — it offers optional private AI infrastructure: dedicated GPU inference endpoints, zero-retention architecture, RAG pipelines, HIPAA-ready controls, and client-specific audit logging.
+
+ 
+
+| **STRATEGIC VERDICT** |
+| --- |
+| *Launch as Managed AI Ops Services. Use private AI infrastructure as a premium differentiator, not the headline product. Validate paid workflow demand first; deploy hardware only when pre-sold or when it materially improves close rate. South Florida law firms are the recommended first beachhead.* |
+
+ 
+
+## **Summary Parameters**
+
+| **Parameter** | **Position** |
+| --- | --- |
+| **What the business is** | A managed AI operations firm that builds, manages, and improves AI-powered workflows for privacy-sensitive SMBs. |
+| **Core problem solved** | SMBs lack the staff, systems, and workflow discipline to adopt AI safely. Regulated SMBs cannot use public AI tools for confidential data. |
+| **Who it serves** | Law firms, dental practices, property managers, and financial SMBs — initially in South Florida. |
+| **Why now** | The Heppner ruling (Feb 2026) created an urgent privilege-protection crisis for law firms using public AI. HIPAA exposure from public AI tools is unresolved. The 12–18 month competitive window before large MSPs productize this layer is open. |
+| **GPU infrastructure role** | Premium differentiator and long-term moat — not the initial product. Used as a compliance-packaged private AI capability for clients who cannot use public AI tools. |
+| **Services-first rationale** | Lower CapEx risk. Validates buyer personas and workflows before hardware commitment. Infrastructure is demand-triggered — deployed only when signed contracts exist. |
+| **Launch strategy** | Two verticals simultaneously: law firms (primary) and dental practices (secondary). Founder-led, relationship-driven, local market first. |
+| **90-day revenue target** | 2–3 onboarding clients ($7,000–15,000 setup) converting to $3,000–6,000/month combined retainer MRR. |
+
+ 
+
+## **Primary Risks**
+
+| **Top Risk** | **Mitigation** |
+| --- | --- |
+| Fuzzy positioning — sounds like GPU hosting + AI agency + SaaS | Lead every narrative with managed AI Ops outcomes. Infrastructure is a capability, not the pitch. |
+| Premature hardware spend before paid demand | Hardware is demand-triggered. No purchase before signed retainer contracts justify it. |
+| Compliance overclaiming — creating liability | Use careful language: 'HIPAA-ready,' 'BAA-supported,' 'zero-retention architecture.' Attorney review required before first regulated client. |
+| Too many verticals, too fast | Two verticals max in Year 1. Law first. Dental second. Marine is experimental. |
+| Founder bandwidth bottleneck at 4+ clients | Hire delivery support at Month 3–4 when retainer count reaches 3–4. |
+
+ 
+
+# **2. Unified Business Thesis**
+
+| *SMBs want AI productivity. Most cannot implement AI safely. Regulated SMBs cannot use public AI tools for confidential data. Private AI Ops solves both problems: managed workflow execution with optional private AI infrastructure.* |
+| --- |
+
+ 
+
+## **Why This Model Is Stronger Than Its Components**
+
+| **Model** | **What It Gets Right** | **What It Misses** |
+| --- | --- | --- |
+| **Pure AI consulting** | Deep workflow expertise. High trust. | Does not manage after launch. No recurring revenue. Clients drift. No retention mechanism. |
+| **Generic automation agency** | Broad applicability. | No vertical depth. Cannot credibly demo domain workflows. Commoditized. |
+| **Raw GPU hosting** | Infrastructure credibility. | Commodity pricing. No managed service moat. SMBs do not buy GPU hours. |
+| **Vertical SaaS at launch** | Scalable if market is large enough. | Requires capital, product team, and a market that self-serves. Not the near-term profile. |
+| **Private AI Ops (combined)** | Recurring services revenue. Vertical depth. Infrastructure moat. Trust-based SMB sales. Private compliance capability. | Requires active sales and delivery. Not passive. Scales through people and playbooks before platform. |
+
+ 
+
+## **The Strategic Gap Being Filled**
+
+Anthropic and OpenAI have built powerful general-purpose AI. Enterprise consulting firms have built AI transformation practices for large companies. Neither has built the last-mile layer for SMBs in regulated or operationally complex niches. MSPs manage devices, email, and security — not AI workflows. No firm is showing up at a 6-attorney law firm in Fort Lauderdale and saying: 'We will configure your AI intake workflows, maintain them monthly, and run them on private infrastructure so your client data never reaches a public AI server.'
+
+That gap is the business. The competitive window is 12–18 months before large MSPs productize this layer. Speed to first retainer client in each vertical is the only metric that matters in Year 1.
+
+ 
+
+# **3. Final Positioning**
+
+## **Recommended Positioning**
+
+| *Private AI Ops builds and operates private AI workflows for SMBs that need automation without exposing sensitive business data to public AI platforms.* |
+| --- |
+
+ 
+
+| **Format** | **Recommended Language** |
+| --- | --- |
+| **One-sentence positioning** | Private AI Ops builds and operates private AI workflows for SMBs that need automation without exposing sensitive business data to public AI platforms. |
+| **Homepage headline** | AI That Works for Your Business — Without Exposing Your Clients' Data. |
+| **Subheadline** | We configure, manage, and continuously improve AI-powered workflows for law firms, dental practices, and property managers — with private infrastructure when confidentiality matters. |
+| **Buyer-facing (law firm)** | After the Heppner ruling, sending client documents to public AI platforms creates real privilege risk. We run your AI workflows on private infrastructure with a signed Data Processing Agreement — so your data never leaves your control. |
+| **Buyer-facing (dental)** | Your front desk shouldn't be spending 8 hours a week on recall calls and confirmations. We automate those workflows and keep patient data out of public AI tools — HIPAA-sensitive by design. |
+| **Investor-facing** | A managed AI operations firm serving privacy-sensitive SMBs. Recurring retainer revenue. Vertical depth as competitive moat. Private infrastructure as a premium capability. 12–18 month window before large MSPs enter. |
+
+ 
+
+## **Alternative Positioning Variants**
+
+| **Version** | **Language** |
+| --- | --- |
+| **Variant A** | We run the AI back office for privacy-sensitive SMBs — managed workflows, private infrastructure, and zero data exposure to public AI platforms. |
+| **Variant B** | We help law firms, dental practices, and property managers adopt AI safely by managing the workflows, integrations, prompts, data controls, and private infrastructure for them. |
+| **Variant C** | The managed AI Ops layer your business needs — without the staff, the risk, or the compliance exposure. |
+
+ 
+
+## **What Not to Say**
+
+| **Avoid** | **Say Instead** |
+| --- | --- |
+| We sell GPU compute | We provide private AI infrastructure for SMBs that need confidentiality |
+| We're a residential GPU hosting business | We operate private AI environments for regulated businesses |
+| Fully HIPAA compliant | HIPAA-ready, BAA-supported, designed for privacy-sensitive workflows |
+| Guarantees privilege protection | Designed to reduce third-party data exposure consistent with privilege concerns |
+| Revolutionary AI platform | Managed AI operations for SMBs that lack the staff to implement it themselves |
+
+ 
+
+# **4. Business Model Architecture**
+
+| **Layer** | **Product** | **Purpose** | **Revenue Role** | **When to Invest** |
+| --- | --- | --- | --- | --- |
+| **1** | **Managed AI Operations** | Core service — configure, manage, and improve AI workflows for SMB clients | Primary — onboarding + retainer | Day 1 |
+| **2** | **Private AI Infrastructure** | Premium capability for clients with confidentiality, compliance, or privacy needs | Add-on margin enhancer | Month 4–6, demand-triggered |
+| **3** | **Vertical Free Tools** | Lead magnets and trust builders — one per target vertical | Lead generation, not revenue | Month 1–2, pre-outreach |
+| **4** | **Long-Term Platform** | Client portal, monitoring dashboard, vertical app marketplace, AI Ops control plane | Scalability and LTV expansion | Year 2+, post-playbook validation |
+
+ 
+
+## **Layer 1 — Managed AI Operations (Core Business)**
+
+The company helps SMBs identify AI-ready administrative workflows, automate them, integrate with existing software, train staff, and maintain the operations monthly. The company displaces manual admin labor, fragmented MSP digital ops, and poorly implemented internal AI experiments. The customer is not buying AI — they are buying operational execution and peace of mind.
+
+Revenue is driven by onboarding fees (one-time setup) and managed retainers (recurring monthly). The retainer is the core economic engine.
+
+ 
+
+## **Layer 2 — Private AI Infrastructure (Premium Differentiator)**
+
+For clients with attorney-client privilege concerns, HIPAA-sensitive workflows, or confidential business data, Private AI Ops can deploy dedicated GPU inference endpoints, RAG pipelines, zero-retention architecture, per-client access controls, and audit-friendly logging. This infrastructure is not sold as commodity compute — it is sold as a managed private AI operating environment.
+
+The residential GPU hosting PoC validates the technical architecture. Infrastructure should be deployed only when client demand justifies it, either because signed contracts pre-sell the capacity or because private infrastructure demonstrably improves close rates and gross margin.
+
+ 
+
+## **Layer 3 — Vertical Free Tools (Distribution)**
+
+Each vertical receives a purpose-built free tool that solves one narrow, high-visibility pain point. These tools collect qualified lead data, demonstrate domain knowledge, and route high-intent prospects into discovery calls. They are not the product — they are distribution mechanisms.
+
+ 
+
+## **Layer 4 — Long-Term Platform (Year 2+)**
+
+After services create repeatable patterns, the company can develop a managed AI control plane, client-facing portal, workflow monitoring, vertical app marketplace, and reusable SOP libraries. This is a Year 2 initiative. Do not build it before services create the pattern it should encode.
+
+ 
+
+# **5. Product ****&**** Service Offering**
+
+| **Product** | **Price** | **Description** |
+| --- | --- | --- |
+| **AI Ops Assessment** | $500–2,500 | Workflow discovery, pain mapping, tool inventory, AI Ops roadmap. Waivable when client signs onboarding immediately. |
+| **Managed AI Onboarding (Standard)** | $3,500–10,000 | Full workflow implementation for small SMBs: discovery, process mapping, prompt architecture, tool configuration, integrations, staff training, first workflow launch. |
+| **Managed AI Onboarding (Regulated)** | $10,000–25,000 | More complex or privacy-sensitive clients. Includes security configuration, BAA/DPA template review, compliance documentation, deeper workflow scope. |
+| **Managed AI Retainer (Standard)** | $1,500–3,000/mo | Ongoing workflow maintenance, prompt tuning, monitoring, monthly reporting, staff support, new workflow rollouts, AI governance updates. |
+| **Managed AI Retainer (Regulated/Multi-location)** | $3,000–7,500/mo | Multi-location or regulated clients. Includes heavier integration management, compliance reporting, and expanded workflow scope. |
+| **Private AI Infrastructure — Endpoint** | $650–850/mo | Dedicated private LLM endpoint, TLS encryption, zero-retention architecture, DPA included. HIPAA-ready tier adds BAA and audit logging. |
+| **Private AI Infrastructure — RAG** | $1,400–2,200/mo | Dual GPU, private LLM + RAG pipeline, client document ingestion, vector search, full compliance documentation. |
+| **Vertical Free Tools** | $0 | Law Brief, Dental Brief, Property Brief, Charter Brief. One narrow workflow per vertical. Unlimited generations. No upgrade pressure. |
+| **Pro Tier (Vertical Apps)** | $49–199/mo | Full automation for the vertical's primary workflow (FareHarbor sync, recall automation, bulk renewal generation). Purpose: filter highest-intent leads. Not a revenue target. |
+| **Add-Ons** | Varies | HIPAA compliance attestation letter ($150 one-time), fine-tuning sprint ($750–1,500/project), emergency SLA upgrade ($100/mo), developer retainer seat ($199/mo). |
+
+ 
+
+## **Pro Tier: Should It Exist?**
+
+Yes — with one critical constraint. The Pro tier exists to filter highest-intent operators, not to generate primary revenue. It should never be the main pitch. When a prospect signs up for Pro, that is a behavioral signal that they will pay for a solution. That signal triggers personal outreach within 48 hours for a discovery call. The Pro subscription is the qualification mechanism — not the product.
+
+ 
+
+# **6. Target Market ****&**** Vertical Prioritization**
+
+| **Vertical** | **Priority** | **Market Size** | **Pain Density** | **Privacy Sensitivity** | **Sales Cycle** | **Willingness to Pay** |
+| --- | --- | --- | --- | --- | --- | --- |
+| **Law Firms** | **1st — Primary** | ~180,000 US firms | Very High | Very High — Heppner + privilege | 4–6 weeks | High |
+| **Dental / Healthcare** | **2nd — Secondary** | ~100,000 practices | High | High — HIPAA | 3–5 weeks | High |
+| **Property Management** | 3rd — Tertiary | ~20,000 firms | Medium-High | Medium | 3–5 weeks | Medium-High |
+| **Financial / Insurance / Mortgage** | 4th — Later | ~50,000 firms | High | Very High — GLBA | 6–10 weeks | High, slower |
+| **Marine / Charter** | Experimental | ~5,000 operators | Medium | Low | 2–3 weeks | Lower retainer potential |
+
+ 
+
+## **Law Firms — Detailed Analysis**
+
+Law firms are the strongest beachhead for the combined strategy. The Heppner ruling (S.D.N.Y., February 2026) found that attorney-client privilege was waived when documents were created using publicly available AI platforms because data was voluntarily disclosed to a third-party server. This is an urgent, real, and legally actionable pain point — not a theoretical risk.
+
+| **Dimension** | **Detail** |
+| --- | --- |
+| **Primary buyer** | Managing partner or practice administrator at a 3–15 attorney firm |
+| **Core pain** | Privilege exposure from public AI. High volume of repetitive document work. Admin burden on attorneys doing non-billable tasks. |
+| **Automatable workflows** | Client intake summaries, discovery document organization, deposition prep summaries, demand letter drafts, case chronology, billing narrative cleanup, research memos, matter status summaries, document comparison, deadline extraction. |
+| **Sales angle** | Lead with Heppner. Frame private endpoint + DPA as privilege preservation. Price as half of OpenAI Enterprise that still exposes their data. |
+| **Objection — trust** | Founder-led local relationship selling. Bar association involvement. Case study from first client. |
+| **Retention driver** | After 90 days, the firm's intake SOP, billing templates, and research workflows are built around the Private AI Ops system. Switching cost is very high. |
+
+ 
+
+## **Marine / Charter — Special Assessment**
+
+Charter Brief is a proven product concept and a useful community distribution asset. However, marine charter operators are a weaker beachhead for managed AI retainer business. The market is small (~5,000 operators), privacy sensitivity is low (no regulatory urgency), willingness to pay for a $1,500/month retainer is lower, and the FareHarbor automation workflow, while compelling, is narrower than the law or dental use cases. Recommendation: Keep Charter Brief as a free distribution tool and community asset. Do not hire a dedicated marine vertical lead in Year 1. If marine operators convert to retainer at better-than-expected rates, evaluate a Part-Time marine lead in Year 2.
+
+ 
+
+# **7. Recommended Beachhead Market**
+
+| *First beachhead: Small law firms in South Florida (3–12 attorneys). Second vertical: Dental practices (owner-operated, 1–3 chair). Marine is experimental distribution, not a beachhead.* |
+| --- |
+
+ 
+
+## **Law Firm ICP — Ideal Client Profile**
+
+| **Dimension** | **Description** |
+| --- | --- |
+| **Firm size** | 3–12 attorneys |
+| **Geography** | Broward, Miami-Dade, Palm Beach counties (within founder's local relationship network) |
+| **Practice areas** | Personal injury, family law, estate planning, business law, real estate, immigration — document-heavy, admin-intensive practices |
+| **Current AI usage** | Using public tools informally (ChatGPT, consumer Claude) with no data controls — maximum privilege exposure |
+| **Tech comfort** | Moderate. Uses Clio, MyCase, or PracticePanther. Has email and document management. Does not have IT staff. |
+| **Decision maker** | Managing partner or office administrator. Conservative. Relationship-driven. Peer referrals carry significant weight. |
+| **Trigger event** | Awareness of Heppner ruling. Peer firm disclosed data issue. State bar guidance on AI usage. New hire asking about AI tools. |
+
+ 
+
+## **Top 10 Workflows to Automate for Law Firms**
+
+| **Workflow** | **Pain Level** | **Automation Feasibility** | **Retainer Value Driver** |
+| --- | --- | --- | --- |
+| Client intake summary generation | Very High | High | Saves 30–60 min per new client |
+| Billing narrative cleanup and generation | Very High | High | Saves 2–5 hr/week per attorney |
+| Demand letter first drafts | High | High | Eliminates blank-page time |
+| Matter status summaries | High | High | Client communication consistency |
+| Case chronology generation from documents | High | Medium-High | Discovery prep time reduction |
+| Research memo drafts | High | Medium | Associates focus on higher-value work |
+| Document comparison and red-lining summary | Medium-High | High | Contract review speed |
+| Deadline and task extraction from documents | Medium-High | High | Malpractice risk reduction |
+| Deposition prep question generation | Medium | Medium | Preparation consistency |
+| Client communication drafts | Medium | High | Response time improvement |
+
+ 
+
+## **First Offer to Law Firm**
+
+| **Component** | **Detail** |
+| --- | --- |
+| **Entry product** | AI Ops Assessment — $1,500. Identify the 3 highest-value workflows. Produce a 1-page AI Ops roadmap. Waivable if they sign onboarding same week. |
+| **Onboarding** | $5,000–8,000 — configure intake, billing narrative, and matter summary workflows. Include private endpoint setup if client has privilege concerns. BAA/DPA executed. |
+| **Retainer** | $2,000–3,000/month — maintain and expand workflows, monthly usage report, prompt tuning, staff support. |
+| **Infrastructure add-on** | $850/month — private endpoint, zero-retention architecture, signed DPA, audit log package. Position as privilege-preservation infrastructure. |
+| **Demo concept** | Open a real intake email from the attorney. Run it through a private intake summary workflow live. Show the output in 30 seconds. Ask: 'How long does this take your paralegal today?' |
+
+ 
+
+# **8. Go-To-Market Strategy**
+
+## **Phase Structure**
+
+| **Phase** | **Timing** | **Focus** | **Goal** |
+| --- | --- | --- | --- |
+| **Phase 1** | Weeks 1–4 | Positioning, offer, landing page, prospect list, outreach, demo, free tools live | 30 targeted prospects contacted, 10 discovery calls booked |
+| **Phase 2** | Weeks 5–8 | Discovery calls, first paid pilots, onboarding process, workflow playbooks, first retainer proposal | 2–3 onboarding clients signed, retainer proposals delivered |
+| **Phase 3** | Weeks 9–12 | Retainer conversion, first case studies, infrastructure decision, sales refinement, playbook documentation | $3,000–6,000/mo combined MRR live |
+| **Phase 4** | Months 4–6 | Scale playbooks, add dental lead, evaluate infrastructure deployment, second vertical outreach | 5–7 retainer clients, infrastructure upsell active |
+
+ 
+
+## **First 30 Prospects — Law Firm Outreach**
+
+| **Source** | **Method** |
+| --- | --- |
+| Florida Bar directory | Filter by Broward and Miami-Dade, 3–12 attorneys, practice areas: PI, family, estate, business, immigration. Build list of 20 firms. |
+| Personal network | Identify 5–10 attorneys in personal or professional network. These are easiest first calls. |
+| Local bar association | Attend one Broward or Miami-Dade bar association event. Introduce self as AI Ops for law firms. |
+| LinkedIn | Search managing partners at boutique South Florida law firms. Connect with personalized Heppner-angle message. |
+
+ 
+
+## **Outreach Message — Law Firm (Email)**
+
+| *Subject: The Heppner ruling and your firm**'**s AI usage  Hi [Name],  A federal judge ruled in February that using publicly available AI platforms can waive attorney-client privilege because data is disclosed to a third-party server. If your firm is using ChatGPT or consumer-grade AI tools for client work, you have exposure.  I help law firms in South Florida implement AI workflows on private infrastructure — your data never reaches a public AI server. Clients are automating intake summaries, billing narratives, and matter status updates at a fraction of their current time investment.  Worth 20 minutes to see if it applies to your practice?  [Name]* |
+| --- |
+
+ 
+
+## **Discovery Call Script**
+
+| **Step** | **Action** |
+| --- | --- |
+| **Open** | Run a live demo: take a real intake email or document they hand you and run it through a private workflow. Let them react before explaining anything. |
+| **Pain inventory** | 'Walk me through a typical week for your paralegals and admins. What takes the most time that feels like it shouldn't require a lawyer or a paralegal?' |
+| **Map and quantify** | List every workflow named. Estimate hours per week. Multiply by paralegal rate ($25–40/hr) or attorney rate if they're doing it themselves. Show them the monthly dollar figure before presenting any solution. |
+| **Introduce concept** | 'We configure and manage AI workflows for law firms — and for firms with confidentiality concerns, we run them on private infrastructure with a signed Data Processing Agreement. Our clients typically recover our fee within 60 days in paralegal time alone.' |
+| **Scope on call** | Name which workflows, which integrations, whether private infrastructure is needed. Name a price range before the call ends. Do not leave without a number. |
+| **Close** | 'If this makes sense, I'll send a one-page scope this afternoon and we can start the workflow audit next week.' A start date, not a follow-up. |
+
+ 
+
+# **9. Pricing Strategy**
+
+## **Model Comparison**
+
+| **Model** | **Approach** | **Risk** | **Recommendation** |
+| --- | --- | --- | --- |
+| **A — Services-First** | Sell onboarding and retainers first. No hardware purchase until demand exists. | Low CapEx risk. Revenue validates model before infrastructure spend. | **RECOMMENDED** |
+| **B — Infrastructure-First** | Buy GPUs, sell private endpoints first. Hardware is the product. | High CapEx risk. Commodity positioning. Sales harder without services moat. | **NOT RECOMMENDED** |
+| **C — Hybrid** | Sell services first. Deploy infrastructure only when pre-sold or when it demonstrably improves close rate. | Best of both. Infrastructure adds margin after demand is proven. | **PREFERRED VARIANT** |
+
+ 
+
+## **Recommended Pricing Model**
+
+| **Product** | **Founder Beta** | **Standard** | **Notes** |
+| --- | --- | --- | --- |
+| **AI Ops Assessment** | $500–1,000 | $1,500–2,500 | Waive if client signs onboarding same week |
+| **Onboarding — Standard** | $3,500–5,000 | $5,000–10,000 | Accept below-range for first client in exchange for case study rights |
+| **Onboarding — Regulated** | $7,500–10,000 | $10,000–25,000 | Law firms, healthcare with HIPAA requirements |
+| **Retainer — Standard** | $1,500–2,000/mo | $2,000–3,000/mo | Core recurring revenue engine |
+| **Retainer — Regulated/Multi-loc** | $2,500–3,500/mo | $3,500–7,500/mo | Heavier integration, compliance reporting |
+| **Private Endpoint — Standard** | $650/mo | $650–850/mo | DPA included; HIPAA-ready tier adds BAA + audit log |
+| **Private Endpoint — RAG** | $1,200/mo | $1,400–2,200/mo | Dual GPU + vector store + document ingestion |
+
+ 
+
+## **Discounting Policy**
+
+First client in each vertical: Accept 20–30% below standard pricing in exchange for written case study rights and video testimonial. This is an investment in playbook documentation and referral assets, not a discount. Do not discount after the first two clients per vertical without a clear strategic reason.
+
+ 
+
+# **10. Financial Model Narrative**
+
+## **Scenario Comparison**
+
+| **Metric** | **Conservative (Month 6)** | **Base Case (Month 12)** | **Upside (Month 12)** |
+| --- | --- | --- | --- |
+| **Retainer clients** | 3 | 6–8 | 10–12 |
+| **MRR (retainers)** | $5,000–7,500/mo | $12,000–18,000/mo | $20,000–30,000/mo |
+| **Onboarding revenue/mo** | $5,000–8,000 | $10,000–15,000 | $20,000–25,000 |
+| **Infrastructure add-ons** | 0–1 clients | 2–3 clients | 5–6 clients |
+| **Infrastructure add-on MRR** | $0–850/mo | $1,700–2,550/mo | $4,250–5,100/mo |
+| **Total monthly revenue** | $10,000–15,500/mo | $23,700–35,550/mo | $44,250–60,100/mo |
+| **CapEx deployed** | $0 (no hardware) | $14,350 if pre-sold | $14,350–22,750 |
+| **Gross margin (approx.)** | 65–75% | 60–70% | 55–65% (infrastructure adds labor) |
+
+ 
+
+## **Cost Categories**
+
+| **Category** | **Monthly Estimate** | **Notes** |
+| --- | --- | --- |
+| Founder time (opportunity cost) | N/A | Not a cash cost at launch — track as hours |
+| Software tools (Claude API, integrations) | $500–1,500/mo | Scales with client count and inference volume |
+| Legal/accounting (LLC, templates) | $200–500/mo | Higher in setup months; BAA/DPA templates one-time |
+| Website / CRM / ops tools | $150–300/mo | Minimal stack — landing page, HubSpot starter, Notion |
+| Delivery support hire (Month 3–4) | $3,000–5,000/mo | Part-time technical implementer when retainer count reaches 3–4 |
+| Infrastructure (if deployed) | $350–500/mo opex | Electricity, ISP upgrade, insurance rider — only if hardware deployed |
+| Hardware CapEx (if deployed) | $14,350 one-time | Demand-triggered only — not before signed contracts |
+
+ 
+
+## **Why Hardware Should Be Demand-Triggered**
+
+The financial model makes the case clearly. Three retainer clients at $2,000/month generate $6,000 MRR before any hardware is purchased. Adding one private endpoint client at $850/month adds $850 MRR with $350–500/month in marginal opex — a 40–60% incremental margin on the add-on. The hardware CapEx of $14,350 is recovered in approximately 5–6 months of infrastructure revenue if 2 infrastructure clients are pre-sold. Buying hardware speculatively without pre-sold demand creates a 6-month payback drag with no guarantee of utilization.
+
+ 
+
+# **11. Infrastructure Strategy**
+
+## **Role of the Residential GPU PoC**
+
+| **Use Case** | **Appropriate?** | **Notes** |
+| --- | --- | --- |
+| Demo environment for discovery calls | Yes | High value — showing a private endpoint live closes deals |
+| Development and test environment | Yes | Ideal for building and validating client workflows before deploying to cloud |
+| Internal RAG and inference lab | Yes | Useful for building prompt libraries and testing integrations |
+| Limited private endpoint for 1–2 pilot clients | Yes, conditionally | Acceptable if disclosed as beta/PoC environment. No uptime SLA. Client must understand residential limitations. |
+| Primary infrastructure for regulated clients | Cautiously | Disclose residential nature. No SLA. Consider colocation for larger or more risk-sensitive clients. |
+| Enterprise-grade private AI environment | No | Residential node cannot deliver Tier II/III uptime guarantees. Use colocation for this use case. |
+| Marketed as data center infrastructure | No | Never represent residential hosting as commercial data center. Overclaiming creates trust and legal risk. |
+
+ 
+
+## **Infrastructure Decision Matrix**
+
+| **Scenario** | **Recommended Approach** | **Rationale** |
+| --- | --- | --- |
+| No signed infrastructure clients yet | Cloud or no deployment | No CapEx risk. Use cloud GPU partners (RunPod, Vast.ai on-demand) temporarily. Validate demand first. |
+| 1–2 pilot clients agree to beta private endpoint | Residential PoC | Deploy 4x RTX 4090 at 38 Chestnut. Disclose residential nature. No SLA commitment. Low risk. |
+| 3+ signed infrastructure clients, uptime matters | Colocation | Migrate to Miami/Doral colo (NAP of the Americas, DataBank, QTS Miami). Tier II/III uptime. Dedicated power. |
+| Regulated client requires data residency + SLA | Colocation or cloud private | Residential cannot support SLA. Use colo or managed private cloud (AWS/Azure private endpoints). |
+| High-volume enterprise use case | Colocation at scale | Phase 3 colo build-out. 20–60 GPU deployment. $75,000–150,000 CapEx. Only after services revenue validates the model. |
+
+ 
+
+## **Pre-Conditions Before Hardware Powers On**
+
+| **Condition** | **Status** |
+| --- | --- |
+| Xfinity Business tier activated with static IP (eliminates ToS violation) | REQUIRED before hardware arrives |
+| Dedicated 20A 240V circuit installed by licensed electrician | REQUIRED before hardware arrives |
+| Commercial equipment insurance rider confirmed in writing | REQUIRED before hardware arrives |
+| HOA CC&R documents reviewed — no commercial use prohibition | REQUIRED — verify before go-live |
+| LLC formed and BAA/DPA templates attorney-reviewed | REQUIRED to sell to regulated clients |
+| Minimum 2 infrastructure clients signed before hardware ships | STRONGLY RECOMMENDED — validates the model |
+
+ 
+
+# **12. Compliance ****&**** Legal Positioning**
+
+| *Use careful, commercially useful language. Never overstate. Attorney review is required before the first regulated client is onboarded. These guidelines are not legal advice.* |
+| --- |
+
+ 
+
+| **Compliance Context** | **Safe Language** | **Avoid** |
+| --- | --- | --- |
+| **Attorney-client privilege** | 'Designed to reduce third-party data exposure consistent with privilege concerns' / 'Private endpoint with signed DPA — your data does not reach a public AI server' | 'Guarantees privilege protection' / 'Eliminates all privilege risk' |
+| **HIPAA workflows** | 'HIPAA-ready' / 'BAA-supported' / 'Designed for privacy-sensitive workflows' / 'PHI does not reach a public AI server in this architecture' | 'Fully HIPAA compliant' / 'Safe harbor' / 'HIPAA certified' |
+| **GLBA financial data** | 'Private endpoint with access controls and audit logging' / 'NPI does not flow through public AI APIs in this architecture' | 'GLBA compliant' / 'Guarantees regulatory compliance' |
+| **Data retention** | 'Zero-retention architecture' / 'GPU memory only — purged on response completion' / 'No prompt storage by design' | 'We never store your data' (without explaining the architecture) / 'Completely private' |
+| **Encryption** | 'TLS 1.3 in transit' / 'LUKS disk encryption at rest' / 'Encrypted endpoint' | Vague claims like 'bank-level encryption' without specifying the standard |
+| **Audit logging** | 'Audit-friendly structured logging' / 'Metadata logs — no prompt content stored' / '90-day log retention' | 'Full compliance audit trail' without defining what is and is not logged |
+
+ 
+
+## **Required Legal Steps Before Regulated Client Onboarding**
+
+| **Item** | **Timing** |
+| --- | --- |
+| LLC formation (Florida) + registered agent | Before first client contract |
+| Attorney review: BAA, DPA, MSA, AUP templates | Before first regulated (law/dental) client — one-time, reused thereafter |
+| Cyber liability E&O insurance ($1M limit) | Before first client receives access to any system |
+| Written AI usage scope definition (what is and is not in scope) | Included in MSA — defines workflow scope, exclusions, human review requirements |
+| Breach notification SOP (24-hr client notice, 72-hr regulatory) | Documented before first regulated client goes live |
+
+ 
+
+# **13. Competitive Landscape**
+
+| **Competitor Type** | **What They Do Well** | **Where They Are Weak** | **Private AI Ops Positioning** |
+| --- | --- | --- | --- |
+| **MSPs** | Device, email, network, and security management. Deep SMB relationships. | Not built to manage AI workflows, prompts, or LLM infrastructure. Cannot credibly demo vertical AI use cases. | The AI Ops layer MSPs are not built to deliver. |
+| **AI Consultants** | Deep strategic thinking. Can design AI strategy. | Advise and leave. Do not implement, maintain, or operate. No recurring model. | We do not just recommend AI. We operate it. |
+| **SaaS Tools (Zapier, Make, etc.)** | Broad automation capability. Self-serve. | SMBs cannot self-implement. No vertical depth. No managed AI layer. | We make your existing systems AI-enabled without a full software migration. |
+| **Public AI Platforms (ChatGPT, Claude.ai)** | Flexible, capable, widely known. | No managed workflow. No privacy controls for SMBs. Heppner and HIPAA exposure. | Public AI is a tool. Private AI Ops is an operating system for safe business adoption. |
+| **GPU Hosting Providers (Vast.ai, RunPod)** | Raw compute at commodity rates. | No workflow management, compliance packaging, or client support. | We deliver AI outcomes, not GPU hours. |
+| **Vertical AI Startups** | Deep vertical knowledge if they have it. | Usually SaaS-model, not managed services. No private infrastructure. Narrow workflow scope. | We manage the full AI Ops stack — not a single workflow SaaS. |
+
+ 
+
+# **14. Moat Analysis**
+
+| **Moat** | **How It Works** | **Strength** | **Honest Assessment** |
+| --- | --- | --- | --- |
+| **Operational Embeddedness** | After 90 days managing a client's workflows, Private AI Ops knows their staff, approval hierarchy, seasonal patterns, software stack, and compliance concerns. | High | Strongest moat. Institutional knowledge does not transfer. Switching cost compounds every month. |
+| **Vertical Playbook IP** | Each deployment creates reusable prompts, SOPs, workflows, checklists, integration patterns, and templates. | Medium-High | Each client makes next onboarding faster and cheaper. However, playbooks become less defensible over time as the market matures. |
+| **Private Infrastructure Capability** | Most AI agencies rely entirely on public APIs. Private AI Ops can offer private inference, RAG, dedicated endpoints, and audit-friendly architecture. | Medium | Differentiator now. Cloud providers will eventually commoditize private endpoints. Build the capability while it is differentiated. |
+| **Trust-Based Local Selling** | For law and healthcare SMBs, trust matters more than features. Founder-led local relationship selling creates a durable sales advantage. | Medium-High | Strong early moat in South Florida. Difficult for remote or national competitors to replicate locally. |
+| **Vertical App Distribution** | Free tools create SEO, community credibility, and referral density across verticals. | Medium | Takes 6–12 months to compound. Not immediately defensible. Valuable as a distribution asset once established. |
+| **Prompt and SOP Libraries** | Documented prompt libraries and implementation templates built from real client deployments. | Medium | Real asset but not patentable. A competitor with enough clients can build similar libraries. The library itself is less important than the implementation skill. |
+
+ 
+
+# **15. Risk Register**
+
+| **Risk** | **Likelihood** | **Impact** | **Mitigation** | **Early Warning Signal** |
+| --- | --- | --- | --- | --- |
+| Fuzzy positioning — sounds like GPU hosting + AI agency + SaaS | High | High | Lead every narrative with managed AI Ops outcomes. Never lead with infrastructure. | Prospects ask 'so you rent GPUs?' |
+| Premature hardware spend before paid demand | Medium | High | Hardware is demand-triggered. No purchase before signed contracts justify it. | Considering buying hardware with no signed clients |
+| Compliance overclaiming — liability exposure | Medium | Very High | Use careful language. Attorney review before first regulated client. Define scope clearly. | Using 'HIPAA compliant' or 'guarantees privilege' in materials |
+| Too many verticals, founder bandwidth collapse | High without discipline | High | Two verticals max in Year 1. Law first. Dental second. Do not add Marine retainer before law playbook is documented. | Founder spending equal time across 3+ verticals |
+| Residential infrastructure trust gap | Medium | Medium | Disclose residential nature appropriately. Use colocation for clients requiring uptime SLA. | Client asks about uptime or data center certifications |
+| Failure to convert free users to retainers | Medium | High | Follow up within 48 hours of Pro signup. Discovery call is the only objective. Do not rely on self-service conversion. | Pro signups not receiving outreach within 48 hours |
+| Long sales cycles with law firms | Medium | Medium | Sell to personal network first. Referrals from known attorneys shorten cycle significantly. | No proposal delivered within 2 weeks of discovery call |
+| Client data security incident | Low if controls implemented | Very High | Full Layer 1–6 security stack. E&O insurance. Written breach SOP. BAA in place before regulated client goes live. | Security controls not implemented before regulated client is live |
+| GPU market price compression | Low (VRAM scarcity continues through 2027) | Medium | 36-month depreciation model. Infrastructure revenue is supplementary, not primary. | Vast.ai GPU rates drop below $0.20/hr sustained |
+
+ 
+
+# **16. 30 / 60 / 90 Day Execution Roadmap**
+
+## **Days 1–30: Foundation**
+
+| **Action** | **Deliverable** | **Success Metric** |
+| --- | --- | --- |
+| Form LLC (Florida) + open business bank account | Legal entity active | Done / Not done |
+| Hire attorney: draft BAA, DPA, MSA, AUP templates | Contract templates ready | Templates reviewed |
+| Notify insurer: commercial equipment rider (if hardware is being deployed) | Insurance confirmation in writing | Written confirmation |
+| Build 1-page landing page: positioning, 3 pricing tiers, contact form | Live URL | Page live |
+| Build 'Law Brief' free tool: intake summary / case chronology generator | Free tool live and functional | Tool generates output |
+| Identify 30 target law firms in Broward/Miami-Dade via Florida Bar directory | Prospect list with contact info | 30 qualified contacts |
+| Begin B2B outreach — Heppner angle for law firms, HIPAA angle for dental | Personalized emails sent | 30 contacts reached |
+| Join 2 South Florida bar association or legal professional networks | Community presence established | 2 communities joined |
+
+ 
+
+## **Days 31–60: First Clients**
+
+| **Action** | **Deliverable** | **Success Metric** |
+| --- | --- | --- |
+| Run 8–12 discovery calls with law firm and dental prospects | Discovery call notes, pain maps | 5+ calls completed |
+| Deliver 3+ retainer proposals — same day as discovery call | Written proposals delivered | 3 proposals delivered |
+| Close minimum 2 onboarding clients — sign agreements, collect payment | Signed MSA + deposit paid | 2 clients signed |
+| Deliver first onboarding — document every configuration step | Client workflows live + playbook draft | Workflows operational |
+| Gate check: if 0 paying clients by Day 60, revisit positioning and outreach before any hardware spend | Go/no-go decision | Decision documented |
+
+ 
+
+## **Days 61–90: Retainer Conversion ****&**** Infrastructure Decision**
+
+| **Action** | **Deliverable** | **Success Metric** |
+| --- | --- | --- |
+| Convert onboarding clients to retainer — invoice Month 1 | Recurring revenue begins | MRR > $3,000 |
+| Deliver first monthly access report to each retainer client | Written monthly report | Reports delivered on time |
+| Evaluate infrastructure: do any signed clients require private endpoints? If yes, initiate hardware or colo procurement. | Infrastructure decision document | Decision made and documented |
+| Begin dental vertical outreach — recall automation angle | 10 dental prospects contacted | 2+ discovery calls booked |
+| Document law firm playbook from first onboarding | Written onboarding playbook v1 | Playbook complete |
+| Pursue case study rights from first client | Written or video case study | Case study asset ready |
+
+ 
+
+# **17. Key Metrics ****&**** Decision Gates**
+
+## **Metrics to Track**
+
+| **Metric** | **Target (Month 3)** | **Target (Month 12)** | **Warning Threshold** |
+| --- | --- | --- | --- |
+| Discovery calls booked | 8–12 total | 3–5/month | < 4 by Day 60 |
+| Discovery-to-proposal rate | > 60% | > 70% | < 40% |
+| Proposal-to-close rate | > 30% | > 40% | < 20% |
+| Onboarding revenue (total) | $7,000–15,000 | $60,000–120,000 | < $3,500 by Month 3 |
+| Monthly Recurring Revenue (MRR) | $3,000–6,000 | $15,000–25,000 | $0 by Month 4 |
+| Active retainer clients | 2–3 | 6–10 | < 1 by Month 4 |
+| Implementation hours per client onboarding | 30–50 hrs (learning curve) | 15–25 hrs (playbook) | > 70 hrs per client |
+| Monthly support hours per retainer client | 10–15 hrs | 5–8 hrs (optimization) | > 20 hrs/client |
+| Infrastructure attach rate | 0–1 clients | 20–30% of retainer clients | N/A (demand-triggered) |
+
+ 
+
+## **Decision Gates**
+
+| **Gate** | **Condition to Pass** | **Unlocks** |
+| --- | --- | --- |
+| **G1 — Hardware Deployment** | 2+ infrastructure clients signed. ISP upgraded. Circuit installed. LLC formed. BAA ready. | 4-GPU build at 38 Chestnut proceeds |
+| **G2 — Dental Vertical** | Law firm playbook documented. 2+ law firm retainers paying. Founder bandwidth confirmed. | Dedicated dental outreach begins |
+| **G3 — Delivery Support Hire** | 3–4 retainer clients active. Monthly support hours exceeding 40+ hrs/week for founder. | Part-time technical implementation support hired |
+| **G4 — Third Vertical** | Law + dental playbooks documented. Combined MRR > $10,000. Dedicated vertical lead available. | Property management or financial SMB vertical activated |
+| **G5 — Colocation Migration** | 5+ infrastructure clients. Revenue target $5,000+/mo infrastructure add-on MRR. Residential power ceiling approached. | Miami/Doral colo evaluation and Phase 3 build planning |
+| **G6 — Platform Development** | 10+ retainer clients. Onboarding playbooks for 2+ verticals documented. Combined MRR > $25,000. | Client portal, monitoring dashboard, and vertical app marketplace |
+
+ 
+
+# **18. Final Strategic Recommendation**
+
+| *Launch as a managed AI Ops services business. Use private infrastructure as a premium differentiator and future moat. Do not lead with residential GPU hosting. Validate paid workflow demand first, then deploy infrastructure only when it is pre-sold or clearly improves close rate and margin.* |
+| --- |
+
+ 
+
+| **Strategic Question** | **Decision** |
+| --- | --- |
+| **Should this launch as GPU hosting or AI Ops services?** | AI Ops services. GPU hosting is a capability, not the business. |
+| **What should the first vertical be?** | Small law firms in South Florida. Heppner ruling creates urgent, real, and monetizable pain. |
+| **What should be sold first?** | AI Ops Assessment ($1,500) converting to Managed AI Onboarding ($5,000–8,000) and a $2,000–3,000/month retainer. |
+| **When should private infrastructure be introduced?** | Month 2–3 as a discovery call and demo asset. Deployed only when signed clients pre-sell the capacity. Never speculatively. |
+| **What should be built in the first 90 days?** | LLC, contract templates, Law Brief free tool, landing page, prospect list, discovery call process, first onboarding playbook, first case study. |
+| **What should be avoided?** | Buying hardware before signed clients. Launching three verticals simultaneously. Marketing as a GPU hosting business. Overclaiming compliance. Building software before services create the pattern. |
+
+ 
+
+## **What This Business Is**
+
+| **The Business Is** | **The Business Is Not** |
+| --- | --- |
+| A managed AI operations firm for privacy-sensitive SMBs | A residential GPU hosting company |
+| A compliance-aware workflow automation provider | A raw compute marketplace competitor |
+| A founder-led, relationship-driven local services business | A passive income or SaaS-first operation |
+| A proof of concept for Miami-area colocation at Phase 3 | A fully compliant data center (do not represent it as one) |
+| An embedded operational partner that deepens value every month | A consulting firm that advises and leaves |
+
+ 
+
+## **Final Assessment**
+
+The technical infrastructure is viable. The compliance architecture is achievable. The target market — South Florida privacy-sensitive SMBs, starting with law firms — is real, underserved, and actively looking for a solution to the Heppner and HIPAA exposure created by public AI tools. The financial model reaches $3,000–6,000/month MRR by Month 3 with two onboarding clients and breaks into five-figure MRR territory by Month 12 with a functioning retainer base.
+
+The single largest risk is failing to close two managed AI Ops retainer clients before committing to infrastructure spend. That is a sales execution risk, not a technical risk. Solve the sales problem first. Buy the hardware second.
+
+ 
+
+*Private AI Ops  |  Unified Strategy  |  May 2026  |  Confidential*
+
+Page

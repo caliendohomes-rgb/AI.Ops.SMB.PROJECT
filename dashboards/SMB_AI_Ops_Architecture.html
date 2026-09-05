@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMB AI Ops — Platform Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0F1C35;--navy2:#1a2d4e;--navy3:#243a60;
+  --gold:#C9A84C;--gold2:#e8c96a;--gold3:#f5e4a8;
+  --teal:#0F6E56;--teal2:#1D9E75;--teal3:#9FE1CB;
+  --coral:#993C1D;--coral2:#D85A30;--coral3:#F5C4B3;
+  --purple:#534AB7;--purple2:#7F77DD;--purple3:#CECBF6;
+  --amber:#854F0B;--amber2:#BA7517;--amber3:#FAC775;
+  --blue:#185FA5;--blue2:#378ADD;--blue3:#B5D4F4;
+  --gray1:#F2F4F7;--gray2:#D5D9E0;--gray3:#4A6080;--gray4:#2A3A50;
+  --white:#FFFFFF;--text:#0F1C35;--text2:#4A6080;--text3:#8899AA;
+  --bg:#F8F7F4;--bg2:#EFEDE8;
+  --r:6px;--r2:10px;--r3:16px;
+}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ── HEADER ── */
+.masthead{background:var(--navy);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--gold)}
+.masthead-left{display:flex;flex-direction:column;gap:4px}
+.masthead-logo{font-size:13px;font-weight:700;letter-spacing:.18em;color:var(--gold);text-transform:uppercase}
+.masthead-title{font-size:20px;font-weight:700;color:var(--white);letter-spacing:-.01em}
+.masthead-meta{font-size:11px;color:rgba(255,255,255,.45);font-family:'DM Mono',monospace;margin-top:2px}
+.masthead-right{display:flex;gap:8px;align-items:center}
+.version-badge{font-family:'DM Mono',monospace;font-size:10px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.35);color:var(--gold2);padding:4px 10px;border-radius:4px;letter-spacing:.08em}
+
+/* ── TABS ── */
+.tab-bar{background:var(--navy2);border-bottom:1px solid rgba(255,255,255,.08);padding:0 32px;display:flex;gap:0}
+.tab-btn{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:14px 20px;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;position:relative;transition:color .2s}
+.tab-btn::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transition:transform .2s}
+.tab-btn.active{color:var(--gold2)}
+.tab-btn.active::after{transform:scaleX(1)}
+.tab-btn:hover:not(.active){color:rgba(255,255,255,.7)}
+
+/* ── LEGEND STRIP ── */
+.legend-strip{background:var(--navy);border-bottom:1px solid rgba(255,255,255,.06);padding:10px 32px;display:flex;gap:20px;flex-wrap:wrap;align-items:center}
+.legend-item{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.04em}
+.legend-swatch{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+
+/* ── DIAGRAM CONTAINER ── */
+.diagram-wrap{position:relative;overflow:hidden;cursor:grab;background:var(--bg);border:1px solid var(--gray2)}
+.diagram-wrap:active{cursor:grabbing}
+.diagram-wrap.active-tab{display:block}
+.diagram-canvas{transform-origin:0 0;will-change:transform}
+
+/* ── CONTROLS ── */
+.controls{position:absolute;bottom:14px;right:14px;display:flex;flex-direction:column;gap:6px;z-index:10}
+.ctrl-btn{width:32px;height:32px;background:var(--navy);border:1px solid rgba(255,255,255,.15);color:var(--white);border-radius:var(--r);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .15s;font-family:'DM Mono',monospace;font-weight:500}
+.ctrl-btn:hover{background:var(--navy2)}
+.zoom-label{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.4);text-align:center;letter-spacing:.04em}
+.reset-btn{width:32px;height:14px;background:var(--navy);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);border-radius:3px;cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;letter-spacing:.04em}
+.reset-btn:hover{color:var(--white)}
+
+/* ── NODE TOOLTIP ── */
+.tooltip{position:fixed;pointer-events:none;z-index:1000;background:var(--navy);border:1px solid rgba(201,168,76,.4);border-radius:var(--r2);padding:10px 14px;max-width:280px;opacity:0;transition:opacity .15s;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.tooltip-title{font-size:12px;font-weight:700;color:var(--gold2);margin-bottom:4px;letter-spacing:.04em}
+.tooltip-body{font-size:11px;color:rgba(255,255,255,.75);line-height:1.5;font-family:'DM Mono',monospace}
+.tooltip.visible{opacity:1}
+
+/* ── DETAIL PANEL ── */
+.detail-panel{display:none;background:var(--white);border-top:2px solid var(--gold);padding:20px 32px}
+.detail-panel.visible{display:block}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:12px}
+.detail-card{background:var(--gray1);border-radius:var(--r2);padding:14px 16px;border-left:3px solid var(--gold)}
+.detail-card-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:8px}
+.detail-card-content{font-size:12px;color:var(--text);line-height:1.6;font-family:'DM Mono',monospace}
+.panel-header{font-size:14px;font-weight:700;color:var(--navy);letter-spacing:-.01em}
+.panel-sub{font-size:11px;color:var(--text2);font-family:'DM Mono',monospace;margin-top:2px}
+.panel-close{float:right;background:none;border:1px solid var(--gray2);border-radius:var(--r);padding:4px 10px;font-size:11px;cursor:pointer;color:var(--text2);font-family:'Syne',sans-serif}
+.panel-close:hover{background:var(--navy);color:var(--white);border-color:var(--navy)}
+
+/* ── FLOW STEPS ── */
+.flow-steps{padding:16px 32px 0;display:flex;gap:0;overflow-x:auto;border-top:1px solid var(--gray2)}
+.flow-step{display:flex;align-items:center;gap:0;flex-shrink:0}
+.step-pill{background:var(--navy);color:var(--white);font-size:10px;font-weight:700;letter-spacing:.08em;padding:6px 14px;border-radius:20px;cursor:pointer;transition:background .15s;white-space:nowrap;font-family:'Syne',sans-serif}
+.step-pill:hover,.step-pill.active{background:var(--gold);color:var(--navy)}
+.step-arrow{color:var(--gray2);font-size:14px;padding:0 8px;flex-shrink:0}
+
+/* ── SVG NODES ── */
+.arch-node{cursor:pointer;transition:opacity .15s}
+.arch-node:hover{opacity:.88}
+.arch-node rect,.arch-node path{transition:filter .15s}
+.arch-node:hover rect{filter:brightness(1.08)}
+
+/* ── TABS CONTENT ── */
+.tab-content{display:none}
+.tab-content.active{display:flex;flex-direction:column}
+.tab-content .diagram-wrap{height:540px}
+
+/* ── FOOTER ── */
+.artifact-footer{background:var(--navy);padding:10px 32px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,.06)}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.06em}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.3)}
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-left">
+    <div class="masthead-logo">SMB AI Ops</div>
+    <div class="masthead-title">Platform Architecture</div>
+    <div class="masthead-meta">VERSION 1.0 &nbsp;·&nbsp; MAY 2026 &nbsp;·&nbsp; INTERNAL REFERENCE</div>
+  </div>
+  <div class="masthead-right">
+    <div class="version-badge">CONFIDENTIAL</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('platform',this)">Platform Architecture</button>
+  <button class="tab-btn" onclick="switchTab('flow',this)">Booking-to-Brief Flow</button>
+</div>
+
+<!-- LEGEND -->
+<div class="legend-strip">
+  <span style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.08em;text-transform:uppercase;margin-right:4px">Layers:</span>
+  <div class="legend-item"><div class="legend-swatch" style="background:#1D9E75"></div>Acquisition</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#378ADD"></div>Platform core</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#7F77DD"></div>AI engine</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#D85A30"></div>Private GPU</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#4A6080"></div>Data &amp; observability</div>
+  <div class="legend-item" style="margin-left:auto"><div class="legend-swatch" style="background:rgba(255,255,255,.15);border:1px dashed rgba(255,255,255,.3)"></div>Trust boundary</div>
+  <div class="legend-item" style="font-style:italic;font-size:10px;color:rgba(255,255,255,.3)">Hover nodes for detail · Drag to pan · Scroll to zoom</div>
+</div>
+
+<!-- ══════════════════════════════
+     TAB 1 — PLATFORM ARCHITECTURE
+═══════════════════════════════ -->
+<div id="tab-platform" class="tab-content active">
+  <div class="diagram-wrap" id="wrap1">
+    <div class="diagram-canvas" id="canvas1">
+    <svg width="1100" height="820" viewBox="0 0 1100 820" xmlns="http://www.w3.org/2000/svg" style="display:block">
+      <defs>
+        <marker id="arr1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M2 2L8 5L2 8" fill="none" stroke="#4A6080" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+        <marker id="arr-gold" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M2 2L8 5L2 8" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+        <marker id="arr-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M2 2L8 5L2 8" fill="none" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+
+      <!-- ── LAYER BANDS ── -->
+      <rect x="0" y="20" width="1100" height="140" rx="10" fill="#0F6E5608" stroke="#1D9E7530" stroke-width="1" stroke-dasharray="6 4"/>
+      <text x="16" y="38" font-family="DM Mono,monospace" font-size="9" fill="#1D9E75" letter-spacing="0.12em" text-decoration="none">ACQUISITION LAYER</text>
+
+      <rect x="0" y="178" width="1100" height="150" rx="10" fill="#185FA508" stroke="#378ADD30" stroke-width="1" stroke-dasharray="6 4"/>
+      <text x="16" y="196" font-family="DM Mono,monospace" font-size="9" fill="#378ADD" letter-spacing="0.12em">PLATFORM CORE</text>
+
+      <rect x="0" y="346" width="1100" height="180" rx="10" fill="#534AB708" stroke="#7F77DD30" stroke-width="1" stroke-dasharray="6 4"/>
+      <text x="16" y="364" font-family="DM Mono,monospace" font-size="9" fill="#7F77DD" letter-spacing="0.12em">AI ENGINE</text>
+
+      <rect x="0" y="544" width="860" height="130" rx="10" fill="#0F1C3508" stroke="#4A608030" stroke-width="1" stroke-dasharray="6 4"/>
+      <text x="16" y="562" font-family="DM Mono,monospace" font-size="9" fill="#4A6080" letter-spacing="0.12em">VERTICAL INTEGRATIONS</text>
+
+      <rect x="878" y="346" width="210" height="328" rx="10" fill="#993C1D10" stroke="#D85A3050" stroke-width="1.5" stroke-dasharray="6 4"/>
+      <text x="894" y="364" font-family="DM Mono,monospace" font-size="9" fill="#D85A30" letter-spacing="0.12em">PRIVATE INFRA</text>
+
+      <rect x="0" y="692" width="1100" height="120" rx="10" fill="#2A3A5008" stroke="#4A608030" stroke-width="1" stroke-dasharray="6 4"/>
+      <text x="16" y="710" font-family="DM Mono,monospace" font-size="9" fill="#4A6080" letter-spacing="0.12em">DATA LAYER</text>
+
+      <!-- ══ ACQUISITION NODES ══ -->
+      <!-- Charter Brief -->
+      <g class="arch-node" onclick="showDetail('charter')" data-tip="charter">
+        <rect x="60" y="46" width="186" height="94" rx="8" fill="#085041" stroke="#1D9E75" stroke-width="1"/>
+        <rect x="60" y="46" width="186" height="26" rx="8" fill="#1D9E75"/>
+        <rect x="60" y="60" width="186" height="12" fill="#1D9E75"/>
+        <text x="153" y="64" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#E1F5EE" letter-spacing="0.04em">Charter Brief</text>
+        <text x="153" y="86" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#9FE1CB">Marine operators</text>
+        <text x="153" y="102" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#9FE1CB">FareHarbor hook</text>
+        <text x="153" y="118" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#5DCAA5">Free + Pro tiers</text>
+      </g>
+
+      <!-- Dental Brief -->
+      <g class="arch-node" onclick="showDetail('dental-brief')" data-tip="dental-brief">
+        <rect x="457" y="46" width="186" height="94" rx="8" fill="#085041" stroke="#1D9E75" stroke-width="1"/>
+        <rect x="457" y="46" width="186" height="26" rx="8" fill="#1D9E75"/>
+        <rect x="457" y="60" width="186" height="12" fill="#1D9E75"/>
+        <text x="550" y="64" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#E1F5EE" letter-spacing="0.04em">Dental Brief</text>
+        <text x="550" y="86" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#9FE1CB">Dental practices</text>
+        <text x="550" y="102" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#9FE1CB">Recall workflows</text>
+        <text x="550" y="118" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#5DCAA5">HIPAA-aligned scope</text>
+      </g>
+
+      <!-- Property Brief -->
+      <g class="arch-node" onclick="showDetail('property-brief')" data-tip="property-brief">
+        <rect x="756" y="46" width="186" height="94" rx="8" fill="#085041" stroke="#1D9E75" stroke-width="1"/>
+        <rect x="756" y="46" width="186" height="26" rx="8" fill="#1D9E75"/>
+        <rect x="756" y="60" width="186" height="12" fill="#1D9E75"/>
+        <text x="849" y="64" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#E1F5EE" letter-spacing="0.04em">Property Brief</text>
+        <text x="849" y="86" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#9FE1CB">Property managers</text>
+        <text x="849" y="102" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#9FE1CB">Renewal letters</text>
+        <text x="849" y="118" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#5DCAA5">AppFolio / Buildium</text>
+      </g>
+
+      <!-- Arrows acq → platform -->
+      <line x1="153" y1="140" x2="240" y2="200" stroke="#1D9E75" stroke-width="1" stroke-opacity="0.5" marker-end="url(#arr-teal)"/>
+      <line x1="550" y1="140" x2="550" y2="200" stroke="#1D9E75" stroke-width="1" stroke-opacity="0.5" marker-end="url(#arr-teal)"/>
+      <line x1="849" y1="140" x2="760" y2="200" stroke="#1D9E75" stroke-width="1" stroke-opacity="0.5" marker-end="url(#arr-teal)"/>
+
+      <!-- ══ PLATFORM CORE NODES ══ -->
+      <!-- Auth & Tenancy -->
+      <g class="arch-node" onclick="showDetail('auth')" data-tip="auth">
+        <rect x="60" y="204" width="160" height="110" rx="8" fill="#1a2d4e" stroke="#4A6080" stroke-width="1"/>
+        <rect x="60" y="204" width="160" height="26" rx="8" fill="#2A3A50"/>
+        <rect x="60" y="218" width="160" height="12" fill="#2A3A50"/>
+        <text x="140" y="222" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#D5D9E0" letter-spacing="0.04em">Auth &amp; Tenancy</text>
+        <text x="140" y="248" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">RBAC · SSO</text>
+        <text x="140" y="264" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">Tenant isolation</text>
+        <text x="140" y="280" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">API key mgmt</text>
+      </g>
+
+      <!-- Ops Dashboard -->
+      <g class="arch-node" onclick="showDetail('ops-dash')" data-tip="ops-dash">
+        <rect x="270" y="204" width="180" height="110" rx="8" fill="#0c2d50" stroke="#378ADD" stroke-width="1"/>
+        <rect x="270" y="204" width="180" height="26" rx="8" fill="#185FA5"/>
+        <rect x="270" y="218" width="180" height="12" fill="#185FA5"/>
+        <text x="360" y="222" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#E6F1FB" letter-spacing="0.04em">Ops Dashboard</text>
+        <text x="360" y="248" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#85B7EB">Staff console</text>
+        <text x="360" y="264" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#85B7EB">Workflow builder</text>
+        <text x="360" y="280" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#85B7EB">Client manager</text>
+      </g>
+
+      <!-- Client Portal -->
+      <g class="arch-node" onclick="showDetail('client-portal')" data-tip="client-portal">
+        <rect x="500" y="204" width="180" height="110" rx="8" fill="#0c2d50" stroke="#378ADD" stroke-width="1"/>
+        <rect x="500" y="204" width="180" height="26" rx="8" fill="#185FA5"/>
+        <rect x="500" y="218" width="180" height="12" fill="#185FA5"/>
+        <text x="590" y="222" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#E6F1FB" letter-spacing="0.04em">Client Portal</text>
+        <text x="590" y="248" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#85B7EB">Usage reports</text>
+        <text x="590" y="264" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#85B7EB">Brief review queue</text>
+        <text x="590" y="280" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#85B7EB">Approval controls</text>
+      </g>
+
+      <!-- Billing -->
+      <g class="arch-node" onclick="showDetail('billing')" data-tip="billing">
+        <rect x="730" y="204" width="144" height="110" rx="8" fill="#1a2d4e" stroke="#4A6080" stroke-width="1"/>
+        <rect x="730" y="204" width="144" height="26" rx="8" fill="#2A3A50"/>
+        <rect x="730" y="218" width="144" height="12" fill="#2A3A50"/>
+        <text x="802" y="222" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#D5D9E0" letter-spacing="0.04em">Billing</text>
+        <text x="802" y="248" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">Stripe</text>
+        <text x="802" y="264" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">Free · Pro · Retainer</text>
+        <text x="802" y="280" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">48h outreach trigger</text>
+      </g>
+
+      <!-- Platform → AI engine arrows -->
+      <line x1="360" y1="314" x2="360" y2="372" stroke="#378ADD" stroke-width="1" stroke-opacity="0.5" marker-end="url(#arr1)"/>
+      <line x1="590" y1="314" x2="530" y2="372" stroke="#378ADD" stroke-width="1" stroke-opacity="0.5" marker-end="url(#arr1)"/>
+
+      <!-- ══ AI ENGINE NODES ══ -->
+      <!-- Workflow Engine -->
+      <g class="arch-node" onclick="showDetail('workflow')" data-tip="workflow">
+        <rect x="60" y="374" width="186" height="130" rx="8" fill="#1a1040" stroke="#7F77DD" stroke-width="1"/>
+        <rect x="60" y="374" width="186" height="26" rx="8" fill="#534AB7"/>
+        <rect x="60" y="388" width="186" height="12" fill="#534AB7"/>
+        <text x="153" y="392" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#EEEDFE" letter-spacing="0.04em">Workflow Engine</text>
+        <text x="153" y="416" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#AFA9EC">Job scheduler</text>
+        <text x="153" y="432" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#AFA9EC">Trigger handlers</text>
+        <text x="153" y="448" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#AFA9EC">Human review queue</text>
+        <text x="153" y="464" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#7F77DD">Retry + fallback</text>
+      </g>
+
+      <!-- Prompt Orchestrator -->
+      <g class="arch-node" onclick="showDetail('orchestrator')" data-tip="orchestrator">
+        <rect x="296" y="374" width="186" height="130" rx="8" fill="#1a1040" stroke="#7F77DD" stroke-width="1"/>
+        <rect x="296" y="374" width="186" height="26" rx="8" fill="#534AB7"/>
+        <rect x="296" y="388" width="186" height="12" fill="#534AB7"/>
+        <text x="389" y="392" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#EEEDFE" letter-spacing="0.04em">Prompt Orchestrator</text>
+        <text x="389" y="416" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#AFA9EC">Template library</text>
+        <text x="389" y="432" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#AFA9EC">Context assembly</text>
+        <text x="389" y="448" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#AFA9EC">Token budgeting</text>
+        <text x="389" y="464" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#7F77DD">Prompt versioning</text>
+      </g>
+
+      <!-- LLM Gateway -->
+      <g class="arch-node" onclick="showDetail('llm-gateway')" data-tip="llm-gateway">
+        <rect x="532" y="374" width="200" height="130" rx="8" fill="#2a1a00" stroke="#BA7517" stroke-width="1"/>
+        <rect x="532" y="374" width="200" height="26" rx="8" fill="#854F0B"/>
+        <rect x="532" y="388" width="200" height="12" fill="#854F0B"/>
+        <text x="632" y="392" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#FAEEDA" letter-spacing="0.04em">LLM Gateway</text>
+        <text x="632" y="416" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#FAC775">Claude API (default)</text>
+        <text x="632" y="432" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#FAC775">Private node routing</text>
+        <text x="632" y="448" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#FAC775">Cost + usage track</text>
+        <text x="632" y="464" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#EF9F27">Audit log + redaction</text>
+      </g>
+
+      <!-- AI engine arrows -->
+      <line x1="246" y1="440" x2="294" y2="440" stroke="#7F77DD" stroke-width="1" stroke-opacity="0.6" marker-end="url(#arr1)"/>
+      <line x1="482" y1="440" x2="530" y2="440" stroke="#7F77DD" stroke-width="1" stroke-opacity="0.6" marker-end="url(#arr1)"/>
+      <!-- Gateway → Private GPU (dashed) -->
+      <line x1="732" y1="440" x2="876" y2="440" stroke="#D85A30" stroke-width="1.5" stroke-dasharray="5 4" stroke-opacity="0.7" marker-end="url(#arr1)"/>
+      <text x="800" y="432" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#D85A30" opacity="0.7">regulated only</text>
+
+      <!-- ══ PRIVATE GPU NODE ══ -->
+      <g class="arch-node" onclick="showDetail('private-gpu')" data-tip="private-gpu">
+        <rect x="892" y="374" width="174" height="174" rx="8" fill="#1a0a08" stroke="#D85A30" stroke-width="1.5"/>
+        <rect x="892" y="374" width="174" height="26" rx="8" fill="#993C1D"/>
+        <rect x="892" y="388" width="174" height="12" fill="#993C1D"/>
+        <text x="979" y="392" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#FAECE7" letter-spacing="0.04em">Private GPU Node</text>
+        <text x="979" y="418" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#F0997B">4× RTX 4090</text>
+        <text x="979" y="434" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#F0997B">Zero-retention arch</text>
+        <text x="979" y="450" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#F0997B">BAA-ready</text>
+        <text x="979" y="466" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#F0997B">VLAN isolated</text>
+        <text x="979" y="482" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#F0997B">TLS 1.3</text>
+        <text x="979" y="498" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#D85A30">Heppner ruling defense</text>
+        <!-- shield icon visual -->
+        <path d="M966 516 l13-6 13 6 v12 c0 6-13 12-13 12 s-13-6-13-12 z" fill="none" stroke="#D85A30" stroke-width="1.2" opacity="0.6"/>
+        <path d="M973 527 l3 3 5-6" fill="none" stroke="#D85A30" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+      </g>
+
+      <!-- ══ VERTICAL INTEGRATIONS ══ -->
+      <!-- FareHarbor -->
+      <g class="arch-node" onclick="showDetail('fareharbor')" data-tip="fareharbor">
+        <rect x="60" y="572" width="170" height="84" rx="8" fill="#04342C" stroke="#1D9E75" stroke-width="1"/>
+        <rect x="60" y="572" width="170" height="22" rx="8" fill="#0F6E56"/>
+        <rect x="60" y="582" width="170" height="12" fill="#0F6E56"/>
+        <text x="145" y="588" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#E1F5EE" letter-spacing="0.04em">FareHarbor</text>
+        <text x="145" y="610" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#5DCAA5">booking.created webhook</text>
+        <text x="145" y="626" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#5DCAA5">Marine vertical</text>
+        <text x="145" y="642" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#1D9E75">Event-driven trigger</text>
+      </g>
+
+      <!-- Dentrix / Eaglesoft -->
+      <g class="arch-node" onclick="showDetail('dentrix')" data-tip="dentrix">
+        <rect x="276" y="572" width="170" height="84" rx="8" fill="#04342C" stroke="#1D9E75" stroke-width="1"/>
+        <rect x="276" y="572" width="170" height="22" rx="8" fill="#0F6E56"/>
+        <rect x="276" y="582" width="170" height="12" fill="#0F6E56"/>
+        <text x="361" y="588" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#E1F5EE" letter-spacing="0.04em">Dentrix / Eaglesoft</text>
+        <text x="361" y="610" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#5DCAA5">Patient data export</text>
+        <text x="361" y="626" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#5DCAA5">Recall lists</text>
+        <text x="361" y="642" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#1D9E75">Dental vertical</text>
+      </g>
+
+      <!-- AppFolio / Buildium -->
+      <g class="arch-node" onclick="showDetail('appfolio')" data-tip="appfolio">
+        <rect x="492" y="572" width="186" height="84" rx="8" fill="#04342C" stroke="#1D9E75" stroke-width="1"/>
+        <rect x="492" y="572" width="186" height="22" rx="8" fill="#0F6E56"/>
+        <rect x="492" y="582" width="186" height="12" fill="#0F6E56"/>
+        <text x="585" y="588" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#E1F5EE" letter-spacing="0.04em">AppFolio / Buildium</text>
+        <text x="585" y="610" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#5DCAA5">Portfolio sync</text>
+        <text x="585" y="626" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#5DCAA5">Lease renewal triggers</text>
+        <text x="585" y="642" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#1D9E75">PM vertical</text>
+      </g>
+
+      <!-- Outbound -->
+      <g class="arch-node" onclick="showDetail('outbound')" data-tip="outbound">
+        <rect x="694" y="572" width="158" height="84" rx="8" fill="#1a2d4e" stroke="#4A6080" stroke-width="1"/>
+        <rect x="694" y="572" width="158" height="22" rx="8" fill="#2A3A50"/>
+        <rect x="694" y="582" width="158" height="12" fill="#2A3A50"/>
+        <text x="773" y="588" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#D5D9E0" letter-spacing="0.04em">Outbound</text>
+        <text x="773" y="610" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">SendGrid · Twilio</text>
+        <text x="773" y="626" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">DocuSign · QuickBooks</text>
+        <text x="773" y="642" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">HubSpot CRM</text>
+      </g>
+
+      <!-- Integration → Data arrows -->
+      <line x1="250" y1="656" x2="250" y2="714" stroke="#4A6080" stroke-width="1" stroke-opacity="0.4" marker-end="url(#arr1)"/>
+      <line x1="480" y1="656" x2="480" y2="714" stroke="#4A6080" stroke-width="1" stroke-opacity="0.4" marker-end="url(#arr1)"/>
+
+      <!-- ══ DATA LAYER ══ -->
+      <!-- Tenant DB -->
+      <g class="arch-node" onclick="showDetail('tenant-db')" data-tip="tenant-db">
+        <rect x="60" y="718" width="170" height="82" rx="8" fill="#1a2d4e" stroke="#4A6080" stroke-width="1"/>
+        <rect x="60" y="718" width="170" height="22" rx="8" fill="#2A3A50"/>
+        <rect x="60" y="728" width="170" height="12" fill="#2A3A50"/>
+        <text x="145" y="734" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#D5D9E0" letter-spacing="0.04em">Tenant DB</text>
+        <text x="145" y="756" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">Postgres · client metadata</text>
+        <text x="145" y="772" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">Workflow configs · RBAC</text>
+        <text x="145" y="788" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#4A6080">Per-tenant isolation</text>
+      </g>
+
+      <!-- Audit Log -->
+      <g class="arch-node" onclick="showDetail('audit-log')" data-tip="audit-log">
+        <rect x="280" y="718" width="180" height="82" rx="8" fill="#1a2d4e" stroke="#4A6080" stroke-width="1"/>
+        <rect x="280" y="718" width="180" height="22" rx="8" fill="#2A3A50"/>
+        <rect x="280" y="728" width="180" height="12" fill="#2A3A50"/>
+        <text x="370" y="734" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#D5D9E0" letter-spacing="0.04em">Audit + Prompt Log</text>
+        <text x="370" y="756" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">Immutable · append-only</text>
+        <text x="370" y="772" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">Model · version · tokens</text>
+        <text x="370" y="788" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#4A6080">No raw PHI logged</text>
+      </g>
+
+      <!-- Object Storage -->
+      <g class="arch-node" onclick="showDetail('object-storage')" data-tip="object-storage">
+        <rect x="510" y="718" width="180" height="82" rx="8" fill="#1a2d4e" stroke="#4A6080" stroke-width="1"/>
+        <rect x="510" y="718" width="180" height="22" rx="8" fill="#2A3A50"/>
+        <rect x="510" y="728" width="180" height="12" fill="#2A3A50"/>
+        <text x="600" y="734" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#D5D9E0" letter-spacing="0.04em">Object Storage</text>
+        <text x="600" y="756" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">S3-compatible · AES-256</text>
+        <text x="600" y="772" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">Docs · briefs · assets</text>
+        <text x="600" y="788" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#4A6080">/tenants/{id}/ isolation</text>
+      </g>
+
+      <!-- Observability -->
+      <g class="arch-node" onclick="showDetail('observability')" data-tip="observability">
+        <rect x="740" y="718" width="168" height="82" rx="8" fill="#1a2d4e" stroke="#4A6080" stroke-width="1"/>
+        <rect x="740" y="718" width="168" height="22" rx="8" fill="#2A3A50"/>
+        <rect x="740" y="728" width="168" height="12" fill="#2A3A50"/>
+        <text x="824" y="734" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#D5D9E0" letter-spacing="0.04em">Observability</text>
+        <text x="824" y="756" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">Error · cost · uptime</text>
+        <text x="824" y="772" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">Usage dashboards</text>
+        <text x="824" y="788" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#4A6080">Sentry + Datadog Lite</text>
+      </g>
+    </svg>
+    </div>
+    <div class="controls">
+      <button class="ctrl-btn" onclick="zoom1('in')">+</button>
+      <div class="zoom-label" id="zoom1-label">100%</div>
+      <button class="ctrl-btn" onclick="zoom1('out')">−</button>
+      <button class="reset-btn" onclick="resetView1()">reset</button>
+    </div>
+  </div>
+
+  <!-- Detail panel -->
+  <div class="detail-panel" id="detail-panel-1">
+    <button class="panel-close" onclick="closeDetail()">✕ close</button>
+    <div class="panel-header" id="dp-title"></div>
+    <div class="panel-sub" id="dp-sub"></div>
+    <div class="detail-grid" id="dp-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     TAB 2 — BOOKING-TO-BRIEF FLOW
+═══════════════════════════════ -->
+<div id="tab-flow" class="tab-content">
+  <div class="flow-steps" id="flow-steps-bar">
+    <div class="flow-step"><button class="step-pill active" onclick="highlightStep(0,this)">① Webhook fires</button><span class="step-arrow">›</span></div>
+    <div class="flow-step"><button class="step-pill" onclick="highlightStep(1,this)">② Tenant auth</button><span class="step-arrow">›</span></div>
+    <div class="flow-step"><button class="step-pill" onclick="highlightStep(2,this)">③ Payload extract</button><span class="step-arrow">›</span></div>
+    <div class="flow-step"><button class="step-pill" onclick="highlightStep(3,this)">④ Weather + brand</button><span class="step-arrow">›</span></div>
+    <div class="flow-step"><button class="step-pill" onclick="highlightStep(4,this)">⑤ Prompt orchestrate</button><span class="step-arrow">›</span></div>
+    <div class="flow-step"><button class="step-pill" onclick="highlightStep(5,this)">⑥ LLM inference</button><span class="step-arrow">›</span></div>
+    <div class="flow-step"><button class="step-pill" onclick="highlightStep(6,this)">⑦ Human review</button><span class="step-arrow">›</span></div>
+    <div class="flow-step"><button class="step-pill" onclick="highlightStep(7,this)">⑧ Deliver + log</button></div>
+  </div>
+  <div class="diagram-wrap" id="wrap2" style="height:580px">
+    <div class="diagram-canvas" id="canvas2">
+    <svg width="1060" height="680" viewBox="0 0 1060 680" xmlns="http://www.w3.org/2000/svg" style="display:block">
+      <defs>
+        <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M2 2L8 5L2 8" fill="none" stroke="#4A6080" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+        <marker id="arr2g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M2 2L8 5L2 8" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+
+      <!-- TRUST BOUNDARY -->
+      <rect x="20" y="260" width="1020" height="340" rx="10" fill="none" stroke="#C9A84C" stroke-width="1" stroke-dasharray="7 5" opacity="0.4"/>
+      <text x="34" y="278" font-family="DM Mono,monospace" font-size="9" fill="#C9A84C" letter-spacing="0.1em" opacity="0.7">TRUST BOUNDARY — tenant-scoped · data not shared across clients · audit-logged</text>
+
+      <!-- STEP NODES — 8 steps in a two-row layout -->
+      <!-- Row 1: steps 1-4 -->
+      <!-- S1: FareHarbor webhook -->
+      <g class="flow-node" id="fn0" data-step="0">
+        <rect x="36" y="36" width="196" height="84" rx="8" fill="#085041" stroke="#1D9E75" stroke-width="1.5"/>
+        <rect x="36" y="36" width="196" height="24" rx="8" fill="#1D9E75"/>
+        <rect x="36" y="48" width="196" height="12" fill="#1D9E75"/>
+        <text x="134" y="53" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#E1F5EE" letter-spacing="0.12em" font-weight="500">① TRIGGER</text>
+        <text x="134" y="78" text-anchor="middle" font-family="Syne,sans-serif" font-size="12" font-weight="700" fill="#E1F5EE">FareHarbor webhook</text>
+        <text x="134" y="96" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#9FE1CB">booking.created fires</text>
+        <text x="134" y="110" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#5DCAA5">inbound → platform</text>
+      </g>
+
+      <!-- Arrow S1→S2 -->
+      <line x1="232" y1="78" x2="276" y2="78" stroke="#4A6080" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+      <!-- S2: Tenant auth -->
+      <g class="flow-node" id="fn1" data-step="1">
+        <rect x="278" y="36" width="196" height="84" rx="8" fill="#1a2d4e" stroke="#4A6080" stroke-width="1.5"/>
+        <rect x="278" y="36" width="196" height="24" rx="8" fill="#2A3A50"/>
+        <rect x="278" y="48" width="196" height="12" fill="#2A3A50"/>
+        <text x="376" y="53" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#D5D9E0" letter-spacing="0.12em" font-weight="500">② AUTH</text>
+        <text x="376" y="78" text-anchor="middle" font-family="Syne,sans-serif" font-size="12" font-weight="700" fill="#D5D9E0">Tenant auth + routing</text>
+        <text x="376" y="96" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">API key resolved</text>
+        <text x="376" y="110" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">Tenant context loaded</text>
+      </g>
+
+      <!-- Arrow S2→S3 -->
+      <line x1="474" y1="78" x2="518" y2="78" stroke="#4A6080" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+      <!-- S3: Payload extraction -->
+      <g class="flow-node" id="fn2" data-step="2">
+        <rect x="520" y="36" width="220" height="84" rx="8" fill="#1a1040" stroke="#7F77DD" stroke-width="1.5"/>
+        <rect x="520" y="36" width="220" height="24" rx="8" fill="#534AB7"/>
+        <rect x="520" y="48" width="220" height="12" fill="#534AB7"/>
+        <text x="630" y="53" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#EEEDFE" letter-spacing="0.12em" font-weight="500">③ EXTRACT</text>
+        <text x="630" y="78" text-anchor="middle" font-family="Syne,sans-serif" font-size="12" font-weight="700" fill="#EEEDFE">Payload extraction</text>
+        <text x="630" y="96" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#AFA9EC">Guest · vessel · date</text>
+        <text x="630" y="110" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#AFA9EC">Party size · trip type</text>
+      </g>
+
+      <!-- Arrow S3→S4 (down into row 2) -->
+      <line x1="630" y1="120" x2="630" y2="148" stroke="#4A6080" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+      <!-- Row 2 (parallel fetch) -->
+      <!-- S4a: Weather fetch -->
+      <g class="flow-node" id="fn3" data-step="3">
+        <rect x="430" y="150" width="196" height="80" rx="8" fill="#0c2d50" stroke="#378ADD" stroke-width="1.5"/>
+        <rect x="430" y="150" width="196" height="22" rx="8" fill="#185FA5"/>
+        <rect x="430" y="160" width="196" height="12" fill="#185FA5"/>
+        <text x="528" y="165" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#E6F1FB" letter-spacing="0.12em" font-weight="500">④a WEATHER</text>
+        <text x="528" y="188" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#E6F1FB">Open-Meteo fetch</text>
+        <text x="528" y="206" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#85B7EB">Wind · precip · Bft scale</text>
+        <text x="528" y="222" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#378ADD">Departure marina loc</text>
+      </g>
+
+      <!-- S4b: Brand context -->
+      <g class="flow-node" id="fn3b" data-step="3">
+        <rect x="650" y="150" width="196" height="80" rx="8" fill="#1a2d4e" stroke="#4A6080" stroke-width="1.5"/>
+        <rect x="650" y="150" width="196" height="22" rx="8" fill="#2A3A50"/>
+        <rect x="650" y="160" width="196" height="12" fill="#2A3A50"/>
+        <text x="748" y="165" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#D5D9E0" letter-spacing="0.12em" font-weight="500">④b BRAND</text>
+        <text x="748" y="188" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#D5D9E0">Brand + context load</text>
+        <text x="748" y="206" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">Logo · tone · vessel</text>
+        <text x="748" y="222" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">Dock info · brand kit</text>
+      </g>
+
+      <!-- Converge arrows into S5 -->
+      <line x1="528" y1="230" x2="528" y2="290" stroke="#4A6080" stroke-width="1" stroke-opacity="0.7" marker-end="url(#arr2)"/>
+      <line x1="748" y1="230" x2="660" y2="290" stroke="#4A6080" stroke-width="1" stroke-opacity="0.7" marker-end="url(#arr2)"/>
+
+      <!-- S5: Prompt Orchestrator -->
+      <g class="flow-node" id="fn4" data-step="4">
+        <rect x="330" y="292" width="360" height="76" rx="8" fill="#1a1040" stroke="#7F77DD" stroke-width="1.5"/>
+        <rect x="330" y="292" width="360" height="22" rx="8" fill="#534AB7"/>
+        <rect x="330" y="302" width="360" height="12" fill="#534AB7"/>
+        <text x="510" y="307" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#EEEDFE" letter-spacing="0.12em" font-weight="500">⑤ ORCHESTRATE</text>
+        <text x="510" y="332" text-anchor="middle" font-family="Syne,sans-serif" font-size="12" font-weight="700" fill="#EEEDFE">Prompt Orchestrator</text>
+        <text x="510" y="350" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#AFA9EC">Context assembly · template select · token budget check</text>
+        <text x="510" y="362" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#7F77DD">Versioned prompt → assembled payload</text>
+      </g>
+
+      <!-- S5 → S6 -->
+      <line x1="510" y1="368" x2="510" y2="392" stroke="#C9A84C" stroke-width="1.5" marker-end="url(#arr2g)"/>
+
+      <!-- S6 split: Claude API + Private GPU -->
+      <g class="flow-node" id="fn5a" data-step="5">
+        <rect x="200" y="394" width="250" height="84" rx="8" fill="#2a1a00" stroke="#BA7517" stroke-width="1.5"/>
+        <rect x="200" y="394" width="250" height="22" rx="8" fill="#854F0B"/>
+        <rect x="200" y="404" width="250" height="12" fill="#854F0B"/>
+        <text x="325" y="409" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#FAEEDA" letter-spacing="0.12em" font-weight="500">⑥a STANDARD CLIENTS</text>
+        <text x="325" y="432" text-anchor="middle" font-family="Syne,sans-serif" font-size="12" font-weight="700" fill="#FAEEDA">Claude API</text>
+        <text x="325" y="450" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#FAC775">Public endpoint</text>
+        <text x="325" y="466" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#EF9F27">Standard SMB clients</text>
+      </g>
+
+      <g class="flow-node" id="fn5b" data-step="5">
+        <rect x="600" y="394" width="256" height="84" rx="8" fill="#1a0a08" stroke="#D85A30" stroke-width="1.5"/>
+        <rect x="600" y="394" width="256" height="22" rx="8" fill="#993C1D"/>
+        <rect x="600" y="404" width="256" height="12" fill="#993C1D"/>
+        <text x="728" y="409" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#FAECE7" letter-spacing="0.12em" font-weight="500">⑥b REGULATED CLIENTS</text>
+        <text x="728" y="432" text-anchor="middle" font-family="Syne,sans-serif" font-size="12" font-weight="700" fill="#FAECE7">Private GPU Node</text>
+        <text x="728" y="450" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#F5C4B3">HIPAA-aligned · zero retention</text>
+        <text x="728" y="466" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#D85A30">Dental + law firm clients</text>
+      </g>
+
+      <!-- OR label -->
+      <circle cx="510" cy="436" r="14" fill="#1a2d4e" stroke="#4A6080" stroke-width="1"/>
+      <text x="510" y="440" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">or</text>
+      <line x1="330" y1="394" x2="460" y2="436" stroke="#BA7517" stroke-width="1" stroke-opacity="0.6" marker-end="url(#arr2)"/>
+      <line x1="600" y1="436" x2="560" y2="436" stroke="#D85A30" stroke-width="1" stroke-opacity="0.6" marker-end="url(#arr2)"/>
+
+      <!-- Converge to S7 -->
+      <line x1="325" y1="478" x2="388" y2="508" stroke="#4A6080" stroke-width="1" stroke-opacity="0.6" marker-end="url(#arr2)"/>
+      <line x1="728" y1="478" x2="636" y2="508" stroke="#4A6080" stroke-width="1" stroke-opacity="0.6" marker-end="url(#arr2)"/>
+
+      <!-- S7: Human review -->
+      <g class="flow-node" id="fn6" data-step="6">
+        <rect x="270" y="510" width="468" height="70" rx="8" fill="#1a2d4e" stroke="#C9A84C" stroke-width="1.5"/>
+        <rect x="270" y="510" width="468" height="22" rx="8" fill="#2A3A50"/>
+        <rect x="270" y="520" width="468" height="12" fill="#2A3A50"/>
+        <text x="504" y="525" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#C9A84C" letter-spacing="0.12em" font-weight="500">⑦ HUMAN REVIEW GATE (OPTIONAL)</text>
+        <text x="504" y="550" text-anchor="middle" font-family="Syne,sans-serif" font-size="12" font-weight="700" fill="#D5D9E0">2-hour approval window</text>
+        <text x="504" y="568" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">Approve · edit · override · skip — operator via Client Portal</text>
+      </g>
+
+      <!-- S7 → S8 trio -->
+      <line x1="370" y1="580" x2="290" y2="608" stroke="#4A6080" stroke-width="1" stroke-opacity="0.5" marker-end="url(#arr2)"/>
+      <line x1="504" y1="580" x2="504" y2="608" stroke="#4A6080" stroke-width="1" stroke-opacity="0.5" marker-end="url(#arr2)"/>
+      <line x1="640" y1="580" x2="730" y2="608" stroke="#4A6080" stroke-width="1" stroke-opacity="0.5" marker-end="url(#arr2)"/>
+
+      <!-- S8 trio: Delivery, Audit, Follow-up -->
+      <g class="flow-node" id="fn7a" data-step="7">
+        <rect x="160" y="610" width="190" height="62" rx="8" fill="#085041" stroke="#1D9E75" stroke-width="1"/>
+        <rect x="160" y="610" width="190" height="20" rx="8" fill="#0F6E56"/>
+        <rect x="160" y="620" width="190" height="10" fill="#0F6E56"/>
+        <text x="255" y="624" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#E1F5EE" letter-spacing="0.1em">⑧a DELIVER</text>
+        <text x="255" y="644" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#E1F5EE">Guest inbox</text>
+        <text x="255" y="660" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#5DCAA5">Email from client domain</text>
+      </g>
+
+      <g class="flow-node" id="fn7b" data-step="7">
+        <rect x="400" y="610" width="210" height="62" rx="8" fill="#1a2d4e" stroke="#4A6080" stroke-width="1"/>
+        <rect x="400" y="610" width="210" height="20" rx="8" fill="#2A3A50"/>
+        <rect x="400" y="620" width="210" height="10" fill="#2A3A50"/>
+        <text x="505" y="624" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#D5D9E0" letter-spacing="0.1em">⑧b AUDIT LOG</text>
+        <text x="505" y="644" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#D5D9E0">Immutable record</text>
+        <text x="505" y="660" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#8899AA">Model · ver · tokens · no PHI</text>
+      </g>
+
+      <g class="flow-node" id="fn7c" data-step="7">
+        <rect x="660" y="610" width="210" height="62" rx="8" fill="#1a1040" stroke="#7F77DD" stroke-width="1"/>
+        <rect x="660" y="610" width="210" height="20" rx="8" fill="#534AB7"/>
+        <rect x="660" y="620" width="210" height="10" fill="#534AB7"/>
+        <text x="765" y="624" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#EEEDFE" letter-spacing="0.1em">⑧c FOLLOW-UP QUEUE</text>
+        <text x="765" y="644" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="700" fill="#EEEDFE">Scheduled sequences</text>
+        <text x="765" y="660" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#AFA9EC">T+24h reminder · T+96h review</text>
+      </g>
+
+      <!-- Timing note -->
+      <text x="530" y="646" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#C9A84C" opacity="0.6">Typical: 3–6s booking-to-inbox</text>
+    </svg>
+    </div>
+    <div class="controls">
+      <button class="ctrl-btn" onclick="zoom2('in')">+</button>
+      <div class="zoom-label" id="zoom2-label">100%</div>
+      <button class="ctrl-btn" onclick="zoom2('out')">−</button>
+      <button class="reset-btn" onclick="resetView2()">reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="artifact-footer">
+  <div class="footer-left">SMB AI OPS · PLATFORM ARCHITECTURE · v1.0 · MAY 2026</div>
+  <div class="footer-right">CONFIDENTIAL — INTERNAL USE ONLY</div>
+</div>
+
+<!-- TOOLTIP -->
+<div class="tooltip" id="tooltip">
+  <div class="tooltip-title" id="tt-title"></div>
+  <div class="tooltip-body" id="tt-body"></div>
+</div>
+
+<script>
+// ── TAB SWITCHING ──
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  closeDetail();
+}
+
+// ── ZOOM + PAN (diagram 1) ──
+let z1 = 1, px1 = 0, py1 = 0, drag1 = false, lx1, ly1;
+const c1 = document.getElementById('canvas1');
+const w1 = document.getElementById('wrap1');
+function applyTransform1() {
+  c1.style.transform = `translate(${px1}px,${py1}px) scale(${z1})`;
+  document.getElementById('zoom1-label').textContent = Math.round(z1*100)+'%';
+}
+function zoom1(dir) { z1 = Math.max(0.4, Math.min(2, z1 + (dir==='in'?0.15:-0.15))); applyTransform1(); }
+function resetView1() { z1=1; px1=0; py1=0; applyTransform1(); }
+w1.addEventListener('mousedown', e=>{ drag1=true; lx1=e.clientX-px1; ly1=e.clientY-py1; });
+window.addEventListener('mousemove', e=>{ if(!drag1)return; px1=e.clientX-lx1; py1=e.clientY-ly1; applyTransform1(); });
+window.addEventListener('mouseup', ()=>drag1=false);
+w1.addEventListener('wheel', e=>{ e.preventDefault(); z1=Math.max(0.4,Math.min(2,z1-e.deltaY*0.001)); applyTransform1(); },{passive:false});
+
+// ── ZOOM + PAN (diagram 2) ──
+let z2 = 1, px2 = 0, py2 = 0, drag2 = false, lx2, ly2;
+const c2 = document.getElementById('canvas2');
+const w2 = document.getElementById('wrap2');
+function applyTransform2() {
+  c2.style.transform = `translate(${px2}px,${py2}px) scale(${z2})`;
+  document.getElementById('zoom2-label').textContent = Math.round(z2*100)+'%';
+}
+function zoom2(dir) { z2 = Math.max(0.4, Math.min(2, z2 + (dir==='in'?0.15:-0.15))); applyTransform2(); }
+function resetView2() { z2=1; px2=0; py2=0; applyTransform2(); }
+w2.addEventListener('mousedown', e=>{ drag2=true; lx2=e.clientX-px2; ly2=e.clientY-py2; });
+window.addEventListener('mousemove', e=>{ if(!drag2)return; px2=e.clientX-lx2; py2=e.clientY-ly2; applyTransform2(); });
+window.addEventListener('mouseup', ()=>drag2=false);
+w2.addEventListener('wheel', e=>{ e.preventDefault(); z2=Math.max(0.4,Math.min(2,z2-e.deltaY*0.001)); applyTransform2(); },{passive:false});
+
+// ── STEP HIGHLIGHT (flow diagram) ──
+function highlightStep(idx, btn) {
+  document.querySelectorAll('.step-pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.flow-node').forEach(n=>{
+    const s = parseInt(n.getAttribute('data-step'));
+    n.style.opacity = (s === idx) ? '1' : '0.25';
+  });
+}
+
+// ── NODE DETAIL DATA ──
+const details = {
+  'charter': {
+    title:'Charter Brief — Acquisition Tool',
+    sub:'Marine vertical · Free + Pro tiers · FareHarbor integration',
+    cards:[
+      {label:'Purpose',body:'Free tool that generates branded pre-trip guest briefs. Earns trust, demonstrates domain depth, qualifies operator intent.'},
+      {label:'Integration hook',body:'FareHarbor booking.created webhook fires on every new booking. Brief auto-generates and delivers to guest inbox within seconds.'},
+      {label:'Lead routing',body:'Pro signup ($49/mo) triggers 48-hour outreach queue. Vertical lead contacts Pro subscriber directly for discovery call.'},
+    ]
+  },
+  'dental-brief': {
+    title:'Dental Brief — Acquisition Tool',
+    sub:'Dental vertical · Free + Pro tiers · HIPAA-aligned scope',
+    cards:[
+      {label:'Purpose',body:'Generates patient recall messages. Targets front-desk admin burden — the primary pain point for owner-operated dental practices.'},
+      {label:'HIPAA note',body:'BAA must be executed before any retainer is signed. Workflows scoped to scheduling and comms only. No clinical data ingested.'},
+      {label:'Lead routing',body:'Same Pro-to-outreach funnel as marine. Dental lead runs discovery calls focused on recall volume and front-desk hours per week.'},
+    ]
+  },
+  'property-brief': {
+    title:'Property Brief — Acquisition Tool',
+    sub:'Property management vertical · AppFolio / Buildium integration',
+    cards:[
+      {label:'Purpose',body:'Generates lease renewal letters and tenant communications. Demonstrates bulk automation capability across entire portfolios.'},
+      {label:'Integration',body:'AppFolio and Buildium API access enables bulk workflow automation. Lease renewal triggers on portfolio-wide renewal date list.'},
+      {label:'Lead routing',body:'NARPM + BiggerPockets community seeding. Pro-to-retainer funnel identical to other verticals.'},
+    ]
+  },
+  'auth': {
+    title:'Auth & Tenancy',
+    sub:'RBAC · SSO · API key management · Tenant context isolation',
+    cards:[
+      {label:'Isolation model',body:'Shared Postgres DB with tenant_id as hard filter on all queries. Path-prefixed object storage (/tenants/{id}/). Namespace-scoped vector embeddings.'},
+      {label:'Access control',body:'RBAC from day one. Staff console access separate from client portal. API keys for webhook ingest. MFA required for internal staff roles.'},
+      {label:'Scale path',body:'Per-tenant DB isolation evaluated at first enterprise dental or legal retainer. Regulated clients will ask — be ready to answer.'},
+    ]
+  },
+  'ops-dash': {
+    title:'Ops Dashboard',
+    sub:'Internal staff console — not visible to clients',
+    cards:[
+      {label:'Primary users',body:'SMB AI Ops staff. Vertical leads manage client workflow configs, monitor automation health, and handle escalations from the human review queue.'},
+      {label:'Workflow builder',body:'V2 feature (Month 6+). MVP is manual config via JSON/YAML. Workflow builder UI deferred until services revenue is repeatable.'},
+      {label:'Human review',body:'Two-hour approval window for high-stakes automation sends. Staff approve, edit, or override before delivery. Full audit trail captured.'},
+    ]
+  },
+  'client-portal': {
+    title:'Client Portal',
+    sub:'SMB client-facing — brief review, usage reports, approval controls',
+    cards:[
+      {label:'Audience',body:'Retainer clients only. The portal is where operators see what was sent on their behalf, review pending approvals, and access usage reports.'},
+      {label:'Approval controls',body:'Clients can configure approval mode (auto-send vs. review required) per workflow. Dental clients default to review mode for all patient-facing sends.'},
+      {label:'Usage reports',body:'Monthly brief count, workflow performance, staff time saved estimate. Used in retainer QBRs to demonstrate ROI and justify expansion.'},
+    ]
+  },
+  'billing': {
+    title:'Billing',
+    sub:'Stripe · Free, Pro, Retainer tiers · 48h outreach trigger',
+    cards:[
+      {label:'Tier structure',body:'Free (tool access only) → Pro ($49/mo, intent signal) → Retainer ($1,000–$2,000+/mo managed ops). Pro not positioned as primary revenue.'},
+      {label:'Outreach trigger',body:'Pro signup fires a 48-hour timer that notifies the vertical lead. The lead contacts the subscriber directly. Speed to contact matters.'},
+      {label:'Retainer billing',body:'Monthly subscription via Stripe. Onboarding fee billed separately at project start. GPU add-on billed as a line item on same invoice.'},
+    ]
+  },
+  'workflow': {
+    title:'Workflow Engine',
+    sub:'Job scheduler · Trigger handlers · Human review queue · Retry + fallback',
+    cards:[
+      {label:'Trigger types',body:'FareHarbor webhook (marine), scheduled cron jobs (dental recall campaigns, PM renewal runs), manual triggers from Ops Dashboard.'},
+      {label:'Queue architecture',body:'BullMQ or Inngest recommended at scale. MVP can use simple async queue. Separate workers from API layer to prevent booking spikes from blocking the pipeline.'},
+      {label:'Human review',body:'Configurable per client. Low-confidence outputs, first sends for new clients, or client-specified workflows route to the 2-hour review queue automatically.'},
+    ]
+  },
+  'orchestrator': {
+    title:'Prompt Orchestrator',
+    sub:'Template library · Context assembly · Token budgeting · Prompt versioning',
+    cards:[
+      {label:'Template library',body:'Versioned prompt templates per vertical and workflow type. Templates stored in DB with version history. Regression tests run on every template or model change.'},
+      {label:'Context assembly',body:'Combines: booking/patient/tenant payload + weather data + brand kit + system prompt + token budget check. All assembled before the LLM call.'},
+      {label:'Citation + tracing',body:'Every output traceable to its prompt version, model, and retrieved context chunks. Required for audit log and human review quality assessment.'},
+    ]
+  },
+  'llm-gateway': {
+    title:'LLM Gateway',
+    sub:'Route · retry · fallback · cost track · audit · PHI redaction',
+    cards:[
+      {label:'Routing logic',body:'Standard clients → Claude API (public). Regulated clients (dental with BAA, law firms) → Private GPU node. Routing config per tenant in DB.'},
+      {label:'Logging policy',body:'Log: request ID, tenant ID, model, prompt version, token count, latency, cost. NEVER log raw prompt content that may contain PII or PHI. Redaction layer before any logging.'},
+      {label:'Reliability',body:'Retry with exponential backoff on provider errors. Fallback chain configurable per tenant. Rate limit enforcement per tenant before hitting either provider.'},
+    ]
+  },
+  'private-gpu': {
+    title:'Private GPU Node',
+    sub:'4× RTX 4090 · Zero-retention · BAA-ready · VLAN isolated · Heppner defense',
+    cards:[
+      {label:'Compliance posture',body:'HIPAA-ready (BAA executed per client). Zero-retention architecture — no prompt data persists after inference. TLS 1.3 in transit. AES-256 at rest. VLAN isolation.'},
+      {label:'Heppner ruling',body:'Feb 2026 S.D.N.Y. ruling: docs created using public AI are NOT protected by attorney-client privilege. Private endpoint + signed DPA eliminates this risk. Primary sales hook for law firm vertical.'},
+      {label:'Scale path',body:'Residential PoC → Miami/Doral colocation at 8–10 GPU demand. Do not represent residential node as enterprise-grade SLA. Disclose appropriately at sales.'},
+    ]
+  },
+  'fareharbor': {
+    title:'FareHarbor Integration',
+    sub:'booking.created webhook · Marine vertical · Event-driven trigger',
+    cards:[
+      {label:'Webhook mechanics',body:'FareHarbor fires booking.created on every confirmed booking. Platform receives event, resolves tenant context, parses payload, hands off to workflow engine.'},
+      {label:'Field mapping',body:'Each marine client\'s FareHarbor field names mapped to platform canonical model during onboarding. Mapping stored in tenant DB. Required because operators configure their own booking forms.'},
+      {label:'Roadmap',body:'DocuSign waiver routing (Q3 2026). Post-trip follow-up sequence. Review request automation. FareHarbor partner directory listing.'},
+    ]
+  },
+  'dentrix': {
+    title:'Dentrix / Eaglesoft Integration',
+    sub:'Patient data export · Recall lists · Dental vertical',
+    cards:[
+      {label:'Data scope',body:'Scheduling and communications workflows only. No clinical records, diagnosis data, or treatment history ingested. Scope defined and documented in client MSA.'},
+      {label:'Export mechanics',body:'Recall list exported from PMS on configurable schedule (daily/weekly). Patient name, last visit date, treatment due — no clinical detail. Mapped to recall campaign templates.'},
+      {label:'BAA requirement',body:'Business Associate Agreement executed before first patient data is processed. Template reviewed by counsel. Required before retainer is signed for any dental client.'},
+    ]
+  },
+  'appfolio': {
+    title:'AppFolio / Buildium Integration',
+    sub:'Portfolio sync · Lease renewal triggers · PM vertical',
+    cards:[
+      {label:'API capabilities',body:'AppFolio and Buildium both expose REST APIs for portfolio data. Tenant list, lease end dates, unit details sync on configurable schedule.'},
+      {label:'Bulk workflow',body:'Primary value prop: generate renewal letters for entire portfolio in one run. PM reviews, approves batch, letters sent via platform email from PM domain.'},
+      {label:'Roadmap',body:'QuickBooks reconciliation narrative (Q3 2026). Owner monthly report generation. Maintenance update templates. Rent increase letter automation.'},
+    ]
+  },
+  'outbound': {
+    title:'Outbound Integrations',
+    sub:'SendGrid · Twilio · DocuSign · QuickBooks · HubSpot',
+    cards:[
+      {label:'Email (SendGrid)',body:'All client-facing email delivered via SendGrid from the client\'s own domain. Open tracking, bounce handling, unsubscribe management. Never sent from platform domain.'},
+      {label:'Waiver / docs (DocuSign)',body:'Q3 2026 roadmap. Charter waiver routing on booking.created. Template library per charter operator. Completion status synced back to booking record.'},
+      {label:'CRM + accounting',body:'HubSpot for review request sequences and client communication tracking. QuickBooks for PM reconciliation narrative generation (retainer scope).'},
+    ]
+  },
+  'tenant-db': {
+    title:'Tenant Database',
+    sub:'Postgres · Client metadata · Workflow configs · RBAC · Prompt templates',
+    cards:[
+      {label:'Isolation model',body:'Shared DB with tenant_id as hard filter on every query. ORM-level enforcement. Per-tenant DB isolation on roadmap for enterprise regulated clients.'},
+      {label:'Schema key tables',body:'tenants, users, rbac_roles, workflow_configs, prompt_templates, field_mappings, brand_kits, audit_log_refs, subscription_tiers.'},
+      {label:'Backup strategy',body:'Daily encrypted backups. Point-in-time recovery. Cross-region replication added when first enterprise client signed. Tested restore quarterly.'},
+    ]
+  },
+  'audit-log': {
+    title:'Audit + Prompt Log',
+    sub:'Immutable · append-only · Model · version · tokens · No raw PHI',
+    cards:[
+      {label:'What is logged',body:'Request ID, tenant ID, workflow type, model used, prompt version ID, token count (input + output), latency, cost, human review flag, approver if reviewed.'},
+      {label:'What is NOT logged',body:'Raw prompt content that may contain PII or PHI. Guest names, patient records, tenant personal data. Redaction layer enforced before any write to log.'},
+      {label:'Compliance use',body:'Per-tenant audit export available from Client Portal. Required for HIPAA audit trail. Used in attorney-client privilege documentation for law firm clients.'},
+    ]
+  },
+  'object-storage': {
+    title:'Object Storage',
+    sub:'S3-compatible · AES-256 at rest · /tenants/{id}/ path isolation',
+    cards:[
+      {label:'What lives here',body:'Raw documents uploaded by clients, generated brief copies, brand kit assets (logos, tone docs), field mapping configs, backup prompt template exports.'},
+      {label:'Isolation',body:'Path prefix /tenants/{tenant_id}/ enforced at application layer. Bucket policies enforce no cross-tenant reads. Pre-signed URLs time-limited to 15 minutes.'},
+      {label:'Encryption',body:'AES-256 at rest via provider-managed keys (SSE-S3). Client-managed KMS available for enterprise regulated clients who require it.'},
+    ]
+  },
+  'observability': {
+    title:'Observability',
+    sub:'Error tracking · Cost per tenant · Uptime · Usage dashboards',
+    cards:[
+      {label:'Error tracking',body:'Sentry for application errors. Alert thresholds on error rate spikes, LLM latency degradation, and queue depth growth. PagerDuty on-call (Month 6+).'},
+      {label:'Cost monitoring',body:'Per-tenant Claude API cost tracked in LLM Gateway. Budget alerts when tenant usage exceeds 120% of baseline. Used for retainer pricing calibration.'},
+      {label:'Usage dashboards',body:'Datadog Lite or Axiom at MVP. Dashboards for: briefs sent per client per week, workflow success rate, human review rate, MoM client growth.'},
+    ]
+  },
+};
+
+function showDetail(id) {
+  const d = details[id];
+  if (!d) return;
+  document.getElementById('dp-title').textContent = d.title;
+  document.getElementById('dp-sub').textContent = d.sub;
+  const grid = document.getElementById('dp-grid');
+  grid.innerHTML = d.cards.map(c=>`
+    <div class="detail-card">
+      <div class="detail-card-label">${c.label}</div>
+      <div class="detail-card-content">${c.body}</div>
+    </div>`).join('');
+  document.getElementById('detail-panel-1').classList.add('visible');
+}
+
+function closeDetail() {
+  document.getElementById('detail-panel-1').classList.remove('visible');
+}
+</script>
+</body>
+</html>

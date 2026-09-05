@@ -1,0 +1,204 @@
+**SMB AI OPS**
+
+*Integrated Strategy **&** Business Plan*
+
+AI Operational Services
+
+Marine  ·  Dental  ·  Property Management
+
+*May 2026  |  Confidential*
+
+| **Business** | AI operational services firm — configure and manage Claude workflows for SMBs |
+| --- | --- |
+| **Verticals** | Marine charter · Dental practices · Property management — launched simultaneously |
+| **Revenue model** | $3,500–5,000 onboarding + $1,000–1,500/mo managed retainer per client |
+| **Target (90 days)** | 3 retainer clients live — one per vertical — $3,000–6,000/mo MRR |
+| **Window** | 12–18 months before large MSPs productize this layer — move now |
+
+# **1. Business Overview**
+
+SMB AI Ops is an AI operational services firm that configures and manages Claude-powered workflows for small and medium-sized businesses that lack the technical staff to implement and maintain them. We are not a software company. Our product is the implementation layer — the playbooks, connectors, training, and ongoing management that transform a general-purpose AI tool into a working business process.
+
+| **Core Thesis** The gap Anthropic left open is the last-mile layer. SMBs in regulated or operationally complex niches cannot self-implement AI workflows. We fill that gap with vertical depth, embedded client relationships, and proprietary playbooks built from real deployments. The moat compounds with every client onboarded. |
+| --- |
+
+## **The Business Model**
+
+| **Layer** | **Product** | **Price** | **Strategic Role** |
+| --- | --- | --- | --- |
+| 1 — Trust | Free vertical app (Charter Brief / Dental Brief / Property Brief) | $0 | Earn credibility, qualify leads by behavior |
+| 2 — Validation | Vertical Pro tier | $49/mo | Filter highest-intent operators — not the primary pitch |
+| 3 — Entry Gate | Managed AI onboarding | $3,500–5,000 | Entry fee that earns embedded access and playbook rights |
+| 4 — Core Business | Managed AI retainer | $1,000–1,500/mo | Recurring revenue — high-LTV, compounding switching cost |
+| Included | Pro features for retainer clients | $0 (bundled) | Retention and expansion — not a separate SKU |
+
+## **What Is Decided**
+
+The following strategic decisions are closed and should not be relitigated:
+
+| **Decision** | **Position** |
+| --- | --- |
+| Primary business | AI operational services — not SaaS, not a software company |
+| Vertical apps role | Lead generation, trust signal, and lead filter — not core product |
+| Pro tier role | Market validation and high-intent filter — never primary revenue pitch |
+| Launch verticals | Marine, dental, and property management — simultaneously |
+| Sequencing model | Three vertical leads, one per niche — founder anchors marine |
+| Competitive posture | Compete directly — displace MSP digital ops layer and admin labor cost |
+| Pricing | $3,500–5,000 onboarding + $1,000–1,500/mo retainer across all verticals |
+| Tech build timing | Monitoring dashboard and prompt libraries in Year 2 — not pre-revenue |
+
+# **2. Three Vertical Strategy**
+
+Most vertical AI firms prove the model in one niche before expanding. SMB AI Ops launches across three simultaneously — not as a resource decision but a strategic one. Three independent data streams validate the GTM model in parallel. Three referral networks compound at once. Three clients by week 12 is a portfolio story that cannot be built sequentially.
+
+## **Marine — Charter Brief**
+
+| **Core Pain** Office managers spend 8–12 hours per week on guest communications, pre-trip coordination, and waiver routing. No AI competitor exists in this niche. FareHarbor webhook integration enables full automation from booking to guest inbox. |
+| --- |
+
+| **Element** | **Detail** |
+| --- | --- |
+| Free tool | Pre-trip guest brief generator — marina, date, guests, trip type → branded weather-aware email in 30 seconds |
+| Primary hook | FareHarbor auto-send on booking.created — zero manual effort per booking |
+| Retainer workflows | Guest comms, post-trip follow-up, review requests, DocuSign waiver routing (Q3 2026 roadmap) |
+| US market | ~5,000 charter operators |
+| Revenue target | $1,000–1,500/mo retainer |
+| Discovery call hook | Pull up their marina live in Charter Brief, generate a real brief, ask how long this takes today |
+| Key channels | Charter operator Facebook groups, marina managers, FareHarbor partner directory, NMMA, BoatUS |
+| SEO targets | yacht charter guest email template, boat rental pre-trip communication, FareHarbor automation |
+
+## **Dental — Dental Brief**
+
+| **Core Pain** Front desk staff spend 6–10 hours per week on manual recall calls, appointment confirmations, and review requests. Recall and reactivation workflows map cleanly to Claude. HIPAA scope is defined: scheduling and comms workflows only — not clinical records. |
+| --- |
+
+| **Element** | **Detail** |
+| --- | --- |
+| Free tool | Patient recall message generator — name, last visit, treatment due, tone → professional recall email or SMS in 20 seconds |
+| Primary hook | Recall and reactivation campaigns against the practice's full overdue patient list |
+| Retainer workflows | Recall sequences, appointment confirmations, post-visit review requests, insurance pre-auth assistance (roadmap) |
+| US market | ~100,000 owner-operated practices (1–3 chair) |
+| Revenue target | $1,000–1,500/mo retainer |
+| Discovery call hook | Generate a recall email live, ask how many overdue patients they have and how many the front desk calls per week |
+| Key channels | Dental practice management Facebook groups, dental study clubs, Henry Schein/Patterson reps, state dental associations |
+| HIPAA note | BAA posture must be confirmed before first retainer signed — workflows stay at scheduling and comms layer |
+
+## **Property Management — Property Brief**
+
+| **Core Pain** Property managers spend 10–15 hours per month drafting renewal letters, maintenance updates, and owner reports. AppFolio and Buildium API access enables bulk workflow automation across entire portfolios. |
+| --- |
+
+| **Element** | **Detail** |
+| --- | --- |
+| Free tool | Lease renewal letter generator — tenant name, unit, rent, renewal terms → professional renewal letter in 20 seconds |
+| Primary hook | Full lease renewal workflow automation — letters generated, sent, and tracked across the portfolio at once |
+| Retainer workflows | Bulk renewal generation, maintenance request templates, monthly owner report narratives, tenant comms sequences, QuickBooks reconciliation |
+| US market | ~20,000 residential PM firms (20–200 units) |
+| Revenue target | $1,000–1,500/mo retainer |
+| Discovery call hook | Generate a lease renewal letter live, ask how many renewals per month and what the current process looks like |
+| Key channels | NARPM, AppFolio/Buildium user communities, BiggerPockets, real estate investor associations, PM software resellers |
+| SEO targets | lease renewal letter template, property management tenant communication AI, AppFolio automation |
+
+# **3. Strategic Moat**
+
+The competitive window is 12–18 months before large MSPs productize this layer. The moat must be built in that window — not through technology, but through vertical depth and embedded client relationships that a generalist competitor cannot replicate.
+
+| **Moat** | **How It Works** | **Why It Compounds** |
+| --- | --- | --- |
+| Vertical App Portfolio | Three purpose-built free tools create three independent acquisition channels | Each app builds SEO, community credibility, and referral density independently |
+| Operational Depth | We know Beaufort scales for marine, recall compliance for dental, AppFolio export formats for PM | Generalist AI firms cannot credibly demo any of these — we close on specificity |
+| Embedded Relationships | After 90 days managing a client's ops, we know their staff, approval hierarchy, and seasonal patterns | Institutional knowledge does not transfer to a competitor — switching cost compounds monthly |
+| Playbook IP | Config guides, prompt libraries, and workflow templates from real client deployments | Each client makes the next onboarding faster, cheaper, and more reliable |
+
+| **Window Statement** The 12–18 month window is not a planning assumption — it is the operating constraint. Large MSPs have the distribution but lack the vertical depth. We build the depth and the client base before they productize the layer. Speed to first retainer client in each vertical is the only metric that matters in the first 90 days. |
+| --- |
+
+# **4. Go-To-Market**
+
+| **North Star** One new managed AI retainer client per month per vertical. Three verticals in simultaneous operation means a combined target of three new retainer clients per month at steady state. |
+| --- |
+
+## **The Funnel — Identical Across All Three Verticals**
+
+| **Stage** | **Mechanism** | **Success Signal** |
+| --- | --- | --- |
+| Awareness | Free app discovered via SEO, community seeding, association listings, referral partners | Operator uses the free tool and completes a generation |
+| Qualification | Operator signs up for Pro ($49/mo) | Self-identified as willing to pay — highest-intent segment, flagged for outreach within 48 hours |
+| Outreach | Vertical lead contacts Pro subscriber within 48 hours of signup | Discovery call booked |
+| Discovery | Workflow audit call — pain mapping, tool inventory, retainer scoping | Retainer proposal delivered same day |
+| Close | Proposal accepted, onboarding deposit paid | Retainer client active |
+| Retention | Monthly ops delivery, proactive monitoring, expansion | Switching cost compounds — relationship deepens every month |
+
+## **The Discovery Call — Universal Script**
+
+The discovery call is a workflow audit, not a product demo. The goal is to make the operator's operational pain visible and quantifiable before presenting any solution.
+
+| **Step** | **Action** |
+| --- | --- |
+| Open | Generate something real for their specific business live in the free tool. Let them react before you say anything. |
+| Pain inventory | Walk me through a typical week for your admin staff. What takes the most time that feels like it shouldn't require a person? |
+| Map and quantify | List every workflow named, estimate hours per week, multiply by staff cost rate. Show them the monthly dollar figure. |
+| Introduce the concept | We configure and manage AI workflows for [their vertical]. Our clients typically recover the cost within 60 days in staff time alone. |
+| Scope on the call | Which workflows, which tools, which integrations. Name a price range before hanging up. Do not let them leave without a number. |
+| Close on a start date | If this makes sense, I'll send you a one-page scope this afternoon and we can start the workflow audit next week. Not a follow-up — a start date. |
+
+# **5. 90-Day Launch Roadmap**
+
+| **Phase** | **Timeline** | **Objectives** | **Goal** |
+| --- | --- | --- | --- |
+| Phase 1: Ship & Seed | Weeks 1–4 | All three apps live with weather API, Claude integration, brand kit, and Pro tier active. Founder joins 3 charter operator communities, contacts 3 marina managers, submits to FareHarbor partner directory. Dental lead joins 3 dental practice management groups, contacts 2 dental CPAs. PM lead joins NARPM chapter, seeds Property Brief in BiggerPockets. | 150+ combined free signups, 10+ Pro subscribers |
+| Phase 2: First Discovery Calls | Weeks 5–8 | Each vertical lead runs 3–5 discovery calls with Pro subscribers — full workflow audit per call. Track which pain points dominate, which workflows drive retainer interest, what objections recur. Identify one retainer candidate per vertical. Deliver retainer proposals to all three before end of week 8. | 3 retainer proposals delivered — one per vertical |
+| Phase 3: First Retainers & Playbook | Weeks 9–12 | Close at least one retainer client per vertical — accept slightly below target for first client in exchange for case study rights. Document every configuration step during onboarding. Each vertical lead produces a written playbook. Record one video case study per vertical closed. | $3,000–6,000/mo combined retainer MRR live by week 12 |
+
+# **6. Team Structure**
+
+| **Role** | **Focus** | **Profile** | **Timing** |
+| --- | --- | --- | --- |
+| Founder | Marine vertical — lead all three GTM architectures, build delivery playbook | Operator-empathetic, technically fluent, consultative seller | Day 1 |
+| Dental Vertical Lead | Dental Brief seeding, discovery calls, first dental retainer onboarding | Dental practice management background or dental industry sales experience | Month 1–2 |
+| Property Mgmt Lead | Property Brief seeding, discovery calls, first PM retainer onboarding | Property management ops background or PropTech sales experience | Month 1–2 |
+| Delivery Support (shared) | Retainer workflow monitoring and maintenance across all verticals | Technical — comfortable with API connectors, Claude configuration, troubleshooting | Month 3–4 (at 3–4 retainer clients) |
+
+# **7. Supplemental Vertical: Private AI Infrastructure**
+
+A parallel initiative — operating independently from the three GTM verticals — validates a private GPU hosting business model targeting regulated South Florida SMBs. This is relevant to the core strategy because it directly addresses the compliance and data sovereignty concerns that make public AI tools unusable for law firms, medical practices, and financial services firms: the same regulated SMB segment that is a target for managed AI retainer services.
+
+## **Business Case Summary — 38 Chestnut Circle PoC**
+
+| **Thesis** The revenue opportunity is not in selling raw GPU hours. It is in selling compliance-packaged private AI infrastructure to regulated South Florida businesses who cannot safely use public AI tools. One private endpoint client at $750/month generates more net cash flow than weeks of marketplace utilization at commodity rates. |
+| --- |
+
+| **Parameter** | **Detail** |
+| --- | --- |
+| Phase 1 hardware | 4x RTX 4090 (24 GB VRAM each) — highest-demand consumer GPU on Vast.ai/RunPod in 2026 |
+| Phase 1 CapEx | $14,350 all-in including compliance setup, legal, and insurance |
+| Target clients | Law firms, medical/dental offices, financial SMBs in Broward/Miami-Dade |
+| Revenue model | Private B2B endpoints ($650–2,200/mo) + marketplace spot rental (Vast.ai/RunPod) |
+| CapEx breakeven | Month 4–5 with 2 pre-sold B2B clients |
+| Month 18 NCF | $3,785/month net with 8 GPUs and 5 clients |
+| Compliance posture | HIPAA-ready (BAA), attorney-client privilege safe via Heppner ruling defense, GLBA-aligned |
+| Phase 3 vision | Miami/Doral colocation migration — 20–60 GPU deployment at $8,000–20,000/mo NCF |
+
+**The Heppner Ruling — Strategic Sales Angle**
+
+A February 2026 federal ruling (S.D.N.Y.) found that documents created using publicly available AI platforms are NOT protected by attorney-client privilege — because data was voluntarily disclosed to a third-party server. A private endpoint with a signed Data Processing Agreement eliminates this risk entirely. This ruling is the single most powerful sales tool for law firm outreach and applies equally to the managed AI retainer business.
+
+**Relevance to Core Strategy**
+
+The compliance architecture developed for the GPU hosting business — zero-retention design, VLAN isolation, TLS 1.3, HIPAA audit logging, BAA templates — translates directly into a credibility signal and sales asset for the managed AI retainer business. Clients in dental and legal verticals face the same data sovereignty concerns. The private node PoC validates a solution to the same problem.
+
+# **8. Open Strategic Questions**
+
+These questions remain open and should be resolved in sequence as the business generates data:
+
+| **Question** | **Why It Matters** | **Decision Trigger** |
+| --- | --- | --- |
+| Pro-to-retainer conversion rate | What rate constitutes proof before launching a fourth vertical? | After 10+ Pro subscribers per vertical — typically Month 2–3 |
+| Vertical lead hiring profile | Operator background vs. sales background vs. technical background — which per vertical? | Before vertical leads are hired in Month 1–2 |
+| HIPAA BAA posture (dental) | Does dental workflow implementation require formal HIPAA compliance posture, and at what client count does this become material? | Before first dental retainer is signed |
+| MSP partnership vs. competition | Partner with existing MSPs for distribution or compete with them for the client relationship? | After first retainer — evaluate based on channel economics |
+| Seasonal revenue structure | How do retainer agreements handle northern marine operators and dental practices with summer slowdowns? | At first retainer contract draft |
+| Fourth vertical timing | HVAC, landscaping, or professional services — which gets the fourth app, and what triggers it? | When combined retainer MRR exceeds $10,000/mo consistently |
+| International expansion | Caribbean marine markets, Canadian dental, UK/Australian property management | Year 2 — after domestic playbooks are documented |
+
+	SMB AI Ops  |  Integrated Strategy  |  May 2026  |  Confidential
